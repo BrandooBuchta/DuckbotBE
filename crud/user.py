@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from app.models.user import User
-from app.schemas.user import UserCreate
+from models.user import User
+from schemas.user import UserCreate
 
 def create_or_update_user(db: Session, user: UserCreate):
     db_user = db.query(User).filter(User.id == user.id).first()
