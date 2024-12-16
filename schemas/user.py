@@ -10,4 +10,3 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     pass
-
