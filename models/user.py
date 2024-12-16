@@ -7,4 +7,4 @@ class User(Base):
     id = Column(BigInteger, primary_key=True, index=True)
     chat_id = Column(BigInteger, nullable=False)
     is_in_betfin = Column(Boolean, default=False)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=True)
