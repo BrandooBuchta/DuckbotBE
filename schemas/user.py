@@ -6,7 +6,7 @@ class UserBase(BaseModel):
     is_in_betfin: bool = False
 
     class Config:
-        orm_mode = True
+        form_attributes = True
 
 class UserCreate(UserBase):
     pass

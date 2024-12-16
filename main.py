@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, Request
 from sqlalchemy.orm import Session
 from database import engine, Base, get_db
 from schemas.user import UserCreate
-from cruds.user import create_or_update_user
+from crud.user import create_or_update_user
 import os
 import requests
 from dotenv import load_dotenv
