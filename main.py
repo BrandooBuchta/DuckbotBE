@@ -73,17 +73,25 @@ async def webhook(update: dict, db: Session = Depends(get_db)):
             requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": "Ahoj!"})
             requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": "Jak ti mám říkat?"})
         elif text == "/events":
-            # Zavoláme náš vlastní /events endpoint
-            events_data = requests.get(f"https://{DOMAIN}/events").json()
-            
-            # Pošleme uživateli data jako text
-            # Můžete je formátovat dle potřeby.
-            # Níže jen příklad, jak data odeslat jako JSON dump.
-            import json
-            events_text = json.dumps(events_data, ensure_ascii=False, indent=2)
-            
-            # Pokud je text dlouhý, můžete ho rozdělit, ale zde ho pošleme přímo.
-            requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": events_text})
+            SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+            # Přímo voláme supabase endpoint
+            url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
+            headers = {
+                "apikey": SUPABASE_ANON_KEY,
+                "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
+            }
+
+            event_resp = requests.get(url, headers=headers)
+            if event_resp.status_code == 200:
+                events_data = event_resp.json()
+                # Zformátujte data podle potřeby
+                import json
+                events_text = json.dumps(events_data, ensure_ascii=False, indent=2)
+                # Odešleme text uživateli na Telegram
+                requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": events_text})
+            else:
+                # Něco se nepovedlo, ohlásíme chybu nebo prázdný výsledek
+                requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": "Nepodařilo se načíst události."})
         else:
             if user and user.name is None:
                 update_user_name(db, user_id, text)
