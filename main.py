@@ -7,9 +7,8 @@ import os
 import requests
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse
 from datetime import datetime
-from fastapi.responses import PlainTextResponse
 
 load_dotenv()
 
@@ -19,7 +18,7 @@ app = FastAPI()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 DOMAIN = os.getenv("VERCEL_URL")
-SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")  
 TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
 class BroadcastMessage(BaseModel):
@@ -42,25 +41,28 @@ def format_events(events):
 
 @app.on_event("startup")
 async def set_webhook():
-    callback_url = f"https://{DOMAIN}/webhook/"
-    get_info_url = f"{TELEGRAM_API_URL}/getWebhookInfo"
-    info_response = requests.get(get_info_url)
-    if info_response.status_code == 200:
-        info_data = info_response.json()
-        if info_data.get("ok") and info_data["result"].get("url") == callback_url:
-            print("Webhook is already set!")
-            return
+    if DOMAIN:
+        callback_url = f"https://{DOMAIN}/webhook/"
+        get_info_url = f"{TELEGRAM_API_URL}/getWebhookInfo"
+        info_response = requests.get(get_info_url)
+        if info_response.status_code == 200:
+            info_data = info_response.json()
+            if info_data.get("ok") and info_data["result"].get("url") == callback_url:
+                print("Webhook is already set!")
+                return
 
-    webhook_url = f"{TELEGRAM_API_URL}/setWebhook"
-    response = requests.post(webhook_url, data={"url": callback_url})
-    if response.status_code == 200:
-        data = response.json()
-        if data.get("ok") and data.get("result") is True:
-            print("Webhook successfully set!")
+        webhook_url = f"{TELEGRAM_API_URL}/setWebhook"
+        response = requests.post(webhook_url, data={"url": callback_url})
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("ok") and data.get("result") is True:
+                print("Webhook successfully set!")
+            else:
+                print("Failed to set webhook:", data)
         else:
-            print("Failed to set webhook:", data)
+            print("Failed to set webhook:", response.text)
     else:
-        print("Failed to set webhook:", response.text)
+        print("No DOMAIN set, cannot set webhook.")
 
 @app.get("/events")
 async def events():
@@ -166,4 +168,3 @@ async def send_message_form(request: Request, db: Session = Depends(get_db)):
 @app.get("/")
 async def root():
     return {"message": "Telegram Bot is running!"}
-
