@@ -166,3 +166,4 @@ async def send_message_form(request: Request, db: Session = Depends(get_db)):
 @app.get("/")
 async def root():
     return {"message": "Telegram Bot is running!"}
+
