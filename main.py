@@ -7,6 +7,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from pydantic import BaseModel
+from fastapi.responses import HTMLResponse
 
 load_dotenv()
 
@@ -78,6 +79,44 @@ async def send_message_to_all_users(payload: BroadcastMessage, db: Session = Dep
         requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": user.chat_id, "text": text})
 
     return {"status": "Message sent to all users"}
+
+@app.get("/ui", response_class=HTMLResponse)
+async def ui():
+    # Jednoduchá HTML stránka s formulářem
+    return """
+    <html>
+      <head><title>Send Message to All Users</title></head>
+      <body>
+        <h1>Odeslat zprávu všem uživatelům</h1>
+        <form action="/send-message-form" method="post">
+          <textarea name="text" rows="4" cols="50">Ahoj, {name}!</textarea><br/><br/>
+          <input type="submit" value="Odeslat">
+        </form>
+      </body>
+    </html>
+    """
+
+@app.post("/send-message-form", response_class=HTMLResponse)
+async def send_message_form(request: Request, db: Session = Depends(get_db)):
+    form_data = await request.form()
+    text = form_data.get("text", "")
+    users = get_all_users(db)
+
+    for user in users:
+        final_text = text
+        if "{name}" in final_text:
+            user_name = user.name if user.name else "kamaráde"
+            final_text = final_text.replace("{name}", user_name)
+        requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": user.chat_id, "text": final_text})
+
+    return """
+    <html>
+      <body>
+        <h2>Zpráva byla odeslána všem uživatelům!</h2>
+        <a href="/ui">Zpět</a>
+      </body>
+    </html>
+    """
 
 @app.get("/")
 async def root():
