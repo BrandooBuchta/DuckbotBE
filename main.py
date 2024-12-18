@@ -19,7 +19,7 @@ app = FastAPI()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 DOMAIN = os.getenv("VERCEL_URL")
-SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")  # Váš Supabase anon key
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
 class BroadcastMessage(BaseModel):
