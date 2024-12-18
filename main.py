@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
 from datetime import datetime
+from fastapi.responses import PlainTextResponse
 
 load_dotenv()
 
