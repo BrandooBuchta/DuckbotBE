@@ -17,6 +17,7 @@ app = FastAPI()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 DOMAIN = os.getenv("VERCEL_URL")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")  # Váš Supabase anon key
 TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
 class BroadcastMessage(BaseModel):
@@ -44,6 +45,19 @@ async def set_webhook():
     else:
         print("Failed to set webhook:", response.text)
 
+@app.get("/events")
+async def events():
+    # Zavoláme Supabase REST endpoint
+    headers = {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
+    }
+
+    url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
+    resp = requests.get(url, headers=headers)
+    resp.raise_for_status()
+    return resp.json()
+
 @app.post("/webhook/")
 async def webhook(update: dict, db: Session = Depends(get_db)):
     if "message" in update:
@@ -58,6 +72,18 @@ async def webhook(update: dict, db: Session = Depends(get_db)):
             create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id))
             requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": "Ahoj!"})
             requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": "Jak ti mám říkat?"})
+        elif text == "/events":
+            # Zavoláme náš vlastní /events endpoint
+            events_data = requests.get(f"https://{DOMAIN}/events").json()
+            
+            # Pošleme uživateli data jako text
+            # Můžete je formátovat dle potřeby.
+            # Níže jen příklad, jak data odeslat jako JSON dump.
+            import json
+            events_text = json.dumps(events_data, ensure_ascii=False, indent=2)
+            
+            # Pokud je text dlouhý, můžete ho rozdělit, ale zde ho pošleme přímo.
+            requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": events_text})
         else:
             if user and user.name is None:
                 update_user_name(db, user_id, text)
@@ -82,7 +108,6 @@ async def send_message_to_all_users(payload: BroadcastMessage, db: Session = Dep
 
 @app.get("/ui", response_class=HTMLResponse)
 async def ui():
-    # Jednoduchá HTML stránka s formulářem
     return """
     <html>
       <head><title>Send Message to All Users</title></head>
