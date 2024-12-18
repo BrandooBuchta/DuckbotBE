@@ -20,6 +20,24 @@ DOMAIN = os.getenv("VERCEL_URL")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")  # Váš Supabase anon key
 TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
+def format_events(events):
+    lines = []
+    for e in events:
+        # Převod timestamp na čitelný formát (UTC)
+        dt = datetime.utcfromtimestamp(e["timestamp"]).strftime("%Y-%m-%d %H:%M:%S UTC")
+        # Vytvoření textu pro jeden event
+        # (můžete použít například markdown, pokud je v botu povolen)
+        line = (
+            f"**{e['title']['cs']}**\n"
+            f"- Jazyk: {e['language']}\n"
+            f"- Čas: {dt}\n"
+            f"- Min. stake: {e['minToStake']}\n"
+            f"- URL: {e['url']}\n"
+        )
+        lines.append(line)
+    return "\n".join(lines)
+
+
 class BroadcastMessage(BaseModel):
     text: str
 
@@ -56,7 +74,7 @@ async def events():
     url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
     resp = requests.get(url, headers=headers)
     resp.raise_for_status()
-    return resp.json()
+    return format_events(resp.json())
 
 @app.post("/webhook/")
 async def webhook(update: dict, db: Session = Depends(get_db)):
