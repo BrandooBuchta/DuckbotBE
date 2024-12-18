@@ -23,6 +23,21 @@ TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 class BroadcastMessage(BaseModel):
     text: str
 
+def format_events(events):
+    lines = []
+    for e in events:
+        # Převod timestamp na čitelný formát (UTC)
+        dt = datetime.utcfromtimestamp(e["timestamp"]).strftime("%Y-%m-%d %H:%M:%S UTC")
+        line = (
+            f"{e['title']['cs']}\n"
+            f"- Jazyk: {e['language']}\n"
+            f"- Čas: {dt}\n"
+            f"- Min. stake: {e['minToStake']}\n"
+            f"- URL: {e['url']}\n"
+        )
+        lines.append(line.strip())
+    return "\n\n".join(lines)
+
 @app.on_event("startup")
 async def set_webhook():
     callback_url = f"https://{DOMAIN}/webhook/"
