@@ -1,36 +1,33 @@
-# main.py
-
-from fastapi import FastAPI, Depends, Request
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import engine, Base, get_db
+from database import SessionLocal
+from schemas.bot import SignIn, SignInResponse, SignUp
+from crud.bot import sign_in, sign_up, get_bot_by_name, get_bot
+from crud.user import get_user_by_id, create_or_update_user, update_user_name
 from schemas.user import UserCreate
-from crud.user import create_or_update_user, get_all_users, get_user_by_id, update_user_name
+from base64 import b64encode, b64decode
 import os
-import requests
 from dotenv import load_dotenv
-from pydantic import BaseModel
-from fastapi.responses import HTMLResponse, PlainTextResponse
 from datetime import datetime
-from routers.bot import router as bot_router
+import requests
 
 load_dotenv()
 
-Base.metadata.create_all(bind=engine)
-
-app = FastAPI()
-
-BOT_TOKEN = os.getenv("BOT_TOKEN")
 DOMAIN = os.getenv("VERCEL_URL")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")  
-TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
-class BroadcastMessage(BaseModel):
-    text: str
+router = APIRouter()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 def format_events(events):
     lines = []
     for e in events:
-        # Převod timestamp na čitelný formát (UTC)
         dt = datetime.utcfromtimestamp(e["timestamp"]).strftime("%Y-%m-%d %H:%M:%S UTC")
         line = (
             f"{e['title']['cs']}\n"
@@ -42,11 +39,35 @@ def format_events(events):
         lines.append(line.strip())
     return "\n\n".join(lines)
 
-@app.on_event("startup")
+@router.post("/sign-up")
+def create_bot(sign_up_body: SignUp, db: Session = Depends(get_db)):
+    bot, status = get_bot_by_name(db, sign_up_body.name)
+    if status == 200:
+        raise HTTPException(status_code=400, detail="Tento bot už existuje!")
+
+    sign_up_status = sign_up(db, sign_up_body)
+    if sign_up_status != 200:
+        raise HTTPException(status_code=400, detail="Stala se chyba při vytváření bota.")
+    return {"detail": "Nový bot byl úspěšně vytvořen!"}
+
+@router.post("/sign-in", response_model=SignInResponse)
+def login_bot(sign_in_body: SignIn, db: Session = Depends(get_db)):
+    token, sign_in_status = sign_in(db, sign_in_body)
+    if sign_in_status == 404:
+        raise HTTPException(status_code=404, detail="Bot s tímto jménem neexistuje.")
+    if sign_in_status == 400:
+        raise HTTPException(status_code=400, detail="Zadané heslo nebylo správné.")
+    return SignInResponse(token=token)
+
+@router.post("/{bot_id}/set-webhook")
 async def set_webhook():
+    bot, status = get_bot(db, bot_id)
+
+    telegram_api_url = f"https://api.telegram.org/bot{base64.b64decode(bot.token).decode()}"
+
     if DOMAIN:
-        callback_url = f"https://{DOMAIN}/webhook/"
-        get_info_url = f"{TELEGRAM_API_URL}/getWebhookInfo"
+        callback_url = f"https://{DOMAIN}/{bot_id}/webhook/"
+        get_info_url = f"{telegram_api_url}/getWebhookInfo"
         info_response = requests.get(get_info_url)
         if info_response.status_code == 200:
             info_data = info_response.json()
@@ -54,7 +75,7 @@ async def set_webhook():
                 print("Webhook is already set!")
                 return
 
-        webhook_url = f"{TELEGRAM_API_URL}/setWebhook"
+        webhook_url = f"{telegram_api_url}/setWebhook"
         response = requests.post(webhook_url, data={"url": callback_url})
         if response.status_code == 200:
             data = response.json()
@@ -67,22 +88,12 @@ async def set_webhook():
     else:
         print("No DOMAIN set, cannot set webhook.")
 
-@app.get("/events")
-async def events():
-    headers = {
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
-    }
-
-    url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
-    resp = requests.get(url, headers=headers)
-    resp.raise_for_status()
-    events_data = resp.json()
-    formatted_text = format_events(events_data)
-    return PlainTextResponse(content=formatted_text)
-
-@app.post("/webhook/")
+@router.post("/{bot_id}/webhook")
 async def webhook(update: dict, db: Session = Depends(get_db)):
+    bot, status = get_bot(db, bot_id)
+
+    telegram_api_url = f"https://api.telegram.org/bot{base64.b64decode(bot.token).decode()}"
+
     if "message" in update:
         message = update["message"]
         user_id = message["from"]["id"]
@@ -93,8 +104,8 @@ async def webhook(update: dict, db: Session = Depends(get_db)):
 
         if text == "/start":
             create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id))
-            requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": "Ahoj!"})
-            requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": "Jak ti mám říkat?"})
+            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Ahoj!"})
+            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Jak ti mám říkat?"})
         elif text == "/events":
             url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
             headers = {
@@ -106,33 +117,15 @@ async def webhook(update: dict, db: Session = Depends(get_db)):
             if event_resp.status_code == 200:
                 events_data = event_resp.json()
                 formatted = format_events(events_data)
-                requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": formatted})
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": formatted})
             else:
-                requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": "Nepodařilo se načíst události."})
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Nepodařilo se načíst události."})
         else:
             if user and user.name is None:
                 update_user_name(db, user_id, text)
-                requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": f"Tvoje jméno je nyní uloženo jako {text}!"})
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": f"Tvoje jméno je nyní uloženo jako {text}!"})
             else:
                 # Další logika, pokud už jméno má
                 pass
 
     return {"ok": True}
-
-@app.post("/send-message")
-async def send_message_to_all_users(payload: BroadcastMessage, db: Session = Depends(get_db)):
-    users = get_all_users(db)
-    for user in users:
-        text = payload.text
-        if "{name}" in text:
-            user_name = user.name if user.name else "kamaráde"
-            text = text.replace("{name}", user_name)
-        requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": user.chat_id, "text": text})
-
-    return {"status": "Message sent to all users"}
-
-@app.get("/")
-async def root():
-    return {"message": "Telegram Bot is running!"}
-
-app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])

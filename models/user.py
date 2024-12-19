@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, Boolean, String
+from sqlalchemy import Column, BigInteger, Boolean, String, Integer
 from database import Base
 
 class User(Base):
