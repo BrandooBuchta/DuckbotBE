@@ -62,8 +62,7 @@ def login_bot(sign_in_body: SignIn, db: Session = Depends(get_db)):
 @router.post("/{bot_id}/set-webhook")
 async def set_webhook(bot_id: int, db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
-
-    telegram_api_url = f"https://api.telegram.org/bot{base64.b64decode(bot.token).decode()}"
+    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
     if DOMAIN:
         callback_url = f"https://{DOMAIN}/{bot_id}/webhook/"
@@ -91,8 +90,7 @@ async def set_webhook(bot_id: int, db: Session = Depends(get_db)):
 @router.post("/{bot_id}/webhook")
 async def webhook(bot_id: int, db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
-
-    telegram_api_url = f"https://api.telegram.org/bot{base64.b64decode(bot.token).decode()}"
+    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
     if "message" in update:
         message = update["message"]
