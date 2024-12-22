@@ -140,15 +140,12 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         user = get_user_by_id(db, user_id)
 
         if text == "/start":
-            create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id, bot_id=bot_id))
-
-            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Jak se jmenuješ?"})
-
-        elif user and user.name is None:
-            update_user_name(db, user_id, text)
-
-            personalized_message = bot.welcome_message.replace("{name}", text)
-            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": personalized_message})
+            if not user or user.name is None:
+                create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id, bot_id=bot_id))
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Jak se jmenuješ?"})
+            else:
+                personalized_message = bot.welcome_message.replace("{name}", user.name)
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": personalized_message})
         else:
             if text == "/help":
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": bot.help_message})
