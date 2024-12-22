@@ -98,7 +98,7 @@ async def set_webhook(bot_id: UUID, db: Session = Depends(get_db)):
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
     if DOMAIN:
-        callback_url = f"{DOMAIN}/{bot_id}/webhook"
+        callback_url = f"{DOMAIN}/bot/{bot_id}/webhook"
         get_info_url = f"{telegram_api_url}/getWebhookInfo"
         info_response = requests.get(get_info_url)
         if info_response.status_code == 200:
