@@ -98,14 +98,14 @@ async def set_webhook(bot_id: UUID, db: Session = Depends(get_db)):
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
     if DOMAIN:
-        callback_url = f"https://{DOMAIN}/{bot_id}/webhook"
+        callback_url = f"{DOMAIN}/{bot_id}/webhook"
         get_info_url = f"{telegram_api_url}/getWebhookInfo"
         info_response = requests.get(get_info_url)
         if info_response.status_code == 200:
             info_data = info_response.json()
             if info_data.get("ok") and info_data["result"].get("url") == callback_url:
                 print("Webhook is already set!")
-                return
+                return callback_url
 
         webhook_url = f"{telegram_api_url}/setWebhook"
         response = requests.post(webhook_url, data={"url": callback_url})
