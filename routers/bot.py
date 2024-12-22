@@ -21,7 +21,7 @@ load_dotenv()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
-DOMAIN = os.getenv("VERCEL_URL")
+DOMAIN = os.getenv("DOMAIN")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")  
 
 router = APIRouter()
@@ -98,7 +98,7 @@ async def set_webhook(bot_id: UUID, db: Session = Depends(get_db)):
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
     if DOMAIN:
-        callback_url = f"https://{DOMAIN}/api/{bot_id}/webhook"
+        callback_url = f"https://{DOMAIN}/{bot_id}/webhook"
         get_info_url = f"{telegram_api_url}/getWebhookInfo"
         info_response = requests.get(get_info_url)
         if info_response.status_code == 200:
