@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from models.user import User
 from schemas.user import UserCreate
+from uuid import UUID
 
 def create_or_update_user(db: Session, user: UserCreate):
     db_user = db.query(User).filter(User.id == user.id).first()
@@ -28,8 +29,8 @@ def update_user_name(db: Session, user_id: int, name: str):
         db.refresh(db_user)
     return db_user
 
-def get_all_users(db: Session):
-    return db.query(User).all()
+def get_all_users(db: Session, bot_id: UUID):
+    return db.query(User).filter(User.bot_id == bot_id).all()
 
 def get_user_by_id(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()

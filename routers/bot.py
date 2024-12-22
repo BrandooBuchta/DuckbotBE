@@ -1,17 +1,25 @@
+# routers/bot.py
+
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from schemas.bot import SignIn, SignInResponse, SignUp
-from crud.bot import sign_in, sign_up, get_bot_by_name, get_bot
+from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage
+from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot
+from crud.faq import get_all_formated_faqs
 from crud.user import get_user_by_id, create_or_update_user, update_user_name
 from schemas.user import UserCreate
 from base64 import b64encode, b64decode
 import os
 from dotenv import load_dotenv
 from datetime import datetime
+from typing import List
 import requests
+from uuid import UUID
 
 load_dotenv()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
 DOMAIN = os.getenv("VERCEL_URL")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")  
@@ -41,7 +49,7 @@ def format_events(events):
 
 @router.post("/sign-up")
 def create_bot(sign_up_body: SignUp, db: Session = Depends(get_db)):
-    bot, status = get_bot_by_name(db, sign_up_body.name)
+    bot, status = get_bot_by_email(db, sign_up_body.name)
     if status == 200:
         raise HTTPException(status_code=400, detail="Tento bot už existuje!")
 
@@ -52,15 +60,40 @@ def create_bot(sign_up_body: SignUp, db: Session = Depends(get_db)):
 
 @router.post("/sign-in", response_model=SignInResponse)
 def login_bot(sign_in_body: SignIn, db: Session = Depends(get_db)):
-    token, sign_in_status = sign_in(db, sign_in_body)
+    res, sign_in_status = sign_in(db, sign_in_body)
+
     if sign_in_status == 404:
         raise HTTPException(status_code=404, detail="Bot s tímto jménem neexistuje.")
     if sign_in_status == 400:
         raise HTTPException(status_code=400, detail="Zadané heslo nebylo správné.")
-    return SignInResponse(token=token)
+    return res
+
+@router.post("/sign-in", response_model=SignInResponse)
+def login_bot(sign_in_body: SignIn, db: Session = Depends(get_db)):
+    res, sign_in_status = sign_in(db, sign_in_body)
+
+    if sign_in_status == 404:
+        raise HTTPException(status_code=404, detail="Bot s tímto jménem neexistuje.")
+    if sign_in_status == 400:
+        raise HTTPException(status_code=400, detail="Zadané heslo nebylo správné.")
+    return res
+
+@router.put("/{bot_id}")
+def update_academy_faq(bot_id: UUID, update_bot_body: UpdateBot, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    bot, status = get_bot(db, bot_id)
+
+    if status == 404:
+        raise HTTPException(status_code=404, detail="Tento bot nexistuje!")
+
+    if not verify_token(db, bot_id, token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    update_bot(db, bot_id, update_bot_body)
+
+    return {"detail": "Úspěšně jsme upravili bota!"}
 
 @router.post("/{bot_id}/set-webhook")
-async def set_webhook(bot_id: int, db: Session = Depends(get_db)):
+async def set_webhook(bot_id: UUID, db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
@@ -87,8 +120,14 @@ async def set_webhook(bot_id: int, db: Session = Depends(get_db)):
     else:
         print("No DOMAIN set, cannot set webhook.")
 
+@router.post("/{bot_id}/send-message")
+async def send_message(bot_id: UUID, body: SendMessage, db: Session = Depends(get_db)):
+    bot, status = get_bot(db, bot_id)
+    print(f"Message: {body.message}\nFollow-up Message: {body.follow_up_message}\nSend after: {body.send_after}\nFor Client: {body.for_client}\nFor New Client: {body.for_new_client}\n")
+
+
 @router.post("/{bot_id}/webhook")
-async def webhook(bot_id: int, db: Session = Depends(get_db)):
+async def webhook(bot_id: UUID, db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
@@ -101,29 +140,37 @@ async def webhook(bot_id: int, db: Session = Depends(get_db)):
         user = get_user_by_id(db, user_id)
 
         if text == "/start":
-            create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id))
-            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Ahoj!"})
-            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Jak ti mám říkat?"})
-        elif text == "/events":
-            url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
-            headers = {
-                "apikey": SUPABASE_ANON_KEY,
-                "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
-            }
+            create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id, bot_id=bot_id))
 
-            event_resp = requests.get(url, headers=headers)
-            if event_resp.status_code == 200:
-                events_data = event_resp.json()
-                formatted = format_events(events_data)
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": formatted})
-            else:
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Nepodařilo se načíst události."})
+            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Jak se jmenuješ?"})
+
+        elif user and user.name is None:
+            update_user_name(db, user_id, text)
+
+            personalized_message = bot.welcome_message.replace("{name}", text)
+            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": personalized_message})
         else:
-            if user and user.name is None:
-                update_user_name(db, user_id, text)
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": f"Tvoje jméno je nyní uloženo jako {text}!"})
+            if text == "/help":
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": bot.help_message})
+            elif text == "/faq":
+                faqs, status = get_all_formated_faqs(db, bot_id)
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": faqs})
+            elif text == "/events":
+                url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
+                headers = {
+                    "apikey": SUPABASE_ANON_KEY,
+                    "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
+                }
+
+                event_resp = requests.get(url, headers=headers)
+                if event_resp.status_code == 200:
+                    events_data = event_resp.json()
+                    formatted = format_events(events_data)
+                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": formatted})
+                else:
+                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Nepodařilo se načíst události."})
             else:
-                # Další logika, pokud už jméno má
-                pass
+                # Neznámý příkaz
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Neznámý příkaz. Použijte /help pro nápovědu."})
 
     return {"ok": True}
