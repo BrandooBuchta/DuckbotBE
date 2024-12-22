@@ -1,3 +1,5 @@
+# crud/user.py
+
 from sqlalchemy.orm import Session
 from models.user import User
 from schemas.user import UserCreate
@@ -13,7 +15,7 @@ def create_or_update_user(db: Session, user: UserCreate):
         db_user = User(
             id=user.id, 
             chat_id=user.chat_id, 
-            bot_id=bot_id,
+            bot_id=user.bot_id,
             is_in_betfin=user.is_in_betfin,
             name=user.name
         )
