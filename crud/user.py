@@ -3,7 +3,7 @@ from models.user import User
 from schemas.user import UserCreate
 from uuid import UUID
 
-def create_or_update_user(db: Session, user: UserCreate):
+def create_or_update_user(db: Session, user: UserCreate, bot_id: UUID):
     db_user = db.query(User).filter(User.id == user.id).first()
     if db_user:
         db_user.chat_id = user.chat_id
@@ -13,6 +13,7 @@ def create_or_update_user(db: Session, user: UserCreate):
         db_user = User(
             id=user.id, 
             chat_id=user.chat_id, 
+            bot_id=bot_id,
             is_in_betfin=user.is_in_betfin,
             name=user.name
         )

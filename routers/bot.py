@@ -140,7 +140,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         user = get_user_by_id(db, user_id)
 
         if text == "/start":
-            create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id, bot_id=bot_id))
+            create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id), bot_id=bot_id)
 
             requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Jak se jmenuješ?"})
 
