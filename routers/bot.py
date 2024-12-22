@@ -127,7 +127,7 @@ async def send_message(bot_id: UUID, body: SendMessage, db: Session = Depends(ge
 
 
 @router.post("/{bot_id}/webhook")
-async def webhook(bot_id: UUID, db: Session = Depends(get_db)):
+async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
