@@ -13,4 +13,7 @@ class UserBase(BaseModel):
         form_attributes = True
 
 class UserCreate(UserBase):
-    pass
+    bot_id: UUID
+    chat_id: int
+    is_in_betfin: bool = False
+    name: Optional[str] = None
