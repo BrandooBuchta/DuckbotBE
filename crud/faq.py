@@ -58,7 +58,6 @@ def get_all_formated_faqs(db: Session, bot_id: UUID):
 
     return formatted_faqs.strip(), 200
 
-
 def update_faq(db: Session, faq_id: UUID, faq: UpdateFAQ):
     db_faq, status = get_base_faq(db, faq_id)
     if not db_faq:
