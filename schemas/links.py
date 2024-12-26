@@ -9,6 +9,8 @@ class BaseLink(BaseModel):
     bot_id: UUID
     is_faq: bool
     position: int
+    currently_sent: int
+    share: int
     parent: str
     child: str
         
@@ -18,6 +20,8 @@ class BaseLink(BaseModel):
 class CreateLink(BaseModel):
     bot_id: UUID
     is_faq: Optional[bool] = False
+    currently_sent: Optional[int] = 0
+    share: Optional[int] = 0
     position: int
     parent: str
     child: str
@@ -27,6 +31,7 @@ class CreateLink(BaseModel):
 
 class UpdateLink(BaseModel):
     position: Optional[int] = None
+    share: Optional[int] = None
     parent: Optional[str] = None
     child: Optional[str] = None
         
@@ -36,6 +41,8 @@ class UpdateLink(BaseModel):
 class ReadLink(BaseModel):
     id: UUID
     bot_id: UUID
+    currently_sent: int
+    share: int
     position: int
     parent: str
     child: str

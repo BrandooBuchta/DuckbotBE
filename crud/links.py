@@ -40,6 +40,8 @@ def get_all_links(db: Session, bot_id: UUID):
             id=l.id,
             bot_id=bot_id,
             position=l.position,
+            share=l.share,
+            currently_sent=l.currently_sent,
             parent=l.parent,
             child=l.child,
         ))
