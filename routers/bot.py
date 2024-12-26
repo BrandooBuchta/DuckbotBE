@@ -26,6 +26,65 @@ SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
 router = APIRouter()
 
+def replace_variables(bot_id: UUID, user_id: int, message: str):
+    bot, status = get_bot(db, bot_id)
+    user = get_user_by_id(db, user_id)
+
+    def get_closest_event(event_type: str) -> str:
+        url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events"
+        headers = {
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
+        }
+        params = {
+            "select": "*",
+            "order": "timestamp.asc",
+            "event_type": f"eq.{event_type}"  # Filter by event_type
+        }
+        response = requests.get(url, headers=headers, params=params)
+        if response.status_code == 200:
+            events = response.json()
+            if events:
+                # Return the URL of the closest event
+                return events[0]["url"]
+        return "No events found"
+
+    variables = [
+        {
+            "key": "name",
+            "value": user.name
+        },
+        {
+            "key": "bot_name",
+            "value": bot.name
+        },
+        {
+            "key": "support_contact",
+            "value": bot.support_contact
+        },
+        {
+            "key": "launch_for_begginers",
+            "value": get_closest_event("launch_for_begginers")
+        },
+        {
+            "key": "build_your_business",
+            "value": get_closest_event("build_your_business")
+        },
+        {
+            "key": "opportunity_call",
+            "value": get_closest_event("opportunity_call")
+        },
+        {
+            "key": "academy_link",
+            "value": "academy link"
+        },
+    ]
+
+    for var in variables:
+        message = message.replace(f"{{{var['key']}}}", var["value"])
+
+    return message
+
 def get_db():
     db = SessionLocal()
     try:
@@ -190,7 +249,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id, bot_id=bot_id))
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": bot.start_message})
             else:
-                personalized_message = bot.welcome_message.replace("{name}", user.name)
+                personalized_message = replace_variables(bot_id, user_id, bot.welcome_message)
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": personalized_message})
         elif not user or user.name is None:
             update_user_name(db, user_id, text)
