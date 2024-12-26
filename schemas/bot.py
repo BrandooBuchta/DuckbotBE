@@ -42,6 +42,7 @@ class SignInResponse(BaseModel):
     bot: BaseBot
 
 class UpdateBot(BaseModel):
+    name: Optional[str] = None
     welcome_message: Optional[str] = None
     sequence_message_client: Optional[str] = None
     sequence_message_new_client: Optional[str] = None

@@ -39,13 +39,12 @@ def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
         params = {
             "select": "*",
             "order": "timestamp.asc",
-            "event_type": f"eq.{event_type}"  # Filter by event_type
+            "event_type": f"eq.{event_type}"
         }
         response = requests.get(url, headers=headers, params=params)
         if response.status_code == 200:
             events = response.json()
             if events:
-                # Return the URL of the closest event
                 return events[0]["url"]
         return "Žádné události nenalezeny"
 
