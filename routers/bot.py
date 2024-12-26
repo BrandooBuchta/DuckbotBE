@@ -47,20 +47,20 @@ def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
             if events:
                 # Return the URL of the closest event
                 return events[0]["url"]
-        return "No events found"
+        return "Žádné události nenalezeny"
 
     variables = [
         {
             "key": "name",
-            "value": user.name
+            "value": user.name if user and user.name else "uživateli"
         },
         {
             "key": "bot_name",
-            "value": bot.name
+            "value": bot.name if bot and bot.name else "tvůj bot"
         },
         {
             "key": "support_contact",
-            "value": bot.support_contact
+            "value": bot.support_contact if bot and bot.support_contact else "podpora"
         },
         {
             "key": "launch_for_begginers",
@@ -76,12 +76,12 @@ def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
         },
         {
             "key": "academy_link",
-            "value": "academy link"
+            "value": "https://academy.example.com"
         },
     ]
 
     for var in variables:
-        message = message.replace(f"{{{var['key']}}}", var["value"])
+        message = message.replace(f"{{{var['key']}}}", var["value"] or "neznámá hodnota")
 
     return message
 
@@ -91,6 +91,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
 
 def format_events(events):
     lines = []

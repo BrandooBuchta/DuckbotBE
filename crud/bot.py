@@ -27,7 +27,7 @@ def get_bot_by_email(db: Session, email: str):
     return db_bot, 200
 
 
-def get_bot(db: Session, bot_id: str):
+def get_bot(db: Session, bot_id: UUID):
     db_bot = db.query(Bot).filter(Bot.id == bot_id).first()
     if not db_bot:
         return None, 404
