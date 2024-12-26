@@ -1,5 +1,3 @@
-# routers/bot.py
-
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -13,7 +11,7 @@ from base64 import b64encode, b64decode
 import os
 from dotenv import load_dotenv
 from datetime import datetime
-from typing import List
+from typing import List, Dict
 import requests
 from uuid import UUID
 
@@ -30,20 +28,42 @@ def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
     bot, status = get_bot(db, bot_id)
     user = get_user_by_id(db, user_id)
 
-    def get_closest_event(event_keyword: str) -> str:
+    def get_closest_events() -> Dict[str, str]:
         url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
         headers = {
             "apikey": SUPABASE_ANON_KEY,
             "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
         }
-        response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            events = response.json()
-            for event in events:
-                if event_keyword.lower() in event["title"]["en"].lower():
-                    return event["url"]
-        return "Žádné události nenalezeny"
 
+        response = requests.get(url, headers=headers)
+        
+        if response.status_code != 200:
+            print(f"Failed to fetch events: {response.status_code} {response.text}")
+            return {
+                "launch_for_begginers": "Žádné události nenalezeny",
+                "build_your_business": "Žádné události nenalezeny",
+                "opportunity_call": "Žádné události nenalezeny",
+            }
+
+        events = response.json()
+
+        keywords = ["Launch for Beginners", "Build Your Business", "Opportunity Call"]
+        closest_events = {
+            "launch_for_begginers": "Žádné události nenalezeny",
+            "build_your_business": "Žádné události nenalezeny",
+            "opportunity_call": "Žádné události nenalezeny",
+        }
+
+        for keyword in keywords:
+            for event in events:
+                if keyword.lower() in event["title"]["en"].lower():
+                    key = keyword.lower().replace(" ", "_")
+                    closest_events[key] = event["url"]
+                    break  # Stop after finding the closest event for this keyword
+
+        return closest_events
+
+    closest_events = get_closest_events()
 
     variables = [
         {
@@ -60,15 +80,15 @@ def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
         },
         {
             "key": "launch_for_begginers",
-            "value": get_closest_event("launch_for_begginers")
+            "value": closest_events["launch_for_begginers"]
         },
         {
             "key": "build_your_business",
-            "value": get_closest_event("build_your_business")
+            "value": closest_events["build_your_business"]
         },
         {
             "key": "opportunity_call",
-            "value": get_closest_event("opportunity_call")
+            "value": closest_events["opportunity_call"]
         },
         {
             "key": "academy_link",
@@ -87,7 +107,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
 
 def format_events(events):
     lines = []
