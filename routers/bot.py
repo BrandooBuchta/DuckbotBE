@@ -126,30 +126,24 @@ async def set_webhook(bot_id: UUID, db: Session = Depends(get_db)):
 @router.delete("/{bot_id}/delete-webhook")
 async def delete_webhook(bot_id: UUID, db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
+    if status != 200:
+        raise HTTPException(status_code=404, detail="Bot not found.")
+
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
     if DOMAIN:
-        callback_url = f"{DOMAIN}/bot/{bot_id}/webhook"
-        get_info_url = f"{telegram_api_url}/getWebhookInfo"
-        info_response = requests.get(get_info_url)
-        if info_response.status_code == 200:
-            info_data = info_response.json()
-            if info_data.get("ok") and info_data["result"].get("url") == callback_url:
-                print("Webhook is already set!")
-                return callback_url
-
         webhook_url = f"{telegram_api_url}/deleteWebhook"
-        response = requests.post(webhook_url, data={"url": callback_url})
+        response = requests.post(webhook_url)
         if response.status_code == 200:
             data = response.json()
-            if data.get("ok") and data.get("result") is True:
-                print("Webhook successfully deleted!")
+            if data.get("ok"):
+                return {"detail": "Webhook successfully deleted!"}
             else:
-                print("Failed to delete webhook:", data)
+                raise HTTPException(status_code=400, detail=f"Failed to delete webhook: {data.get('description', 'Unknown error')}")
         else:
-            print("Failed to delete webhook:", response.text)
+            raise HTTPException(status_code=response.status_code, detail=f"Failed to delete webhook: {response.text}")
     else:
-        print("No DOMAIN set, cannot delete webhook.")
+        raise HTTPException(status_code=400, detail="No DOMAIN set, cannot delete webhook.")
 
 @router.get("/{bot_id}/webhook-info")
 async def get_webhook_info(bot_id: UUID, db: Session = Depends(get_db)) -> dict:
