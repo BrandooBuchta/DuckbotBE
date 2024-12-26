@@ -168,9 +168,9 @@ async def get_webhook_info(bot_id: UUID, db: Session = Depends(get_db)) -> dict:
             info_data = info_response.json()
             if info_data.get("ok"):
                 webhook_url = info_data["result"].get("url")
-                return { "webhook-info": webhook_url == callback_url }
+                return { "webhook_info": webhook_url == callback_url }
 
-    return { "webhook-info": False }
+    return { "webhook_info": False }
 
 @router.post("/{bot_id}/send-message")
 async def send_message(bot_id: UUID, body: SendMessage, db: Session = Depends(get_db)):
