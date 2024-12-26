@@ -15,7 +15,6 @@ class Bot(Base):
     email = Column(String, nullable=True)
     password = Column(String, nullable=True)
     token = Column(String, nullable=True)
-    is_webhook_set = Column(Boolean, nullable=True)
     welcome_message = Column(String, nullable=True)
     sequence_frequency = Column(Integer, nullable=True)
     sequence_starts_at = Column(DateTime(timezone=True))

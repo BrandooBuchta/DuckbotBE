@@ -9,7 +9,6 @@ class BaseBot(BaseModel):
     id: UUID
     name: Optional[str] = None
     email: Optional[str] = None
-    is_webhook_set: Optional[bool] = None
     welcome_message: Optional[str] = None
     sequence_message_client: Optional[str] = None
     sequence_message_new_client: Optional[str] = None
@@ -43,9 +42,6 @@ class SignInResponse(BaseModel):
     bot: BaseBot
 
 class UpdateBot(BaseModel):
-    name: Optional[str] = None
-    email: Optional[str] = None
-    is_webhook_set: Optional[bool] = None
     welcome_message: Optional[str] = None
     sequence_message_client: Optional[str] = None
     sequence_message_new_client: Optional[str] = None
@@ -57,17 +53,6 @@ class UpdateBot(BaseModel):
 
     class Config:
         form_attributes = True
-
-class UpdatedBot(BaseModel):
-    is_webhook_set: Optional[bool] = None
-    welcome_message: Optional[str] = None
-    sequence_message_client: Optional[str] = None
-    sequence_message_new_client: Optional[str] = None
-    sequence_frequency: Optional[int] = None
-    sequence_starts_at: Optional[datetime] = None
-    start_message: Optional[str] = None
-    help_message: Optional[str] = None
-    support_contact: Optional[str] = None
 
 class SendMessage(BaseModel):
     message: str

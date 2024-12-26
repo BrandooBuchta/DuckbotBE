@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, UpdatedBot, SendMessage
+from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage
 from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot
 from crud.faq import get_all_formated_faqs
 from crud.user import get_user_by_id, create_or_update_user, update_user_name
@@ -78,7 +78,7 @@ def login_bot(sign_in_body: SignIn, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Zadané heslo nebylo správné.")
     return res
 
-@router.put("/{bot_id}", response_model=UpdatedBot)
+@router.put("/{bot_id}", response_model=UpdateBot)
 def update_academy_faq(bot_id: UUID, update_bot_body: UpdateBot, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
 
@@ -93,7 +93,7 @@ def update_academy_faq(bot_id: UUID, update_bot_body: UpdateBot, token: str = De
     if status != 200:
         raise HTTPException(status_code=400, detail="Chyba při aktualizaci bota.")
 
-    return UpdatedBot(**db_bot.__dict__)
+    return UpdateBot(**db_bot.__dict__)
 
 @router.post("/{bot_id}/set-webhook")
 async def set_webhook(bot_id: UUID, db: Session = Depends(get_db)):
@@ -123,6 +123,54 @@ async def set_webhook(bot_id: UUID, db: Session = Depends(get_db)):
     else:
         print("No DOMAIN set, cannot set webhook.")
 
+@router.delete("/{bot_id}/delete-webhook")
+async def delete_webhook(bot_id: UUID, db: Session = Depends(get_db)):
+    bot, status = get_bot(db, bot_id)
+    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
+
+    if DOMAIN:
+        callback_url = f"{DOMAIN}/bot/{bot_id}/webhook"
+        get_info_url = f"{telegram_api_url}/getWebhookInfo"
+        info_response = requests.get(get_info_url)
+        if info_response.status_code == 200:
+            info_data = info_response.json()
+            if info_data.get("ok") and info_data["result"].get("url") == callback_url:
+                print("Webhook is already set!")
+                return callback_url
+
+        webhook_url = f"{telegram_api_url}/deleteWebhook"
+        response = requests.post(webhook_url, data={"url": callback_url})
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("ok") and data.get("result") is True:
+                print("Webhook successfully deleted!")
+            else:
+                print("Failed to delete webhook:", data)
+        else:
+            print("Failed to delete webhook:", response.text)
+    else:
+        print("No DOMAIN set, cannot delete webhook.")
+
+@router.get("/{bot_id}/webhook-info")
+async def get_webhook_info(bot_id: UUID, db: Session = Depends(get_db)) -> dict:
+    bot, status = get_bot(db, bot_id)
+    if status != 200:
+        raise HTTPException(status_code=404, detail="Bot not found.")
+
+    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
+
+    if DOMAIN:
+        callback_url = f"{DOMAIN}/bot/{bot_id}/webhook"
+        get_info_url = f"{telegram_api_url}/getWebhookInfo"
+        info_response = requests.get(get_info_url)
+
+        if info_response.status_code == 200:
+            info_data = info_response.json()
+            if info_data.get("ok"):
+                webhook_url = info_data["result"].get("url")
+                return webhook_url == callback_url
+    return False
+
 @router.post("/{bot_id}/send-message")
 async def send_message(bot_id: UUID, body: SendMessage, db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
@@ -145,12 +193,11 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         if text == "/start":
             if not user or user.name is None:
                 create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id, bot_id=bot_id))
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Jak se jmenuješ?"})
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": bot.start_message})
             else:
                 personalized_message = bot.welcome_message.replace("{name}", user.name)
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": personalized_message})
         elif not user or user.name is None:
-            # Pokud ještě není uživatel registrován nebo nemá jméno, uložíme jméno a pošleme uvítací zprávu
             update_user_name(db, user_id, text)
             personalized_message = bot.welcome_message.replace("{name}", text)
             requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": personalized_message})
@@ -175,7 +222,6 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 else:
                     requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Nepodařilo se načíst události."})
             else:
-                # Neznámý příkaz
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Neznámý příkaz. Použijte /help pro nápovědu."})
 
     return {"ok": True}
