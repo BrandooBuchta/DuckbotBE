@@ -67,6 +67,8 @@ def create_link(db: Session, bot_id: UUID):
         id=uuid.uuid4(),
         bot_id=bot_id,
         is_faq=False,
+        currently_sent=0,
+        share=0,
         parent=f"Link Alias {len(db_links) + 1}",
         child=f"Link URL {len(db_links) + 1}",
         position=len(db_links) + 1

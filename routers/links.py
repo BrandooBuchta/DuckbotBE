@@ -47,7 +47,6 @@ def get_academy_link(link_id: UUID, token: str = Depends(oauth2_scheme), db: Ses
 
 @router.get("/{bot_id}/all", response_model=List[ReadLink])
 def get_academy_links(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    print ("bot_id: ", bot_id, " token: ", token)
     if not verify_token(db, bot_id, token):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
