@@ -40,7 +40,7 @@ def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
         if response.status_code != 200:
             print(f"Failed to fetch events: {response.status_code} {response.text}")
             return {
-                "launch_for_begginers": "Žádné události nenalezeny",
+                "launch_for_beginners": "Žádné události nenalezeny",
                 "build_your_business": "Žádné události nenalezeny",
                 "opportunity_call": "Žádné události nenalezeny",
             }
@@ -49,7 +49,7 @@ def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
 
         keywords = ["Launch for Beginners", "Build Your Business", "Opportunity Call"]
         closest_events = {
-            "launch_for_begginers": "Žádné události nenalezeny",
+            "launch_for_beginners": "Žádné události nenalezeny",
             "build_your_business": "Žádné události nenalezeny",
             "opportunity_call": "Žádné události nenalezeny",
         }
@@ -79,8 +79,8 @@ def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
             "value": bot.support_contact if bot and bot.support_contact else "podpora"
         },
         {
-            "key": "launch_for_begginers",
-            "value": closest_events["launch_for_begginers"]
+            "key": "launch_for_beginners",
+            "value": closest_events["launch_for_beginners"]
         },
         {
             "key": "build_your_business",
