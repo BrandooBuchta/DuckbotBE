@@ -30,23 +30,20 @@ def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
     bot, status = get_bot(db, bot_id)
     user = get_user_by_id(db, user_id)
 
-    def get_closest_event(event_type: str) -> str:
-        url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events"
+    def get_closest_event(event_keyword: str) -> str:
+        url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
         headers = {
             "apikey": SUPABASE_ANON_KEY,
             "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
         }
-        params = {
-            "select": "*",
-            "order": "timestamp.asc",
-            "event_type": f"eq.{event_type}"
-        }
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, headers=headers)
         if response.status_code == 200:
             events = response.json()
-            if events:
-                return events[0]["url"]
+            for event in events:
+                if event_keyword.lower() in event["title"]["en"].lower():
+                    return event["url"]
         return "Žádné události nenalezeny"
+
 
     variables = [
         {
