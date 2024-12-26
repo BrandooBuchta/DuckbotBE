@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage
+from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, UpdatedBot, SendMessage
 from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot
 from crud.faq import get_all_formated_faqs
 from crud.user import get_user_by_id, create_or_update_user, update_user_name
@@ -78,19 +78,22 @@ def login_bot(sign_in_body: SignIn, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Zadané heslo nebylo správné.")
     return res
 
-@router.put("/{bot_id}")
+@router.put("/{bot_id}", response_model=UpdatedBot)
 def update_academy_faq(bot_id: UUID, update_bot_body: UpdateBot, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
 
     if status == 404:
-        raise HTTPException(status_code=404, detail="Tento bot nexistuje!")
+        raise HTTPException(status_code=404, detail="Tento bot neexistuje!")
 
     if not verify_token(db, bot_id, token):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    update_bot(db, bot_id, update_bot_body)
+    db_bot, status = update_bot(db, bot_id, update_bot_body)
 
-    return {"detail": "Úspěšně jsme upravili bota!"}
+    if status != 200:
+        raise HTTPException(status_code=400, detail="Chyba při aktualizaci bota.")
+
+    return UpdatedBot(**db_bot.__dict__)
 
 @router.post("/{bot_id}/set-webhook")
 async def set_webhook(bot_id: UUID, db: Session = Depends(get_db)):
