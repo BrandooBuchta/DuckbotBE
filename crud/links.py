@@ -83,3 +83,4 @@ def delete_link(db: Session, link_id: UUID):
         db.commit()
         return 200, True
     return 404, False
+

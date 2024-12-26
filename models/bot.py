@@ -1,6 +1,6 @@
 # models/bot.py
 
-from sqlalchemy import Column, BigInteger, Boolean, String, Integer, ARRAY, Integer, DateTime
+from sqlalchemy import Column, BigInteger, Boolean, String, Integer, ARRAY, Integer, DateTime, Float
 from database import Base
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
@@ -33,6 +33,8 @@ class BotList(Base):
     bot_id = Column(UUID(as_uuid=True), nullable=False)
     is_faq = Column(Boolean, nullable=False)
     position = Column(Integer, nullable=True)
+    share = Column(Float, nullable=True)
+    currently_sent = Column(Float, nullable=True)
     parent = Column(String, nullable=True)
     child = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
