@@ -26,7 +26,7 @@ SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
 router = APIRouter()
 
-def replace_variables(bot_id: UUID, user_id: int, message: str):
+def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
     bot, status = get_bot(db, bot_id)
     user = get_user_by_id(db, user_id)
 
@@ -249,7 +249,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id, bot_id=bot_id))
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": bot.start_message})
             else:
-                personalized_message = replace_variables(bot_id, user_id, bot.welcome_message)
+                personalized_message = replace_variables(db, bot_id, user_id, bot.welcome_message)
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": personalized_message})
         elif not user or user.name is None:
             update_user_name(db, user_id, text)
