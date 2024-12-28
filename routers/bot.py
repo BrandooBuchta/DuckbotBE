@@ -244,8 +244,29 @@ async def get_webhook_info(bot_id: UUID, db: Session = Depends(get_db)) -> dict:
 @router.post("/{bot_id}/send-message")
 async def send_message(bot_id: UUID, body: SendMessage, db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
+    if status != 200:
+        raise HTTPException(status_code=404, detail="Bot not found.")
+
     print(f"Message: {body.message}\nFollow-up Message: {body.follow_up_message}\nSend after: {body.send_after}\nFor Client: {body.for_client}\nFor New Client: {body.for_new_client}\n")
 
+    users = db.query(User).filter(User.bot_id == bot_id).all()
+
+    if not users:
+        raise HTTPException(status_code=404, detail="No users found for this bot.")
+
+    for user in users:
+        personalized_message = replace_variables(db, bot_id, user.id, body.message)
+
+        telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}/sendMessage"
+        response = requests.post(
+            telegram_api_url,
+            json={"chat_id": user.chat_id, "text": personalized_message}
+        )
+
+        if response.status_code != 200:
+            print(f"Failed to send message to user {user.id}: {response.text}")
+
+    return {"detail": "Messages sent to all users."}
 
 @router.post("/{bot_id}/webhook")
 async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
