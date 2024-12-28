@@ -14,6 +14,8 @@ def get_link(db: Session, link_id: UUID):
         id=db_link.id,
         bot_id=db_link.bot_id,
         position=db_link.position,
+        share=db_link.share,
+        currently_sent=db_link.currently_sent,
         parent=db_link.parent,
         child=db_link.child,
     )
