@@ -5,7 +5,8 @@ from database import SessionLocal
 from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage
 from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot
 from crud.faq import get_all_formated_faqs
-from crud.user import get_user_by_id, create_or_update_user, update_user_name
+from crud.user import get_user_by_id, create_or_update_user, update_user_name, update_users_academy_link
+from crud.links import get_all_links
 from schemas.user import UserCreate
 from models.user import User
 from base64 import b64encode, b64decode
@@ -15,6 +16,7 @@ from datetime import datetime
 from typing import List, Dict
 import requests
 from uuid import UUID
+import random
 
 load_dotenv()
 
@@ -24,6 +26,26 @@ DOMAIN = os.getenv("DOMAIN")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")  
 
 router = APIRouter()
+
+def assing_academy_link(db: Session, bot_id: UUID, user_id: int):
+    bot, status = get_bot(db, bot_id)
+    links, status = get_all_links(db, bot_id)
+    links_length = len(links)
+    random_number = random.randint(0, links_length)
+
+    link = links[random_number]
+    if link:
+        if link.currently_assigned != link.share:
+            update_users_academy_link(db, user_id, link.child)
+            return
+        else:
+            assing_academy_link(db, bot_id, user_id)
+    else:
+        if bot.devs_currently_assigned != link.devs_share:
+            update_users_academy_link(db, user_id, link.child)
+            return
+        else:
+            assing_academy_link(db, bot_id, user_id)
 
 def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
     bot, status = get_bot(db, bot_id)
@@ -155,7 +177,7 @@ def login_bot(sign_in_body: SignIn, db: Session = Depends(get_db)):
     return res
 
 @router.put("/{bot_id}", response_model=UpdateBot)
-def update_academy_faq(bot_id: UUID, update_bot_body: UpdateBot, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def put_bot(bot_id: UUID, update_bot_body: UpdateBot, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
 
     if status == 404:
@@ -285,6 +307,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         if text == "/start":
             if not user or user.name is None:
                 create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id, bot_id=bot_id))
+                assing_academy_link(db, bot_id, user_id)
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": bot.start_message})
             else:
                 personalized_message = replace_variables(db, bot_id, user_id, bot.welcome_message)

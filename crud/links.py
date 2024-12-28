@@ -15,7 +15,7 @@ def get_link(db: Session, link_id: UUID):
         bot_id=db_link.bot_id,
         position=db_link.position,
         share=db_link.share,
-        currently_sent=db_link.currently_sent,
+        currently_assigned=db_link.currently_assigned,
         parent=db_link.parent,
         child=db_link.child,
     )
@@ -43,7 +43,7 @@ def get_all_links(db: Session, bot_id: UUID):
             bot_id=bot_id,
             position=l.position,
             share=l.share,
-            currently_sent=l.currently_sent,
+            currently_assigned=l.currently_assigned,
             parent=l.parent,
             child=l.child,
         ))
@@ -69,7 +69,7 @@ def create_link(db: Session, bot_id: UUID):
         id=uuid.uuid4(),
         bot_id=bot_id,
         is_faq=False,
-        currently_sent=0,
+        currently_assigned=0,
         share=0,
         parent=f"Link Alias {len(db_links) + 1}",
         child=f"Link URL {len(db_links) + 1}",
