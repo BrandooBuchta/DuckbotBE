@@ -7,6 +7,7 @@ from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, 
 from crud.faq import get_all_formated_faqs
 from crud.user import get_user_by_id, create_or_update_user, update_user_name
 from schemas.user import UserCreate
+from models.user import User
 from base64 import b64encode, b64decode
 import os
 from dotenv import load_dotenv
