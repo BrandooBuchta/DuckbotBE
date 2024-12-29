@@ -43,6 +43,8 @@ def sign_up(db: Session, bot: SignUp):
         email=bot.email,
         password=hashed_password,
         welcome_message="*Vítej, {name}*",
+        devs_currently_assigned=0,
+        devs_share=10,
         start_message="*Ahoj já jsem {botName} a jak mám říkat tobě?*",
         help_message="*Help message; {supportContact}*",
 
@@ -103,3 +105,5 @@ def create_scheduled_message(db: Session, message: CreateScheduledMessage):
     db.commit()
     db.refresh(db_message)
     return 200
+
+    

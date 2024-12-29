@@ -6,8 +6,9 @@ from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage
 from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot
 from crud.faq import get_all_formated_faqs
 from crud.user import get_user_by_id, create_or_update_user, update_user_name, update_users_academy_link
-from crud.links import get_all_links
+from crud.links import get_all_links, update_link
 from schemas.user import UserCreate
+from schemas.links import UpdateLink
 from models.user import User
 from base64 import b64encode, b64decode
 import os
@@ -27,25 +28,40 @@ SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
 router = APIRouter()
 
+def reset_all_links(db: Session, bot_id: UUID):
+    links, status = get_all_links(db, bot_id)
+    if status != 200 or not links:
+        return
+
+    for link_schema in links:
+        update_link(db, link_schema.id, UpdateLink(currently_assigned=0))
+        
 def assing_academy_link(db: Session, bot_id: UUID, user_id: int):
     bot, status = get_bot(db, bot_id)
     links, status = get_all_links(db, bot_id)
     links_length = len(links)
+
+    if all(link.currently_assigned == link.share for link in links) and bot.devs_currently_assigned == bot.devs_share:
+        reset_all_links(db, bot_id)
+        update_bot(db, bot_id, UpdateBot(devs_currently_assigned=0))
+
     random_number = random.randint(0, links_length)
 
+    if random_number == links_length:
+        if bot.devs_currently_assigned < bot.devs_share:
+            update_users_academy_link(db, user_id, "link3")
+            update_bot(db, bot_id, UpdateBot(devs_currently_assigned=bot.devs_currently_assigned + 1))
+            return
+        else:
+            assing_academy_link(db, bot_id, user_id)
+            return
+
     link = links[random_number]
-    if link:
-        if link.currently_assigned != link.share:
-            update_users_academy_link(db, user_id, link.child)
-            return
-        else:
-            assing_academy_link(db, bot_id, user_id)
+    if link.currently_assigned < link.share:
+        update_users_academy_link(db, user_id, link.child)
+        update_link(db, link.id, UpdateLink(currently_assigned=link.currently_assigned + 1))
     else:
-        if bot.devs_currently_assigned != link.devs_share:
-            update_users_academy_link(db, user_id, link.child)
-            return
-        else:
-            assing_academy_link(db, bot_id, user_id)
+        assing_academy_link(db, bot_id, user_id)
 
 def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
     bot, status = get_bot(db, bot_id)
@@ -115,7 +131,7 @@ def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
         },
         {
             "key": "academy_link",
-            "value": "https://academy.example.com"
+            "value": user.academy_link
         },
     ]
 
@@ -155,16 +171,6 @@ def create_bot(sign_up_body: SignUp, db: Session = Depends(get_db)):
     if sign_up_status != 200:
         raise HTTPException(status_code=400, detail="Stala se chyba při vytváření bota.")
     return {"detail": "Nový bot byl úspěšně vytvořen!"}
-
-@router.post("/sign-in", response_model=SignInResponse)
-def login_bot(sign_in_body: SignIn, db: Session = Depends(get_db)):
-    res, sign_in_status = sign_in(db, sign_in_body)
-
-    if sign_in_status == 404:
-        raise HTTPException(status_code=404, detail="Bot s tímto jménem neexistuje.")
-    if sign_in_status == 400:
-        raise HTTPException(status_code=400, detail="Zadané heslo nebylo správné.")
-    return res
 
 @router.post("/sign-in", response_model=SignInResponse)
 def login_bot(sign_in_body: SignIn, db: Session = Depends(get_db)):

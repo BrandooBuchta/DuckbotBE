@@ -32,6 +32,7 @@ class CreateLink(BaseModel):
 class UpdateLink(BaseModel):
     position: Optional[int] = None
     share: Optional[int] = None
+    currently_assigned: Optional[int] = None
     parent: Optional[str] = None
     child: Optional[str] = None
         
