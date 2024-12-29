@@ -298,7 +298,7 @@ async def send_message(bot_id: UUID, body: SendMessage, db: Session = Depends(ge
     create_scheduled_message(db, CreateScheduledMessage(
         bot_id=bot_id,
         message=body.follow_up_message,
-        send_at=datetime.now() - timedelta(hours=body.send_after),
+        send_at=datetime.now() + timedelta(hours=body.send_after + 1),
         repeat=False,
         for_client=body.for_client,
         for_new_client=body.for_new_client
