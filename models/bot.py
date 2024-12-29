@@ -47,7 +47,11 @@ class ScheduledMessage(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     bot_id = Column(UUID(as_uuid=True), nullable=False)
-    send_at = Column(DateTime(timezone=True), server_default=func.now())
+    send_at = Column(DateTime(timezone=True), nullable=False)
     message = Column(String, nullable=True)
+    repeat_interval = Column(Integer, nullable=True)
+    repeat = Column(Boolean, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     for_new_client = Column(Boolean, nullable=True)
-    for_client = Column(Boolean, nullable=True)
+    for_client = Column(Boolean, nullable=True) 

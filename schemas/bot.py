@@ -67,8 +67,10 @@ class SendMessage(BaseModel):
     for_client: bool
 
 class CreateScheduledMessage(BaseModel):
+    bot_id: UUID
     message: str
     send_at: datetime
-    bot_id: UUID
+    repeat_interval: Optional[int] = None
+    repeat: Optional[bool] = None
     for_client: bool
     for_new_client: bool

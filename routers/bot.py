@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage
-from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot
+from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage, CreateScheduledMessage
+from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot, create_scheduled_message
 from crud.faq import get_all_formated_faqs
 from crud.user import get_user_by_id, create_or_update_user, update_user_name, update_users_academy_link
 from crud.links import get_all_links, update_link
@@ -13,7 +13,7 @@ from models.user import User
 from base64 import b64encode, b64decode
 import os
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Dict
 import requests
 from uuid import UUID
@@ -294,6 +294,15 @@ async def send_message(bot_id: UUID, body: SendMessage, db: Session = Depends(ge
 
         if response.status_code != 200:
             print(f"Failed to send message to user {user.id}: {response.text}")
+
+    create_scheduled_message(db, CreateScheduledMessage(
+        bot_id=bot_id,
+        message=body.follow_up_message,
+        send_at=datetime.now() - timedelta(hours=body.send_after),
+        repeat=False,
+        for_client=body.for_client,
+        for_new_client=body.for_new_client
+    ))
 
     return {"detail": "Messages sent to all users."}
 

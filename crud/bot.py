@@ -96,6 +96,8 @@ def create_scheduled_message(db: Session, message: CreateScheduledMessage):
     db_message = ScheduledMessage(
         id=uuid.uuid4(),
         bot_id=message.bot_id,
+        repeat_interval=message.repeat_interval,
+        repeat=message.repeat,
         for_client=message.for_client,
         for_new_client=message.for_new_client,
         send_at=message.send_at,
@@ -105,5 +107,3 @@ def create_scheduled_message(db: Session, message: CreateScheduledMessage):
     db.commit()
     db.refresh(db_message)
     return 200
-
-    
