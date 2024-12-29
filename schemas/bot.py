@@ -66,11 +66,26 @@ class SendMessage(BaseModel):
     for_new_client: bool
     for_client: bool
 
-class CreateScheduledMessage(BaseModel):
+class UpdateSequence(BaseModel):
+    name: Optional[str] = None
+    message: Optional[str] = None
+    send_at: Optional[datetime] = None
+    starts_at: Optional[datetime] = None
+    interval: Optional[int] = None
+    repeat: Optional[bool] = None
+    for_client: Optional[bool] = None
+    for_new_client: Optional[bool] = None
+    is_active: Optional[bool] = None
+
+class ReadSequence(BaseModel):
+    id: UUID
     bot_id: UUID
+    name: str
     message: str
     send_at: datetime
-    repeat_interval: Optional[int] = None
-    repeat: Optional[bool] = None
+    starts_at: datetime
+    interval: int
+    repeat: bool
     for_client: bool
     for_new_client: bool
+    is_active: bool

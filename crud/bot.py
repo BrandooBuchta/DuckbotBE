@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from models.bot import Bot, ScheduledMessage
-from schemas.bot import SignUp, SignIn, SignInResponse, BaseBot, UpdateBot, CreateScheduledMessage
+from models.bot import Bot, Sequence
+from schemas.bot import SignUp, SignIn, SignInResponse, BaseBot, UpdateBot
 from security import get_password_hash, verify_password
 from base64 import b64decode, b64encode
 import uuid
@@ -91,19 +91,3 @@ def update_bot(db: Session, bot_id: UUID, bot: UpdateBot):
     db.commit()
     db.refresh(db_bot)
     return db_bot, 200
-
-def create_scheduled_message(db: Session, message: CreateScheduledMessage):
-    db_message = ScheduledMessage(
-        id=uuid.uuid4(),
-        bot_id=message.bot_id,
-        repeat_interval=message.repeat_interval,
-        repeat=message.repeat,
-        for_client=message.for_client,
-        for_new_client=message.for_new_client,
-        send_at=message.send_at,
-        message=message.message,
-    )
-    db.add(db_message)
-    db.commit()
-    db.refresh(db_message)
-    return 200

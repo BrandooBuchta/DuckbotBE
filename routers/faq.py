@@ -24,7 +24,7 @@ def get_db():
         db.close()
 
 @router.post("/{bot_id}")
-def create_academy_faq(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def post_faq(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     if not verify_token(db, bot_id, token):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
@@ -35,7 +35,7 @@ def create_academy_faq(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Se
     return {"detail": "Nový faq byl úspěšně vytvořen!"}
 
 @router.get("/{faq_id}", response_model=ReadFAQ)
-def get_academy_faq(faq_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def fetch_faq(faq_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     faq, status = get_faq(db, faq_id)
     if status == 404:
         raise HTTPException(status_code=404, detail="Tento faq nexistuje!")
@@ -46,7 +46,7 @@ def get_academy_faq(faq_id: UUID, token: str = Depends(oauth2_scheme), db: Sessi
     return faq
 
 @router.get("/{bot_id}/all", response_model=List[ReadFAQ])
-def get_academy_faqs(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def fetch_all_faqs(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     print ("bot_id: ", bot_id, " token: ", token)
     if not verify_token(db, bot_id, token):
         raise HTTPException(status_code=401, detail="Unauthorized")
@@ -56,7 +56,7 @@ def get_academy_faqs(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Sess
     return faqs
 
 @router.put("/{faq_id}")
-def update_academy_faq(faq_id: UUID, update_faq_body: UpdateFAQ, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def put_faq(faq_id: UUID, update_faq_body: UpdateFAQ, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     faq, status = get_faq(db, faq_id)
 
     if status == 404:
@@ -70,7 +70,7 @@ def update_academy_faq(faq_id: UUID, update_faq_body: UpdateFAQ, token: str = De
     return {"detail": "Úspěšně jsme upravili faq!"}
 
 @router.delete("/{faq_id}")
-def delete_academy_faq(faq_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def delete_faq(faq_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     faq, status = get_faq(db, faq_id)
 
     if status == 404:

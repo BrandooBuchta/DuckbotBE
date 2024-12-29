@@ -13,6 +13,7 @@ from datetime import datetime
 from routers.bot import router as bot_router
 from routers.links import router as links_router
 from routers.faq import router as faq_router
+from routers.sequence import router as sequence_router
 
 load_dotenv()
 
@@ -68,56 +69,6 @@ async def events():
     formatted_text = format_events(events_data)
     return PlainTextResponse(content=formatted_text)
 
-# @app.post("/webhook/")
-# async def webhook(update: dict, db: Session = Depends(get_db)):
-#     if "message" in update:
-#         message = update["message"]
-#         user_id = message["from"]["id"]
-#         chat_id = message["chat"]["id"]
-#         text = message.get("text", "").strip()
-
-#         user = get_user_by_id(db, user_id)
-
-#         if text == "/start":
-#             create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id))
-#             requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": "Ahoj!"})
-#             requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": "Jak ti mám říkat?"})
-#         elif text == "/events":
-#             url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
-#             headers = {
-#                 "apikey": SUPABASE_ANON_KEY,
-#                 "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
-#             }
-
-#             event_resp = requests.get(url, headers=headers)
-#             if event_resp.status_code == 200:
-#                 events_data = event_resp.json()
-#                 formatted = format_events(events_data)
-#                 requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": formatted})
-#             else:
-#                 requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": "Nepodařilo se načíst události."})
-#         else:
-#             if user and user.name is None:
-#                 update_user_name(db, user_id, text)
-#                 requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": f"Tvoje jméno je nyní uloženo jako {text}!"})
-#             else:
-#                 # Další logika, pokud už jméno má
-#                 pass
-
-#     return {"ok": True}
-
-# @app.post("/send-message/{bot_id}")
-# async def send_message_to_all_users(bot_id: UUID, payload: BroadcastMessage, db: Session = Depends(get_db)):
-#     users = get_all_users(db)
-#     for user in users:
-#         text = payload.text
-#         if "{name}" in text:
-#             user_name = user.name if user.name else "kamaráde"
-#             text = text.replace("{name}", user_name)
-#         requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": user.chat_id, "text": text})
-
-#     return {"status": "Message sent to all users"}
-
 @app.get("/")
 async def root():
     return {"message": "Telegram Bot is running!"}
@@ -125,3 +76,4 @@ async def root():
 app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
 app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy Links"])
 app.include_router(faq_router, prefix="/api/bot/faq", tags=["FAQ"])
+app.include_router(sequence_router, prefix="/api/bot/sequence", tags=["Sequences"])
