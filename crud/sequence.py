@@ -36,11 +36,13 @@ def create_sequence(db: Session, bot_id: UUID):
         id=uuid.uuid4(),
         bot_id=bot_id,
         name=f"Sekvence {len(db_sequences) + 1}",
+        position=len(db_sequences) + 1,
         message="",
         for_new_client=False,
         for_client=False,
         repeat=False,
         send_at=None,
+        send_immediately=True,
         starts_at=None,
         is_active=False,
         interval=None

@@ -71,7 +71,9 @@ class UpdateSequence(BaseModel):
     message: Optional[str] = None
     send_at: Optional[datetime] = None
     starts_at: Optional[datetime] = None
+    send_immediately: Optional[bool] = None
     interval: Optional[int] = None
+    position: Optional[int] = None
     repeat: Optional[bool] = None
     for_client: Optional[bool] = None
     for_new_client: Optional[bool] = None
@@ -82,9 +84,11 @@ class ReadSequence(BaseModel):
     bot_id: UUID
     name: str
     message: str
-    send_at: datetime
-    starts_at: datetime
-    interval: int
+    position: int
+    send_at: Optional[datetime]
+    starts_at: Optional[datetime]
+    send_immediately: bool
+    interval: Optional[int]
     repeat: bool
     for_client: bool
     for_new_client: bool

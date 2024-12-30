@@ -69,7 +69,7 @@ def put_sequence(sequence_id: UUID, update_sequence_body: UpdateSequence, token:
     return {"detail": "Úspěšně jsme upravili sequence!"}
 
 @router.delete("/{sequence_id}")
-def delete_sequence(sequence_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def remove_sequence(sequence_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     sequence, status = get_sequence(db, sequence_id)
 
     if status == 404:

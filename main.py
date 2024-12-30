@@ -4,12 +4,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base, get_db
 from schemas.user import UserCreate
 from crud.user import create_or_update_user, get_all_users, get_user_by_id, update_user_name
+from models.bot import Sequence
 import os
 import requests
 from dotenv import load_dotenv
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.date import DateTrigger
+from apscheduler.triggers.interval import IntervalTrigger
+from datetime import datetime, timedelta
 from pydantic import BaseModel
 from fastapi.responses import HTMLResponse, PlainTextResponse
-from datetime import datetime
 from routers.bot import router as bot_router
 from routers.links import router as links_router
 from routers.faq import router as faq_router
@@ -34,16 +38,80 @@ app.add_middleware(
 )
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")  
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
+
+scheduler = BackgroundScheduler()
 
 class BroadcastMessage(BaseModel):
     text: str
 
+def send_message_to_user(bot_token: str, chat_id: str, message: str):
+    telegram_api_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+    response = requests.post(
+        telegram_api_url,
+        json={"chat_id": chat_id, "text": message}
+    )
+    if response.status_code != 200:
+        print(f"Failed to send message to {chat_id}: {response.text}")
+
+def process_sequence(sequence: Sequence, db: Session):
+    bot_token = BOT_TOKEN
+    users_query = db.query(User).filter(User.bot_id == sequence.bot_id)
+
+    if sequence.for_client:
+        users_query = users_query.filter(User.is_in_betfin == True)
+    elif sequence.for_new_client:
+        users_query = users_query.filter(User.is_in_betfin == False)
+
+    users = users_query.all()
+
+    for user in users:
+        send_message_to_user(bot_token, user.chat_id, sequence.message)
+
+    if not sequence.repeat and not sequence.send_immediately:
+        db.delete(sequence)
+        db.commit()
+        return
+
+    if sequence.repeat:
+        sequence.send_at = sequence.send_at + timedelta(days=sequence.interval)
+        db.commit()
+
+def schedule_sequences():
+    db = next(get_db())
+    sequences = db.query(Sequence).filter(Sequence.is_active == True).all()
+
+    for sequence in sequences:
+        initial_execution_time = sequence.starts_at or sequence.send_at
+        if not initial_execution_time:
+            continue
+
+        scheduler.add_job(
+            process_sequence,
+            trigger=DateTrigger(run_date=initial_execution_time),
+            args=[sequence, db],
+            id=str(sequence.id),
+        )
+
+        if sequence.repeat:
+            scheduler.add_job(
+                process_sequence,
+                trigger=IntervalTrigger(days=sequence.interval, start_date=initial_execution_time),
+                args=[sequence, db],
+                id=f"{sequence.id}_recurring",
+            )
+
+    scheduler.start()
+
+@app.on_event("startup")
+async def startup_event():
+    schedule_sequences()
+    print("Scheduler initialized and sequences are scheduled.")
+
 def format_events(events):
     lines = []
     for e in events:
-        # Převod timestamp na čitelný formát (UTC)
         dt = datetime.utcfromtimestamp(e["timestamp"]).strftime("%Y-%m-%d %H:%M:%S UTC")
         line = (
             f"{e['title']['cs']}\n"
