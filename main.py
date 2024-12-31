@@ -16,8 +16,13 @@ from routers.faq import router as faq_router
 from routers.sequence import router as sequence_router
 from apscheduler.schedulers.background import BackgroundScheduler
 from crud.sequence import get_sequences, update_sequence, delete_sequence
+import logging
 
 load_dotenv()
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 Base.metadata.create_all(bind=engine)
 
@@ -87,6 +92,7 @@ app.include_router(sequence_router, prefix="/api/bot/sequence", tags=["Sequences
 
 # Scheduler Logic
 def process_sequences(db: Session):
+    logger.info("Processing sequences...")
     sequences, _ = get_sequences(db)
     now = datetime.utcnow()
 
@@ -97,7 +103,7 @@ def process_sequences(db: Session):
         # Set send_at based on conditions
         if sequence.send_immediately:
             sequence.send_at = now
-            update_sequence(db, sequence.id, {"send_at": sequence.send_at})
+            update_sequence(db, sequence.id, {"send_at": sequence.send_at, "send_immediately": False})
         elif sequence.starts_at:
             sequence.send_at = sequence.starts_at
             update_sequence(db, sequence.id, {"send_at": sequence.send_at})
@@ -131,6 +137,7 @@ def send_message_to_user(message, chat_id):
 
 # Scheduler function
 def sequence_service():
+    logger.info("Scheduler started scheduling...")
     db = next(get_db())
     process_sequences(db)
 
@@ -141,4 +148,5 @@ scheduler.start()
 
 @app.on_event("shutdown")
 async def shutdown_event():
+    logger.info("Shutting down scheduler...")
     scheduler.shutdown()
