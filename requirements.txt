@@ -5,3 +5,4 @@ psycopg2-binary
 uvicorn
 requests
 passlib
+apscheduler
