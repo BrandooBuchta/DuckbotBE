@@ -94,10 +94,13 @@ def process_sequences(db: Session):
         if not sequence.is_active:
             continue  # Skip inactive sequences
 
-        # Set send_at to now if send_immediately is True
+        # Set send_at based on conditions
         if sequence.send_immediately:
             sequence.send_at = now
-            update_sequence(db, sequence.id, {"send_at": sequence.send_at, "send_immediately": False})
+            update_sequence(db, sequence.id, {"send_at": sequence.send_at})
+        elif sequence.starts_at:
+            sequence.send_at = sequence.starts_at
+            update_sequence(db, sequence.id, {"send_at": sequence.send_at})
 
         # If send_at is due
         if sequence.send_at and sequence.send_at <= now:
