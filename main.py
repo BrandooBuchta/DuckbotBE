@@ -2,13 +2,20 @@ from fastapi import FastAPI, Depends, Request
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base, SessionLocal
-from crud.sequence import get_sequences, update_sequence, delete_sequence
-from crud.user import get_all_users
-from datetime import datetime, timedelta
-from apscheduler.schedulers.background import BackgroundScheduler
-import requests
+from schemas.user import UserCreate
+from crud.user import create_or_update_user, get_all_users, get_user_by_id, update_user_name
 import os
+import requests
 from dotenv import load_dotenv
+from pydantic import BaseModel
+from fastapi.responses import HTMLResponse, PlainTextResponse
+from datetime import datetime, timedelta
+from routers.bot import router as bot_router
+from routers.links import router as links_router
+from routers.faq import router as faq_router
+from routers.sequence import router as sequence_router
+from apscheduler.schedulers.background import BackgroundScheduler
+from crud.sequence import get_sequences, update_sequence, delete_sequence
 
 load_dotenv()
 
@@ -29,6 +36,7 @@ app.add_middleware(
 )
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
 # Dependency to get the database session
@@ -38,6 +46,44 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def format_events(events):
+    lines = []
+    for e in events:
+        # Převod timestamp na čitelný formát (UTC)
+        dt = datetime.utcfromtimestamp(e["timestamp"]).strftime("%Y-%m-%d %H:%M:%S UTC")
+        line = (
+            f"{e['title']['cs']}\n"
+            f"- Jazyk: {e['language']}\n"
+            f"- Čas: {dt}\n"
+            f"- Min. stake: {e['minToStake']}\n"
+            f"- URL: {e['url']}\n"
+        )
+        lines.append(line.strip())
+    return "\n\n".join(lines)
+
+@app.get("/events")
+async def events():
+    headers = {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
+    }
+
+    url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
+    resp = requests.get(url, headers=headers)
+    resp.raise_for_status()
+    events_data = resp.json()
+    formatted_text = format_events(events_data)
+    return PlainTextResponse(content=formatted_text)
+
+@app.get("/")
+async def root():
+    return {"message": "Telegram Bot is running!"}
+
+app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
+app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy Links"])
+app.include_router(faq_router, prefix="/api/bot/faq", tags=["FAQ"])
+app.include_router(sequence_router, prefix="/api/bot/sequence", tags=["Sequences"])
 
 # Scheduler Logic
 def process_sequences(db: Session):
@@ -93,8 +139,3 @@ scheduler.start()
 @app.on_event("shutdown")
 async def shutdown_event():
     scheduler.shutdown()
-
-# Root endpoint
-@app.get("/")
-async def root():
-    return {"message": "Scheduler is running!"}
