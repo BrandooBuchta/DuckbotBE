@@ -1,23 +1,14 @@
 from fastapi import FastAPI, Depends, Request
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
-from database import engine, Base, get_db
-from schemas.user import UserCreate
-from crud.user import create_or_update_user, get_all_users, get_user_by_id, update_user_name
-from models.bot import Sequence
-import os
-import requests
-from dotenv import load_dotenv
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.date import DateTrigger
-from apscheduler.triggers.interval import IntervalTrigger
+from database import engine, Base, SessionLocal
+from crud.sequence import get_sequences, update_sequence, delete_sequence
+from crud.user import get_all_users
 from datetime import datetime, timedelta
-from pydantic import BaseModel
-from fastapi.responses import HTMLResponse, PlainTextResponse
-from routers.bot import router as bot_router
-from routers.links import router as links_router
-from routers.faq import router as faq_router
-from routers.sequence import router as sequence_router
+from apscheduler.schedulers.background import BackgroundScheduler
+import requests
+import os
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -38,110 +29,72 @@ app.add_middleware(
 )
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
-scheduler = BackgroundScheduler()
+# Dependency to get the database session
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-class BroadcastMessage(BaseModel):
-    text: str
-
-def send_message_to_user(bot_token: str, chat_id: str, message: str):
-    telegram_api_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-    response = requests.post(
-        telegram_api_url,
-        json={"chat_id": chat_id, "text": message}
-    )
-    if response.status_code != 200:
-        print(f"Failed to send message to {chat_id}: {response.text}")
-
-def process_sequence(sequence: Sequence, db: Session):
-    bot_token = BOT_TOKEN
-    users_query = db.query(User).filter(User.bot_id == sequence.bot_id)
-
-    if sequence.for_client:
-        users_query = users_query.filter(User.is_in_betfin == True)
-    elif sequence.for_new_client:
-        users_query = users_query.filter(User.is_in_betfin == False)
-
-    users = users_query.all()
-
-    for user in users:
-        send_message_to_user(bot_token, user.chat_id, sequence.message)
-
-    if not sequence.repeat and not sequence.send_immediately:
-        db.delete(sequence)
-        db.commit()
-        return
-
-    if sequence.repeat:
-        sequence.send_at = sequence.send_at + timedelta(days=sequence.interval)
-        db.commit()
-
-def schedule_sequences():
-    db = next(get_db())
-    sequences = db.query(Sequence).filter(Sequence.is_active == True).all()
+# Scheduler Logic
+def process_sequences(db: Session):
+    sequences, _ = get_sequences(db)
+    now = datetime.utcnow()
 
     for sequence in sequences:
-        initial_execution_time = sequence.starts_at or sequence.send_at
-        if not initial_execution_time:
-            continue
+        if not sequence.is_active:
+            continue  # Skip inactive sequences
 
-        scheduler.add_job(
-            process_sequence,
-            trigger=DateTrigger(run_date=initial_execution_time),
-            args=[sequence, db],
-            id=str(sequence.id),
-        )
+        # Set send_at to now if send_immediately is True
+        if sequence.send_immediately:
+            sequence.send_at = now
+            update_sequence(db, sequence.id, {"send_at": sequence.send_at, "send_immediately": False})
 
-        if sequence.repeat:
-            scheduler.add_job(
-                process_sequence,
-                trigger=IntervalTrigger(days=sequence.interval, start_date=initial_execution_time),
-                args=[sequence, db],
-                id=f"{sequence.id}_recurring",
-            )
+        # If send_at is due
+        if sequence.send_at and sequence.send_at <= now:
+            # Filter users based on sequence conditions
+            users = get_all_users(db, sequence.bot_id)
+            if sequence.for_new_client:
+                users = [user for user in users if not user.is_in_betfin]
+            elif sequence.for_client:
+                users = [user for user in users if user.is_in_betfin]
 
-    scheduler.start()
+            # Send messages to users
+            for user in users:
+                send_message_to_user(sequence.message, user.chat_id)
 
-@app.on_event("startup")
-async def startup_event():
-    schedule_sequences()
-    print("Scheduler initialized and sequences are scheduled.")
+            # Handle repeating or deletion of the sequence
+            if sequence.repeat and sequence.interval:
+                sequence.send_at = sequence.send_at + timedelta(days=sequence.interval)
+                update_sequence(db, sequence.id, {"send_at": sequence.send_at})
+            else:
+                delete_sequence(db, sequence.id)
 
-def format_events(events):
-    lines = []
-    for e in events:
-        dt = datetime.utcfromtimestamp(e["timestamp"]).strftime("%Y-%m-%d %H:%M:%S UTC")
-        line = (
-            f"{e['title']['cs']}\n"
-            f"- Jazyk: {e['language']}\n"
-            f"- Čas: {dt}\n"
-            f"- Min. stake: {e['minToStake']}\n"
-            f"- URL: {e['url']}\n"
-        )
-        lines.append(line.strip())
-    return "\n\n".join(lines)
+def send_message_to_user(message, chat_id):
+    """Sends a message to a user using the Telegram API."""
+    url = f"{TELEGRAM_API_URL}/sendMessage"
+    data = {"chat_id": chat_id, "text": message}
+    response = requests.post(url, json=data)
+    response.raise_for_status()
 
-@app.get("/events")
-async def events():
-    headers = {
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
-    }
+# Scheduler function
+def sequence_service():
+    db = next(get_db())
+    process_sequences(db)
 
-    url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
-    resp = requests.get(url, headers=headers)
-    resp.raise_for_status()
-    events_data = resp.json()
-    formatted_text = format_events(events_data)
-    return PlainTextResponse(content=formatted_text)
+# Initialize APScheduler
+scheduler = BackgroundScheduler()
+scheduler.add_job(sequence_service, "interval", minutes=1)
+scheduler.start()
 
+@app.on_event("shutdown")
+async def shutdown_event():
+    scheduler.shutdown()
+
+# Root endpoint
 @app.get("/")
 async def root():
-    return {"message": "Telegram Bot is running!"}
-
-app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
-app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy Links"])
-app.include_router(faq_router, prefix="/api/bot/faq", tags=["FAQ"])
-app.include_router(sequence_router, prefix="/api/bot/sequence", tags=["Sequences"])
+    return {"message": "Scheduler is running!"}

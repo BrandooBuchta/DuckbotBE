@@ -1,3 +1,5 @@
+# crud/sequences.py 
+
 from sqlalchemy.orm import Session
 from models.bot import Sequence
 from schemas.bot import ReadSequence, UpdateSequence
@@ -13,6 +15,14 @@ def get_sequence(db: Session, sequence_id: UUID):
 
 def get_all_sequences(db: Session, bot_id: UUID):
     db_sequences = db.query(Sequence).filter(Sequence.bot_id == bot_id).all()
+
+    if not db_sequences:
+        return [], 404
+
+    return db_sequences, 200
+
+def get_sequences(db: Session):
+    db_sequences = db.query(Sequence).all()
 
     if not db_sequences:
         return [], 404
