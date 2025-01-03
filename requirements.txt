@@ -6,3 +6,4 @@ uvicorn
 requests
 passlib
 apscheduler
+pytz

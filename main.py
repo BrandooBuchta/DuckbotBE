@@ -18,7 +18,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from crud.sequence import get_sequences, update_sequence, delete_sequence, get_sequence, update_send_at
 from crud.vars import replace_variables
 import logging
-from pytz import utc, timezone
+from pytz import timezone
 from uuid import UUID
 
 load_dotenv()
