@@ -230,7 +230,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         message = update["message"]
         user_id = message["from"]["id"]
         chat_id = message["chat"]["id"]
-        text = message.get("text", "").strip().lower()  # Normalizace textu
+        text = message.get("text", "").strip()
 
         user = get_user_by_id(db, user_id)
 
@@ -267,48 +267,6 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 else:
                     requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Nepodařilo se načíst události."})
             else:
-                # Přidána logika pro sekvence s check_status
-                active_sequence = (
-                    db.query(Sequence)
-                    .filter(
-                        Sequence.bot_id == bot_id,
-                        Sequence.check_status == True,
-                        Sequence.is_active == True
-                    )
-                    .order_by(Sequence.position.asc())
-                    .first()
-                )
-
-                if active_sequence:
-                    # Kontrola poslední zprávy odeslané botem
-                    response = requests.get(
-                        f"{telegram_api_url}/getUpdates",
-                        params={"limit": 1, "offset": -1}
-                    )
-                    if response.status_code == 200:
-                        updates = response.json().get("result", [])
-                        if updates:
-                            last_message = updates[-1].get("message", {}).get("text", "").strip().lower()
-                            if last_message == active_sequence.message.lower():
-                                # Odpověď uživatele je relevantní k aktivní sekvenci
-                                if text in ["ano", "ne"]:
-                                    user.is_in_betfin = text == "ano"
-                                    db.commit()
-                                    response_text = "Děkujeme za odpověď! Vaše volba byla zaznamenána."
-                                else:
-                                    response_text = "Prosím, odpovězte pouze 'Ano' nebo 'Ne'."
-                            else:
-                                # Poslední zpráva nebyla z aktivní sekvence
-                                response_text = "Vaše odpověď nesouvisí s očekávanou sekvencí."
-                            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": response_text})
-                        else:
-                            # Nelze získat poslední zprávu
-                            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Nelze ověřit stav sekvence."})
-                    else:
-                        requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Chyba při načítání zpráv."})
-                else:
-                    # Výchozí odpověď, pokud není aktivní sekvence
-                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Neznámý příkaz. Použijte /help pro nápovědu."})
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Neznámý příkaz. Použijte /help pro nápovědu."})
 
     return {"ok": True}
-

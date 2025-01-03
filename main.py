@@ -98,40 +98,27 @@ def processs_sequences(db: Session):
     
     sequences, status = get_sequences(db)
     if status != 200:
-        logger.error("Failed to retrieve sequences from the database.")
+        logger.error(f"Failed to retrieve sequences from the database. {sequences}")
         return
 
-    now = datetime.now(timezone("UTC")).replace(microsecond=0) + timedelta(hours=1)
-    logger.info(f"Now: {now}")
-    
     for sequence in sequences:
-        logger.info(f"Processing sequence ID: {sequence.id}")
+        users = get_all_users(db, sequence.bot_id)
 
-        if not sequence.send_at:
-            if sequence.send_immediately:
-                update_sequence(db, sequence.id, {"send_at": now})
-            elif sequence.starts_at:
-                update_sequence(db, sequence.id, {"send_at": sequence.starts_at})
+        if not users:
+            logger.warning(f"No users found for bot ID: {sequence.bot_id}")
+            continue
 
-        if sequence.send_at and sequence.send_at <= now:
-            logger.info(f"Sequence ID {sequence.id} is due to be sent.")
-            users = get_all_users(db, sequence.bot_id)
+        for user in users:
+            send_message_to_user(db, sequence.bot_id, user.chat_id, sequence.message)
 
-            if not users:
-                logger.warning(f"No users found for bot ID: {sequence.bot_id}")
-                continue
+        if sequence.repeat:
+            if sequence.interval:
+                updated_date = sequence.send_at + timedelta(days=sequence.interval)
+                update_sequence(db, sequence.id, {"send_at": updated_date, "starts_at": updated_date, "send_immediately": False})
+                logger.info(f"Sequence {sequence.id} rescheduled to send_at: {updated_date}")
 
-            for user in users:
-                send_message_to_user(db, sequence.bot_id, user.chat_id, sequence.message)
-
-            if sequence.repeat:
-                if sequence.interval:
-                    updated_date = sequence.send_at + timedelta(days=sequence.interval)
-                    update_sequence(db, sequence.id, {"send_at": updated_date, "starts_at": updated_date, "send_immediately": False})
-                    logger.info(f"Sequence {sequence.id} rescheduled to send_at: {updated_date}")
-
-            else:
-                update_sequence(db, sequence.id, {"send_at": None, "starts_at": None, "send_immediately": False, "is_active": True})
+        else:
+            update_sequence(db, sequence.id, {"send_at": None, "starts_at": None, "send_immediately": False, "is_active": True})
 
 def send_message_to_user(db, bot_id: UUID, chat_id: int, message: str):
     """Sends a message to a user using the Telegram API."""
@@ -148,7 +135,13 @@ def sequence_service():
 
 # Initialize APScheduler
 scheduler = BackgroundScheduler()
-scheduler.add_job(sequence_service, "interval", minutes=1)
+scheduler.add_job(
+    sequence_service,
+    "interval",
+    minutes=1,
+    max_instances=10,  # Umožní až 10 instancí najednou
+    misfire_grace_time=300  # Povolené zpoždění až 5 minut
+)
 scheduler.start()
 
 

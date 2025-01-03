@@ -5,7 +5,7 @@ from models.bot import Sequence
 from schemas.bot import ReadSequence, UpdateSequence
 import uuid
 from uuid import UUID
-from datetime import timedelta
+from datetime import timedelta, datetime, timezone
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -28,7 +28,10 @@ def get_all_sequences(db: Session, bot_id: UUID):
     return db_sequences, 200
 
 def get_sequences(db: Session):
-    db_sequences = db.query(Sequence).filter(Sequence.is_active == True).all()
+    db_sequences = db.query(Sequence).filter(
+        Sequence.is_active == True,
+        Sequence.send_at <= datetime.utcnow().replace(tzinfo=timezone.utc),
+    ).all()
 
     if not db_sequences:
         return [], 404
@@ -37,6 +40,8 @@ def get_sequences(db: Session):
 
 def update_sequence(db: Session, sequence_id: UUID, update_data: UpdateSequence):
     db_sequence, status = get_sequence(db, sequence_id)
+    now = datetime.now(timezone("UTC")).replace(microsecond=0) + timedelta(hours=1)
+
     if not db_sequence:
         return 404, None
     
@@ -45,6 +50,12 @@ def update_sequence(db: Session, sequence_id: UUID, update_data: UpdateSequence)
     
     for key, value in update_data.items():
         setattr(db_sequence, key, value)
+
+    if not db_sequence.send_at:
+        if db_sequence.send_immediately:
+            setattr(db_sequence, "send_at", now)
+        elif db_sequence.starts_at:
+            setattr(db_sequence, "send_at", db_sequence.starts_at)
     
     db.commit()
     db.refresh(db_sequence)
@@ -94,6 +105,7 @@ def create_sequence(db: Session, bot_id: UUID):
     db.add(db_sequence)
     db.commit()
     db.refresh(db_sequence)
+
     return 200
 
 
