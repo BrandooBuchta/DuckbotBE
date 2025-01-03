@@ -46,6 +46,7 @@ class Sequence(Base):
     __tablename__ = "sequence"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    check_status = Column(Boolean, default=False)
     name = Column(String, nullable=True)
     bot_id = Column(UUID(as_uuid=True), nullable=False)
     message = Column(String, nullable=True)

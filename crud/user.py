@@ -44,5 +44,8 @@ def update_users_academy_link(db: Session, user_id: int, academy_link: str):
 def get_all_users(db: Session, bot_id: UUID):
     return db.query(User).filter(User.bot_id == bot_id).all()
 
+def get_audience(db: Session, bot_id: UUID, for_client: bool, for_new_client: bool):
+    return db.query(User).filter(User.bot_id == bot_id).all()
+
 def get_user_by_id(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()

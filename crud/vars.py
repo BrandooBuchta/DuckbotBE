@@ -1,0 +1,86 @@
+from sqlalchemy.orm import Session
+from uuid import UUID
+import requests
+from typing import Dict
+import os
+from crud.bot import get_bot
+from crud.user import get_user_by_id 
+
+def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
+    SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+    
+    bot, status = get_bot(db, bot_id)
+    user = get_user_by_id(db, user_id)
+
+    def get_closest_events() -> Dict[str, str]:
+        url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
+        headers = {
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
+        }
+
+        response = requests.get(url, headers=headers)
+        
+        if response.status_code != 200:
+            print(f"Failed to fetch events: {response.status_code} {response.text}")
+            return {
+                "launch_for_beginners": "Žádné události nenalezeny",
+                "build_your_business": "Žádné události nenalezeny",
+                "opportunity_call": "Žádné události nenalezeny",
+            }
+
+        events = response.json()
+
+        keywords = ["Launch for Beginners", "Build Your Business", "Opportunity Call"]
+        closest_events = {
+            "launch_for_beginners": "Žádné události nenalezeny",
+            "build_your_business": "Žádné události nenalezeny",
+            "opportunity_call": "Žádné události nenalezeny",
+        }
+
+        for keyword in keywords:
+            for event in events:
+                if keyword.lower() in event["title"]["en"].lower():
+                    key = keyword.lower().replace(" ", "_")
+                    closest_events[key] = event["url"]
+                    break  # Stop after finding the closest event for this keyword
+
+        return closest_events
+
+    closest_events = get_closest_events()
+
+    variables = [
+        {
+            "key": "name",
+            "value": user.name if user and user.name else "uživateli"
+        },
+        {
+            "key": "bot_name",
+            "value": bot.name if bot and bot.name else "tvůj bot"
+        },
+        {
+            "key": "support_contact",
+            "value": bot.support_contact if bot and bot.support_contact else "podpora"
+        },
+        {
+            "key": "launch_for_beginners",
+            "value": closest_events["launch_for_beginners"]
+        },
+        {
+            "key": "build_your_business",
+            "value": closest_events["build_your_business"]
+        },
+        {
+            "key": "opportunity_call",
+            "value": closest_events["opportunity_call"]
+        },
+        {
+            "key": "academy_link",
+            "value": user.academy_link
+        },
+    ]
+
+    for var in variables:
+        message = message.replace(f"{{{var['key']}}}", var["value"] or "neznámá hodnota")
+
+    return message

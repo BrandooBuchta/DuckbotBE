@@ -15,8 +15,11 @@ from routers.links import router as links_router
 from routers.faq import router as faq_router
 from routers.sequence import router as sequence_router
 from apscheduler.schedulers.background import BackgroundScheduler
-from crud.sequence import get_sequences, update_sequence, delete_sequence
+from crud.sequence import get_sequences, update_sequence, delete_sequence, get_sequence, update_send_at
+from crud.vars import replace_variables
 import logging
+from pytz import utc, timezone
+from uuid import UUID
 
 load_dotenv()
 
@@ -90,48 +93,53 @@ app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy 
 app.include_router(faq_router, prefix="/api/bot/faq", tags=["FAQ"])
 app.include_router(sequence_router, prefix="/api/bot/sequence", tags=["Sequences"])
 
-# Scheduler Logic
-def process_sequences(db: Session):
-    logger.info("Processing sequences...")
-    sequences, _ = get_sequences(db)
-    now = datetime.utcnow()
+def processs_sequences(db: Session):
+    logger.info("Starting to process sequences...")
+    
+    sequences, status = get_sequences(db)
+    if status != 200:
+        logger.error("Failed to retrieve sequences from the database.")
+        return
 
+    now = datetime.now(timezone("UTC")).replace(microsecond=0) + timedelta(hours=1)
+    logger.info(f"Now: {now}")
+    
     for sequence in sequences:
-        if not sequence.is_active:
-            continue  # Skip inactive sequences
+        logger.info(f"Processing sequence ID: {sequence.id}")
 
-        # Set send_at based on conditions
-        if sequence.send_immediately:
-            sequence.send_at = now
-            update_sequence(db, sequence.id, {"send_at": sequence.send_at, "send_immediately": False})
-        elif sequence.starts_at:
-            sequence.send_at = sequence.starts_at
-            update_sequence(db, sequence.id, {"send_at": sequence.send_at})
+        if not sequence.send_at:
+            if sequence.send_immediately:
+                update_sequence(db, sequence.id, {"send_at": now})
+                sequence.send_at = now
+            elif sequence.starts_at:
+                update_sequence(db, sequence.id, {"send_at": sequence.starts_at})
+                sequence.send_at = starts_at_cet 
 
-        # If send_at is due
         if sequence.send_at and sequence.send_at <= now:
-            # Filter users based on sequence conditions
+            logger.info(f"Sequence ID {sequence.id} is due to be sent.")
             users = get_all_users(db, sequence.bot_id)
-            if sequence.for_new_client:
-                users = [user for user in users if not user.is_in_betfin]
-            elif sequence.for_client:
-                users = [user for user in users if user.is_in_betfin]
 
-            # Send messages to users
+            if not users:
+                logger.warning(f"No users found for bot ID: {sequence.bot_id}")
+                continue
+
             for user in users:
-                send_message_to_user(sequence.message, user.chat_id)
+                send_message_to_user(db, sequence.bot_id, user.chat_id, sequence.message)
 
-            # Handle repeating or deletion of the sequence
-            if sequence.repeat and sequence.interval:
-                sequence.send_at = sequence.send_at + timedelta(days=sequence.interval)
-                update_sequence(db, sequence.id, {"send_at": sequence.send_at})
+            # Aktualizace send_at po odeslání, pokud je nastavena opakování
+            if sequence.repeat:
+                if sequence.interval:
+                    updated_date = sequence.send_at + timedelta(days=sequence.interval)
+                    update_sequence(db, sequence.id, {"send_at": updated_date, "starts_at": updated_date, "send_immediately": False})
+                    logger.info(f"Sequence {sequence.id} rescheduled to send_at: {updated_date}")
+
             else:
                 delete_sequence(db, sequence.id)
 
-def send_message_to_user(message, chat_id):
+def send_message_to_user(db, bot_id: UUID, chat_id: int, message: str):
     """Sends a message to a user using the Telegram API."""
     url = f"{TELEGRAM_API_URL}/sendMessage"
-    data = {"chat_id": chat_id, "text": message}
+    data = {"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, message)}
     response = requests.post(url, json=data)
     response.raise_for_status()
 
@@ -139,12 +147,13 @@ def send_message_to_user(message, chat_id):
 def sequence_service():
     logger.info("Scheduler started scheduling...")
     db = next(get_db())
-    process_sequences(db)
+    processs_sequences(db)
 
 # Initialize APScheduler
 scheduler = BackgroundScheduler()
 scheduler.add_job(sequence_service, "interval", minutes=1)
 scheduler.start()
+
 
 @app.on_event("shutdown")
 async def shutdown_event():

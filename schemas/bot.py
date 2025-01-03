@@ -71,6 +71,7 @@ class UpdateSequence(BaseModel):
     message: Optional[str] = None
     send_at: Optional[datetime] = None
     starts_at: Optional[datetime] = None
+    check_status: Optional[bool] = None
     send_immediately: Optional[bool] = None
     interval: Optional[int] = None
     position: Optional[int] = None
