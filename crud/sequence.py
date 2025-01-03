@@ -40,7 +40,7 @@ def get_sequences(db: Session):
 
 def update_sequence(db: Session, sequence_id: UUID, update_data: UpdateSequence):
     db_sequence, status = get_sequence(db, sequence_id)
-    now = datetime.now(timezone("UTC")).replace(microsecond=0) + timedelta(hours=1)
+    now = datetime.now(timezone.utc).replace(microsecond=0) + timedelta(hours=1)  # Fixed timezone
 
     if not db_sequence:
         return 404, None
