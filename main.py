@@ -134,7 +134,7 @@ def processs_sequences(db: Session):
                     logger.info(f"Sequence {sequence.id} rescheduled to send_at: {updated_date}")
 
             else:
-                update_sequence(db, sequence.id, {"send_at": updated_date, "starts_at": updated_date, "send_immediately": False, "is_active": False})
+                update_sequence(db, sequence.id, {"send_at": None, "starts_at": None, "send_immediately": False, "is_active": True})
 
 def send_message_to_user(db, bot_id: UUID, chat_id: int, message: str):
     """Sends a message to a user using the Telegram API."""
