@@ -79,6 +79,7 @@ class UpdateSequence(BaseModel):
     for_client: Optional[bool] = None
     for_new_client: Optional[bool] = None
     is_active: Optional[bool] = None
+    check_status: Optional[bool] = None
 
 class ReadSequence(BaseModel):
     id: UUID
@@ -94,3 +95,4 @@ class ReadSequence(BaseModel):
     for_client: bool
     for_new_client: bool
     is_active: bool
+    check_status: bool

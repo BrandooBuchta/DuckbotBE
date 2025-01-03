@@ -87,6 +87,7 @@ def create_sequence(db: Session, bot_id: UUID):
         send_immediately=True,
         starts_at=None,
         is_active=False,
+        check_status=False,
         interval=None
     )
 
