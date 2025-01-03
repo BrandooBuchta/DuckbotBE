@@ -110,10 +110,8 @@ def processs_sequences(db: Session):
         if not sequence.send_at:
             if sequence.send_immediately:
                 update_sequence(db, sequence.id, {"send_at": now})
-                sequence.send_at = now
             elif sequence.starts_at:
                 update_sequence(db, sequence.id, {"send_at": sequence.starts_at})
-                sequence.send_at = starts_at_cet 
 
         if sequence.send_at and sequence.send_at <= now:
             logger.info(f"Sequence ID {sequence.id} is due to be sent.")
@@ -126,7 +124,6 @@ def processs_sequences(db: Session):
             for user in users:
                 send_message_to_user(db, sequence.bot_id, user.chat_id, sequence.message)
 
-            # Aktualizace send_at po odeslání, pokud je nastavena opakování
             if sequence.repeat:
                 if sequence.interval:
                     updated_date = sequence.send_at + timedelta(days=sequence.interval)
