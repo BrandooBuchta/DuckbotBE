@@ -142,14 +142,14 @@ def sequence_service():
 
 # Initialize APScheduler
 scheduler = BackgroundScheduler()
-scheduler.add_job(
-    sequence_service,
-    "interval",
-    minutes=1,
-    max_instances=10,  # Umožní až 10 instancí najednou
-    misfire_grace_time=300  # Povolené zpoždění až 5 minut
-)
-scheduler.start()
+# scheduler.add_job(
+#     sequence_service,
+#     "interval",
+#     minutes=1,
+#     max_instances=10,  # Umožní až 10 instancí najednou
+#     misfire_grace_time=300  # Povolené zpoždění až 5 minut
+# )
+# scheduler.start()
 
 
 @app.on_event("shutdown")
