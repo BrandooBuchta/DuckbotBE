@@ -22,6 +22,7 @@ from crud.vars import replace_variables
 import logging
 from pytz import timezone
 from uuid import UUID
+import uvicorn
 
 load_dotenv()
 
