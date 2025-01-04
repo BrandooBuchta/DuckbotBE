@@ -12,7 +12,7 @@ class User(Base):
     id = Column(BigInteger, primary_key=True, index=True)
     bot_id = Column(UUID(as_uuid=True), nullable=False)
     chat_id = Column(BigInteger, nullable=False)
-    is_in_betfin = Column(Boolean, default=False)
+    is_client = Column(Boolean, default=False)
     academy_link = Column(String, nullable=True)
     name = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

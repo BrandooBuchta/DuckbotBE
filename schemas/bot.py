@@ -10,12 +10,8 @@ class BaseBot(BaseModel):
     name: Optional[str] = None
     email: Optional[str] = None
     welcome_message: Optional[str] = None
-    sequence_message_client: Optional[str] = None
     devs_currently_assigned: Optional[int] = 0
     share: Optional[int] = 5
-    sequence_message_new_client: Optional[str] = None
-    sequence_frequency: Optional[int] = None
-    sequence_starts_at: Optional[datetime] = None
     start_message: Optional[str] = None
     help_message: Optional[str] = None
     support_contact: Optional[str] = None
@@ -46,12 +42,8 @@ class SignInResponse(BaseModel):
 class UpdateBot(BaseModel):
     name: Optional[str] = None
     welcome_message: Optional[str] = None
-    sequence_message_client: Optional[str] = None
     devs_currently_assigned: Optional[int] = None
     devs_share: Optional[int] = None
-    sequence_message_new_client: Optional[str] = None
-    sequence_frequency: Optional[int] = None
-    sequence_starts_at: Optional[datetime] = None
     start_message: Optional[str] = None
     help_message: Optional[str] = None
     support_contact: Optional[str] = None

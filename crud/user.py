@@ -16,7 +16,7 @@ def create_or_update_user(db: Session, user: UserCreate):
             id=user.id, 
             chat_id=user.chat_id, 
             bot_id=user.bot_id,
-            is_in_betfin=user.is_in_betfin,
+            is_client=user.is_client,
             academy_link=None,
             name=user.name
         )
@@ -48,9 +48,9 @@ def get_audience(db: Session, bot_id: UUID, for_client: bool, for_new_client: bo
     if for_client and for_new_client:
         return db.query(User).filter(User.bot_id == bot_id).all()
     if for_client and not for_new_client:
-        return db.query(User).filter(User.bot_id == bot_id, User.is_in_betfin == True).all()
+        return db.query(User).filter(User.bot_id == bot_id, User.is_client == True).all()
     if not for_client and for_new_client:
-        return db.query(User).filter(User.bot_id == bot_id, User.is_in_betfin == False).all()
+        return db.query(User).filter(User.bot_id == bot_id, User.is_client == False).all()
     if not for_client and not for_new_client:
         return []
 

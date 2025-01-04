@@ -8,7 +8,7 @@ class UserBase(BaseModel):
     id: int
     bot_id: UUID
     chat_id: int
-    is_in_betfin: bool = False
+    is_client: bool = False
     name: Optional[str] = None
 
     class Config:
@@ -17,5 +17,5 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     bot_id: UUID
     chat_id: int
-    is_in_betfin: bool = False
+    is_client: bool = False
     name: Optional[str] = None
