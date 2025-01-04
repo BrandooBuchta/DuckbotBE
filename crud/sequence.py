@@ -32,11 +32,6 @@ from datetime import datetime, timezone
 def get_sequences(db: Session):
     now = datetime.now(timezone.utc).replace(microsecond=0) + timedelta(hours=1)
 
-    db_sequence = db.query(Sequence).first()
-    if not db_sequence:
-        logger.warning("No sequences found in the database.")
-        return [], 404
-
     db_sequences = db.query(Sequence).filter(
         Sequence.is_active == True,
         Sequence.send_at <= now,
