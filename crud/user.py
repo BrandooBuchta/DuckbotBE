@@ -41,19 +41,18 @@ def update_users_academy_link(db: Session, user_id: int, academy_link: str):
         db.refresh(db_user)
     return db_user
 
+def get_all_users(db: Session, bot_id: UUID):
+    return db.query(User).filter(User.bot_id == bot_id).all()
+
 def get_audience(db: Session, bot_id: UUID, for_client: bool, for_new_client: bool):
-    query = db.query(User).filter(User.bot_id == bot_id)
-
+    if for_client and for_new_client:
+        return db.query(User).filter(User.bot_id == bot_id).all()
     if for_client and not for_new_client:
-        query = query.filter(User.is_in_betfin == False)
-    elif not for_client and for_new_client:
-        query = query.filter(User.is_in_betfin == True)
-    elif not for_client and not for_new_client:
+        return db.query(User).filter(User.bot_id == bot_id, User.is_in_betfin == False).all()
+    if not for_client and for_new_client:
+        return db.query(User).filter(User.bot_id == bot_id, User.is_in_betfin == True).all()
+    if not for_client and not for_new_client:
         return []
-
-    return query.all()
-
-
 
 def get_user_by_id(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
