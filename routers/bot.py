@@ -13,7 +13,6 @@ from crud.links import get_all_links, update_link
 from schemas.user import UserCreate
 from schemas.links import UpdateLink
 from models.user import User
-from models.bot import Sequence
 from base64 import b64encode, b64decode
 import os
 from dotenv import load_dotenv
@@ -237,29 +236,6 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
         user = get_user_by_id(db, user_id)
 
-        # Logika pro odpověď na poslední sekvenci s check_status=True
-        last_sequence = db.query(Sequence).filter(
-            Sequence.bot_id == bot_id,
-            Sequence.check_status == True
-        ).order_by(Sequence.send_at.desc()).first()
-
-        if last_sequence:
-            if text.lower() in ["ano", "ne"]:
-                # Aktualizace hodnoty is_in_betfin na základě odpovědi
-                is_in_betfin = text.lower() == "ano"
-                user.is_in_betfin = is_in_betfin
-                db.commit()
-
-                response_message = "Vaše odpověď byla zaznamenána. Děkujeme!"
-                requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": response_message})
-                return {"ok": True}
-            else:
-                # Neplatná odpověď
-                response_message = "Prosím odpovězte pouze 'Ano' nebo 'Ne'."
-                requests.post(f"{TELEGRAM_API_URL}/sendMessage", json={"chat_id": chat_id, "text": response_message})
-                return {"ok": True}
-
-        # Stávající příkazy a logika
         if text == "/start":
             if not user or user.name is None:
                 create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id, bot_id=bot_id))
