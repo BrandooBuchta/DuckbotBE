@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base, SessionLocal
 from schemas.user import UserCreate
-from crud.user import create_or_update_user, get_all_users, get_user_by_id, update_user_name
+from crud.user import create_or_update_user, get_audience, get_user_by_id, update_user_name
 import os
 import requests
 from dotenv import load_dotenv
@@ -109,7 +109,7 @@ def processs_sequences(db: Session):
     for sequence in sequences:
         logger.info(f"Processing sequence ID: {sequence.id}")
         
-        users = get_all_users(db, sequence.bot_id)
+        users = get_audience(db, sequence.bot_id, sequence.for_client, sequence.for_new_client)
         logger.info(f"Found users: {users} for bot ID: {sequence.bot_id}")
 
         if not users:
