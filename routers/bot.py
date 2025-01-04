@@ -233,7 +233,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         message = update["message"]
         user_id = message["from"]["id"]
         chat_id = message["chat"]["id"]
-        text = message.get("text", "").strip().lower()  # Normalizace textu
+        text = message.get("text", "").strip().lower()
 
         user = get_user_by_id(db, user_id)
 
@@ -270,7 +270,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 else:
                     requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Nepodařilo se načíst události."})
             else:
-                # Přidána logika pro sekvence s check_status
+                # Přidána logika pro kontrolu aktivní sekvence
                 active_sequence = (
                     db.query(Sequence)
                     .filter(
@@ -283,17 +283,19 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 )
 
                 if active_sequence:
-                    # Kontrola poslední zprávy odeslané botem
-                    response = requests.get(
-                        f"{telegram_api_url}/getUpdates",
-                        params={"limit": 1, "offset": -1}
-                    )
+                    # Kontrola poslední zprávy
+                    response = requests.get(f"{telegram_api_url}/getUpdates")
                     if response.status_code == 200:
                         updates = response.json().get("result", [])
                         if updates:
-                            last_message = updates[-1].get("message", {}).get("text", "").strip().lower()
+                            # Najdeme poslední zprávu odeslanou botem
+                            last_message = next(
+                                (u["message"]["text"].strip().lower() for u in reversed(updates)
+                                 if u.get("message", {}).get("from", {}).get("is_bot", False)),
+                                None
+                            )
                             if last_message == active_sequence.message.lower():
-                                # Odpověď uživatele je relevantní k aktivní sekvenci
+                                # Zpracování odpovědi uživatele
                                 if text in ["ano", "ne"]:
                                     user.is_in_betfin = text == "ano"
                                     db.commit()
@@ -301,16 +303,13 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                                 else:
                                     response_text = "Prosím, odpovězte pouze 'Ano' nebo 'Ne'."
                             else:
-                                # Poslední zpráva nebyla z aktivní sekvence
                                 response_text = "Vaše odpověď nesouvisí s očekávanou sekvencí."
-                            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": response_text})
                         else:
-                            # Nelze získat poslední zprávu
-                            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Nelze ověřit stav sekvence."})
+                            response_text = "Nepodařilo se načíst historii zpráv."
                     else:
-                        requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Chyba při načítání zpráv."})
+                        response_text = f"Chyba při načítání zpráv: {response.status_code}"
+                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": response_text})
                 else:
-                    # Výchozí odpověď, pokud není aktivní sekvence
                     requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Neznámý příkaz. Použijte /help pro nápovědu."})
 
     return {"ok": True}
