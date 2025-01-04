@@ -99,18 +99,24 @@ def processs_sequences(db: Session):
     logger.info("Starting to process sequences...")
     
     sequences, status = get_sequences(db)
+    logger.info(f"Retrieved sequences: {sequences}, Status: {status}")
+
     if status != 200:
         logger.error(f"Failed to retrieve sequences from the database. {sequences}")
         return
 
     for sequence in sequences:
+        logger.info(f"Processing sequence ID: {sequence.id}")
+        
         users = get_all_users(db, sequence.bot_id)
+        logger.info(f"Found users: {users} for bot ID: {sequence.bot_id}")
 
         if not users:
             logger.warning(f"No users found for bot ID: {sequence.bot_id}")
             continue
 
         for user in users:
+            logger.info(f"Sending message to user {user.chat_id}")
             send_message_to_user(db, sequence.bot_id, user.chat_id, sequence.message)
 
         if sequence.repeat:
@@ -118,7 +124,6 @@ def processs_sequences(db: Session):
                 updated_date = sequence.send_at + timedelta(days=sequence.interval)
                 update_sequence(db, sequence.id, {"send_at": updated_date, "starts_at": updated_date, "send_immediately": False})
                 logger.info(f"Sequence {sequence.id} rescheduled to send_at: {updated_date}")
-
         else:
             update_sequence(db, sequence.id, {"send_at": None, "starts_at": None, "send_immediately": False, "is_active": True})
 
