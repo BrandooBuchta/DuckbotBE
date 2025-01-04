@@ -13,6 +13,7 @@ from crud.links import get_all_links, update_link
 from schemas.user import UserCreate
 from schemas.links import UpdateLink
 from models.user import User
+from models.bot import Sequence
 from base64 import b64encode, b64decode
 import os
 from dotenv import load_dotenv
