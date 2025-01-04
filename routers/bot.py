@@ -233,7 +233,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         message = update["message"]
         user_id = message["from"]["id"]
         chat_id = message["chat"]["id"]
-        text = message.get("text", "").strip().lower()  # Normalizace textu
+        text = message.get("text", "").strip().lower()  # Normalizace na malá písmena
 
         user = get_user_by_id(db, user_id)
 
@@ -281,17 +281,22 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                     .first()
                 )
 
-                if active_sequence:
+                if active_sequence and not user.is_in_betfin:  # Kontrola, zda uživatel nemá is_in_betfin
                     # Pokud je text "ano" nebo "ne", aktualizujeme is_in_betfin
                     if text in ["ano", "ne"]:
-                        user.is_in_betfin = text == "ano"
+                        user.is_in_betfin = text.lower() == "ano"
                         db.commit()
                         response_text = "Děkujeme za odpověď! Vaše volba byla zaznamenána."
                     else:
                         response_text = "Prosím, odpovězte pouze 'Ano' nebo 'Ne'."
+                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": response_text})
+                elif user.is_in_betfin:
+                    # Pokud uživatel již má is_in_betfin nastaveno
+                    response_text = "Vaše odpověď byla již dříve zaznamenána."
                     requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": response_text})
                 else:
                     # Pokud není aktivní sekvence s check_status=True
                     requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Neznámý příkaz. Použijte /help pro nápovědu."})
 
     return {"ok": True}
+
