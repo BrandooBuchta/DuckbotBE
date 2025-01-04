@@ -27,13 +27,23 @@ def get_all_sequences(db: Session, bot_id: UUID):
 
     return db_sequences, 200
 
+from datetime import datetime, timezone
+
 def get_sequences(db: Session):
+    now = datetime.now(timezone.utc).replace(microsecond=0) + timedelta(hours=1)
+
+    db_sequence = db.query(Sequence).first()
+    if not db_sequence:
+        logger.warning("No sequences found in the database.")
+        return [], 404
+
     db_sequences = db.query(Sequence).filter(
         Sequence.is_active == True,
-        Sequence.send_at <= datetime.utcnow().replace(tzinfo=timezone.utc),
+        Sequence.send_at <= now,
     ).all()
 
     if not db_sequences:
+        logger.info("No sequences ready to be processed.")
         return [], 404
 
     return db_sequences, 200
