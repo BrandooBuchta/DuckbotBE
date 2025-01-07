@@ -131,7 +131,7 @@ def processs_sequences(db: Session):
 def send_message_to_user(db, bot_id: UUID, chat_id: int, message: str):
     """Sends a message to a user using the Telegram API."""
     url = f"{TELEGRAM_API_URL}/sendMessage"
-    data = {"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, message), "parse_mode": "Markdow"}
+    data = {"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, message), "parse_mode": "MarkdownV2"}
     response = requests.post(url, json=data)
     response.raise_for_status()
 
