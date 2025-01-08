@@ -51,6 +51,16 @@ class UpdateBot(BaseModel):
     class Config:
         form_attributes = True
 
+class PlainBot(BaseModel):
+    name: str
+    welcome_message: str
+    start_message: str
+    help_message: str
+    support_contact: str
+
+    class Config:
+        form_attributes = True
+
 class SendMessage(BaseModel):
     message: str
     follow_up_message: Optional[str] = None
