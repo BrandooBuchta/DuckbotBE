@@ -19,10 +19,12 @@ from routers.sequence import router as sequence_router
 from apscheduler.schedulers.background import BackgroundScheduler
 from crud.sequence import get_sequences, update_sequence, delete_sequence, get_sequence, update_send_at
 from crud.vars import replace_variables
+from crud.bot import get_bot
 import logging
 from pytz import timezone
 from uuid import UUID
 import uvicorn
+from base64 import b64decode
 
 load_dotenv()
 
@@ -49,7 +51,6 @@ app.add_middleware(
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
-TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
 # Dependency to get the database session
 def get_db():
@@ -131,7 +132,9 @@ def processs_sequences(db: Session):
 
 def send_message_to_user(db, bot_id: UUID, chat_id: int, message: str):
     """Sends a message to a user using the Telegram API."""
-    url = f"{TELEGRAM_API_URL}/sendMessage"
+    bot, status = get_bot(db, bot_id) 
+    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
+    url = f"{telegram_api_url}/sendMessage"
     data = {"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, message), "parse_mode": "Markdown"}
     response = requests.post(url, json=data)
     response.raise_for_status()
