@@ -55,27 +55,27 @@ def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
             "value": user.name if user and user.name else "uživateli"
         },
         {
-            "key": "bot_name",
+            "key": "botName",
             "value": bot.name if bot and bot.name else "tvůj bot"
         },
         {
-            "key": "support_contact",
+            "key": "supportContact",
             "value": bot.support_contact if bot and bot.support_contact else "podpora"
         },
         {
-            "key": "launch_for_beginners",
+            "key": "launchForBeginners",
             "value": closest_events["launch_for_beginners"]
         },
         {
-            "key": "build_your_business",
+            "key": "buildYourBusiness",
             "value": closest_events["build_your_business"]
         },
         {
-            "key": "opportunity_call",
+            "key": "opportunityCall",
             "value": closest_events["opportunity_call"]
         },
         {
-            "key": "academy_link",
+            "key": "academyLink",
             "value": user.academy_link
         },
     ]
