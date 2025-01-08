@@ -56,8 +56,8 @@ def sign_up(db: Session, bot: SignUp):
         welcome_message="*Vítej, {name}*",
         devs_currently_assigned=0,
         devs_share=10,
-        start_message="*Ahoj já jsem {bot_name} a jak mám říkat tobě?*",
-        help_message="*Help message; {support_contact}*",
+        start_message="*Ahoj já jsem {botName} a jak mám říkat tobě?*",
+        help_message="*Help message; {supportContact}*",
 
         token=b64encode(bot.token.encode()).decode(),
     )
@@ -65,7 +65,6 @@ def sign_up(db: Session, bot: SignUp):
     db.commit()
     db.refresh(db_bot)
     return 200
-
 
 def sign_in(db: Session, sign_in: SignIn):
     db_bot, status_code = get_bot_by_email(db, sign_in.email)
