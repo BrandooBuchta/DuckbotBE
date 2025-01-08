@@ -35,7 +35,8 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://don-simon-bot-manager-ui.onrender.com"
 ]
 
 app.add_middleware(
