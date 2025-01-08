@@ -233,20 +233,20 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
             if not user or user.name is None:
                 create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id, bot_id=bot_id))
                 assing_academy_link(db, bot_id, user_id)
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": bot.start_message, "parse_mode": "Markdown"})
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user_id, bot.start_message), "parse_mode": "Markdown"})
             else:
                 personalized_message = replace_variables(db, bot_id, user_id, bot.welcome_message)
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": personalized_message, "parse_mode": "Markdown"})
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user_id, personalized_message), "parse_mode": "Markdown"})
         elif not user or user.name is None:
             update_user_name(db, user_id, text)
             personalized_message = bot.welcome_message.replace("{name}", text)
-            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": personalized_message, "parse_mode": "Markdown"})
+            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user_id, personalized_message), "parse_mode": "Markdown"})
         else:
             if text == "/help":
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": bot.help_message, "parse_mode": "Markdown"})
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user_id, bot.help_message), "parse_mode": "Markdown"})
             elif text == "/faq":
                 faqs, status = get_all_formated_faqs(db, bot_id)
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": faqs, "parse_mode": "Markdown"})
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user_id, faqs), "parse_mode": "Markdown"})
             elif text == "/events":
                 url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
                 headers = {
