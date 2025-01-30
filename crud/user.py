@@ -57,5 +57,5 @@ def get_audience(db: Session, bot_id: UUID, for_client: bool, for_new_client: bo
 def get_user_by_id(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
-def get_user_current_user(db: Session, chat_id: int, bot_id: UUID):
-    return db.query(User).filter(User.chat_id == chat_id).first()
+def get_user_current_user(db: Session, user_id: int, bot_id: UUID):
+    return db.query(User).filter(User.user_id == chat_id).first()
