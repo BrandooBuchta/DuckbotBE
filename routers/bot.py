@@ -223,15 +223,15 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
     if "message" in update:
         message = update["message"]
-        user_message["from"]["id"]
+        user_id = message["from"]["id"]
         chat_id = message["chat"]["id"]
         text = message.get("text", "").strip().lower()
 
-        user = get_current_user(db, user_id, bot_id)
+        user = get_current_user(db, chat_id, bot_id)
 
         if text == "/start":
             if not user or user.name is None:
-                create_or_update_user(db, UserCreate(user_id=user_id, chat_id=chat_id, bot_id=bot_id))
+                create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id, bot_id=bot_id))
                 assing_academy_link(db, bot_id, user_id)
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user_id, bot.start_message), "parse_mode": "Markdown"})
             else:
