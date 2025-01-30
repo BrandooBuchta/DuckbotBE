@@ -7,7 +7,7 @@ from uuid import UUID
 class UserBase(BaseModel):
     id: UUID
     bot_id: UUID
-    user_id: int
+    from_id: int
     chat_id: int
     is_client: bool = False
     name: Optional[str] = None
@@ -18,6 +18,6 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     bot_id: UUID
     chat_id: int
-    user_id: int
+    from_id: int
     is_client: bool = False
     name: Optional[str] = None

@@ -6,7 +6,7 @@ import os
 from crud.bot import get_bot
 from crud.user import get_user_by_id 
 
-def replace_variables(db: Session, bot_id: UUID, user_id: int, message: str):
+def replace_variables(db: Session, bot_id: UUID, user_id: UUID, message: str):
     SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
     
     bot, status = get_bot(db, bot_id)

@@ -15,7 +15,7 @@ def create_or_update_user(db: Session, user: UserCreate):
         db_user = User(
 
             id=uuid4(), 
-            user_id=user.user_id, 
+            from_id=user.from_id, 
             chat_id=user.chat_id, 
             bot_id=user.bot_id,
             is_client=user.is_client,
