@@ -225,7 +225,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         message = update["message"]
         user_id = message["from"]["id"]
         chat_id = message["chat"]["id"]
-        text = message.get("text", "").strip().lower()  # Normalizace na malá písmena
+        text = message.get("text", "").strip().lower()
 
         user = get_user_by_chat_id(db, chat_id)
 
