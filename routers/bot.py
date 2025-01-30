@@ -230,13 +230,17 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         user = get_current_user(db, chat_id, bot_id)
 
         if text == "/start":
-            if not user or user.name is None:
+            if not user:
                 user = create_or_update_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id))
                 assing_academy_link(db, bot_id, user.id)
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user.id, bot.start_message), "parse_mode": "Markdown"})
             else:
                 personalized_message = replace_variables(db, bot_id, user.id, bot.welcome_message)
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user.id, personalized_message), "parse_mode": "Markdown"})
+        elif user.name is None:
+            update_user_name(db, user_id, text)
+            personalized_message = bot.welcome_message.replace("{name}", text)
+            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user_id, personalized_message), "parse_mode": "Markdown"})
         else:
             if text == "/help":
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user.id, bot.help_message), "parse_mode": "Markdown"})
