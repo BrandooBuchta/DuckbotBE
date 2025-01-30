@@ -218,6 +218,7 @@ async def get_webhook_info(bot_id: UUID, db: Session = Depends(get_db)) -> dict:
 
 @router.post("/{bot_id}/webhook")
 async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
+    print("webhook info bot id", bot_id)
     bot, status = get_bot(db, bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
