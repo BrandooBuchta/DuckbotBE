@@ -5,7 +5,7 @@ from typing import Optional
 from uuid import UUID
 
 
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
     bot_id: UUID
     chat_id: int
     from_id: int
