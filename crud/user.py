@@ -1,4 +1,5 @@
 # crud/user.py
+
 from sqlalchemy.orm import Session
 from models.user import User
 from schemas.user import UserCreate
