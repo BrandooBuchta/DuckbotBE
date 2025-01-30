@@ -56,3 +56,6 @@ def get_audience(db: Session, bot_id: UUID, for_client: bool, for_new_client: bo
 
 def get_user_by_id(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
+
+def get_user_by_chat_id(db: Session, user_id: int):
+    return db.query(User).filter(User.id == user_id).first()

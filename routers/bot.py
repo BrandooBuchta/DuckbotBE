@@ -7,7 +7,7 @@ from database import SessionLocal
 from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage, PlainBot
 from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot, get_plain_bot
 from crud.faq import get_all_formated_faqs
-from crud.user import get_user_by_id, create_or_update_user, update_user_name, update_users_academy_link
+from crud.user import get_user_by_id, get_user_by_chat_id, create_or_update_user, update_user_name, update_users_academy_link
 from crud.vars import replace_variables
 from crud.links import get_all_links, update_link
 from schemas.user import UserCreate
@@ -227,7 +227,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         chat_id = message["chat"]["id"]
         text = message.get("text", "").strip().lower()  # Normalizace na malá písmena
 
-        user = get_user_by_id(db, user_id)
+        user = get_user_by_chat_id(db, chat_id)
 
         if text == "/start":
             if not user or user.name is None:
