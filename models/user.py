@@ -9,8 +9,9 @@ from datetime import timedelta
 class User(Base):
     __tablename__ = "telegram_users"
 
-    id = Column(BigInteger, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     bot_id = Column(UUID(as_uuid=True), nullable=False)
+    user_id = Column(BigInteger, nullable=False)
     chat_id = Column(BigInteger, nullable=False)
     is_client = Column(Boolean, default=False)
     academy_link = Column(String, nullable=True)

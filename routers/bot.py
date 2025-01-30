@@ -218,7 +218,6 @@ async def get_webhook_info(bot_id: UUID, db: Session = Depends(get_db)) -> dict:
 
 @router.post("/{bot_id}/webhook")
 async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
-    print("webhook info bot id", bot_id)
     bot, status = get_bot(db, bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
@@ -226,15 +225,12 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         message = update["message"]
         user_id = message["from"]["id"]
         chat_id = message["chat"]["id"]
-        print("chat_id: ", chat_id)
         text = message.get("text", "").strip().lower()
 
-        user = get_current_user(db, chat_id, bot_id)
-        print("user ain't exist, we'll create new")
+        user = get_current_user(db, user_id, bot_id)
 
         if text == "/start":
             if not user or user.name is None:
-                print("user: ", user)
                 create_or_update_user(db, UserCreate(id=user_id, chat_id=chat_id, bot_id=bot_id))
                 assing_academy_link(db, bot_id, user_id)
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user_id, bot.start_message), "parse_mode": "Markdown"})
