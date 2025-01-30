@@ -3,7 +3,7 @@
 from sqlalchemy.orm import Session
 from models.user import User
 from schemas.user import UserCreate
-from uuid import UUID
+from uuid import UUID, uuid4
 
 def create_or_update_user(db: Session, user: UserCreate):
     db_user = db.query(User).filter(User.chat_id == user.chat_id, User.bot_id == user.bot_id).first()
@@ -13,7 +13,9 @@ def create_or_update_user(db: Session, user: UserCreate):
             db_user.name = user.name
     else:
         db_user = User(
-            id=user.id, 
+
+            id=uuid4(), 
+            user_id=user.user_id, 
             chat_id=user.chat_id, 
             bot_id=user.bot_id,
             is_client=user.is_client,
@@ -25,7 +27,7 @@ def create_or_update_user(db: Session, user: UserCreate):
     db.refresh(db_user)
     return db_user
 
-def update_user_name(db: Session, user_id: int, name: str):
+def update_user_name(db: Session, user_id: UUID, name: str):
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user:
         db_user.name = name
@@ -33,7 +35,7 @@ def update_user_name(db: Session, user_id: int, name: str):
         db.refresh(db_user)
     return db_user
 
-def update_users_academy_link(db: Session, user_id: int, academy_link: str):
+def update_users_academy_link(db: Session, user_id: UUID, academy_link: str):
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user:
         db_user.academy_link = academy_link
@@ -54,7 +56,7 @@ def get_audience(db: Session, bot_id: UUID, for_client: bool, for_new_client: bo
     if not for_client and not for_new_client:
         return []
 
-def get_user_by_id(db: Session, user_id: int):
+def get_user_by_id(db: Session, user_id: UUID):
     return db.query(User).filter(User.id == user_id).first()
 
 def get_current_user(db: Session, chat_id: int, bot_id: UUID):
