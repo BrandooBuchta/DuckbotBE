@@ -3,6 +3,7 @@
 from sqlalchemy import Column, BigInteger, Boolean, String, Integer, DateTime
 from database import Base
 from sqlalchemy.dialects.postgresql import UUID
+import uuid
 from sqlalchemy.sql import func
 from datetime import timedelta
 
