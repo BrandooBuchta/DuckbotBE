@@ -59,3 +59,4 @@ def get_user_by_id(db: Session, user_id: int):
 
 def get_current_user(db: Session, chat_id: int, bot_id: UUID):
     return db.query(User).filter(User.chat_id == chat_id, User.bot_id == bot_id).first()
+    
