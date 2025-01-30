@@ -226,6 +226,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         message = update["message"]
         user_id = message["from"]["id"]
         chat_id = message["chat"]["id"]
+        print("chat_id: ", chat_id)
         text = message.get("text", "").strip().lower()
 
         user = get_current_user(db, chat_id, bot_id)
