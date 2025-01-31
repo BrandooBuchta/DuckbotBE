@@ -229,9 +229,6 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
         user = get_current_user(db, chat_id, bot_id)
 
-        print("user: ", user)
-        print("user.name is None: ", user.name is None)
-
         if text == "/start":
             if not user:
                 user = create_or_update_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id))
@@ -240,7 +237,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
             else:
                 personalized_message = replace_variables(db, bot_id, user.id, bot.welcome_message)
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user.id, personalized_message), "parse_mode": "Markdown"})
-        elif user and user.name is None:
+        elif user and not user.name:
             update_user_name(db, user.id, text)
             personalized_message = bot.welcome_message.replace("{name}", text)
             requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user.id, personalized_message), "parse_mode": "Markdown"})
