@@ -20,7 +20,7 @@ def create_or_update_user(db: Session, user: UserCreate):
             bot_id=user.bot_id,
             is_client=user.is_client,
             academy_link=None,
-            name=user.name
+            name=None
         )
         db.add(db_user)
     db.commit()
