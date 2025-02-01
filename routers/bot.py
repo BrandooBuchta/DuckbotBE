@@ -7,7 +7,7 @@ from database import SessionLocal
 from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage, PlainBot
 from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot, get_plain_bot
 from crud.faq import get_all_formated_faqs
-from crud.user import get_user_by_id, get_current_user, create_or_update_user, update_user_name, update_users_academy_link
+from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link
 from crud.vars import replace_variables
 from crud.links import get_all_links, update_link
 from schemas.user import UserCreate
@@ -234,23 +234,23 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 user = create_or_update_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id))
                 assing_academy_link(db, bot_id, user.id)
                 print("creating new user and assigning link")
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user.id, bot.start_message), "parse_mode": "Markdown"})
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, bot.start_message), "parse_mode": "Markdown"})
                 print("bot.start_message: ", bot.start_message)
                 print("chat_id: ", chat_id)
             else:
-                personalized_message = replace_variables(db, bot_id, user.id, bot.welcome_message)
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user.id, personalized_message), "parse_mode": "Markdown"})
+                personalized_message = replace_variables(db, bot_id, chat_id, bot.welcome_message)
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, personalized_message), "parse_mode": "Markdown"})
         elif user and user.name is None:
             update_user_name(db, user.id, text)
             personalized_message = bot.welcome_message.replace("{name}", text)
-            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user.id, personalized_message), "parse_mode": "Markdown"})
+            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, personalized_message), "parse_mode": "Markdown"})
 
         else:
             if text == "/help":
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user.id, bot.help_message), "parse_mode": "Markdown"})
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, bot.help_message), "parse_mode": "Markdown"})
             elif text == "/faq":
                 faqs, status = get_all_formated_faqs(db, bot_id)
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user.id, faqs), "parse_mode": "Markdown"})
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, faqs), "parse_mode": "Markdown"})
             elif text == "/events":
                 url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
                 headers = {
@@ -285,11 +285,11 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                         response_text = "Děkujeme za odpověď! Vaše volba byla zaznamenána."
                     else:
                         response_text = "Prosím, odpovězte pouze 'Ano' nebo 'Ne'."
-                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": response_text, "parse_mode": "Markdown"})
+                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, response_text), "parse_mode": "Markdown"})
                 elif user.is_client:
                     # Pokud uživatel již má is_client nastaveno
                     response_text = "Vaše odpověď byla již dříve zaznamenána."
-                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": response_text, "parse_mode": "Markdown"})
+                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, response_text), "parse_mode": "Markdown"})
                 else:
                     # Pokud není aktivní sekvence s check_status=True
                     requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Neznámý příkaz. Použijte /help pro nápovědu.", "parse_mode": "Markdown"})

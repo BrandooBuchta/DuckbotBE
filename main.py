@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base, SessionLocal
 from schemas.user import UserCreate
-from crud.user import get_audience, get_user_by_id, update_user_name
+from crud.user import get_audience, update_user_name
 import os
 import requests
 from dotenv import load_dotenv

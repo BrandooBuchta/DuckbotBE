@@ -4,13 +4,13 @@ import requests
 from typing import Dict
 import os
 from crud.bot import get_bot
-from crud.user import get_user_by_id 
+from crud.user import get_current_user
 
-def replace_variables(db: Session, bot_id: UUID, user_id: UUID, message: str):
+def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
     SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
     
     bot, status = get_bot(db, bot_id)
-    user = get_user_by_id(db, user_id)
+    user = get_current_user(db, chat_id, bot_id)
 
     def get_closest_events() -> Dict[str, str]:
         url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
