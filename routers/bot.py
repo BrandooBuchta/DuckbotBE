@@ -233,7 +233,9 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
             if not user:
                 user = create_or_update_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id))
                 assing_academy_link(db, bot_id, user.id)
+                print("creating new user and assigning link")
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user.id, bot.start_message), "parse_mode": "Markdown"})
+                print("sendnig message to new user without name")
             else:
                 personalized_message = replace_variables(db, bot_id, user.id, bot.welcome_message)
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, user.id, personalized_message), "parse_mode": "Markdown"})
