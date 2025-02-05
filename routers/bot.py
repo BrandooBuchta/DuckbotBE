@@ -234,7 +234,14 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 user = create_or_update_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id))
                 assing_academy_link(db, bot_id, user.id)
                 print("creating new user and assigning link")
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, bot.start_message), "parse_mode": "Markdown"})
+                response = requests.post(f"{telegram_api_url}/sendMessage", json={
+                    "chat_id": chat_id,
+                    "text": replace_variables(db, bot_id, chat_id, bot.start_message),
+                    "parse_mode": "Markdown"
+                })
+
+                if response.status_code != 200:
+                    print(f"Failed to send message: {response.text}")
                 print("bot.start_message: ", bot.start_message)
                 print("chat_id: ", chat_id)
             else:
