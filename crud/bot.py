@@ -56,8 +56,8 @@ def sign_up(db: Session, bot: SignUp):
         welcome_message="*Vítej, {name}*",
         devs_currently_assigned=0,
         devs_share=10,
-        start_message="*Ahoj já jsem {botName} a jak mám říkat tobě?*",
-        help_message="*Help message; {supportContact}*",
+        start_message="Ahoj já jsem {botName} a jak mám říkat tobě?",
+        help_message="Help message; {supportContact}",
 
         token=b64encode(bot.token.encode()).decode(),
     )
