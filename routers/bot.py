@@ -279,7 +279,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
     return {"ok": True}
 
 
-@app.post("/callback")
+@router.post("/callback")
 async def handle_callback(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     callback_data = data["callback_query"]["data"]
