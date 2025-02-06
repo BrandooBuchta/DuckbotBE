@@ -157,6 +157,8 @@ def send_message_to_user(db: Session, bot_id: UUID, chat_id: int, message: str, 
         }
     
     response = requests.post(url, json=data)
+    if response.status_code != 200:
+        logger.error(f"Failed to send message: {response.status_code} - {response.text}")
     response.raise_for_status()
 
 
