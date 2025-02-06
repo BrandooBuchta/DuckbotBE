@@ -7,7 +7,7 @@ from database import SessionLocal
 from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage, PlainBot
 from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot, get_plain_bot
 from crud.faq import get_all_formated_faqs
-from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link
+from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link, get_user
 from crud.vars import replace_variables
 from crud.links import get_all_links, update_link
 from schemas.user import UserCreate
@@ -283,36 +283,14 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 async def handle_callback(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     callback_data = data["callback_query"]["data"]
-    chat_id = data["callback_query"]["message"]["chat"]["id"]
+    user = get_user(db, callback_data.split("|")[0])
 
-    logger.info(f"Received callback data: {callback_data}")
+    bot, status = get_bot(db, user.bot_id)
+    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
-    if callback_data.startswith("set_client|"):
-        parts = callback_data.split("|")
-        
-        if len(parts) < 4:
-            logger.error("Invalid callback format")
-            return {"error": "Invalid callback format"}
-        
-        bot_id = parts[1]
-        user_chat_id = parts[2]
-        is_client = parts[3] == "True"
+    user.is_client = is_client
+    db.commit()
 
-        logger.info(f"Updating user {user_chat_id} for bot {bot_id} - is_client: {is_client}")
-
-        # Fetch the user and update their is_client status
-        user = get_current_user(db, user_chat_id, bot_id)
-        if user:
-            user.is_client = is_client
-            db.commit()
-            logger.info(f"User {user_chat_id} updated successfully.")
-
-            # Send confirmation message
-            requests.post(
-                f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-                json={"chat_id": chat_id, "text": "Your preference has been updated!"}
-            )
-        else:
-            logger.warning(f"User {user_chat_id} not found for bot {bot_id}")
+    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Vaše odpověď byla zaznamenána!.", "parse_mode": "html"})
 
     return {"status": "ok"}
