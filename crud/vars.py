@@ -11,6 +11,9 @@ def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
     
     bot, status = get_bot(db, bot_id)
     user = get_current_user(db, chat_id, bot_id)
+    
+    if not user:
+        logger.warning(f"User not found for chat_id: {chat_id}, bot_id: {bot_id}")
 
     def get_closest_events() -> Dict[str, str]:
         url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
