@@ -10,7 +10,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi.responses import htmlResponse, PlainTextResponse
 from datetime import datetime, timedelta
 from routers.bot import router as bot_router
 from routers.links import router as links_router
@@ -135,7 +135,7 @@ def send_message_to_user(db, bot_id: UUID, chat_id: int, message: str):
     bot, status = get_bot(db, bot_id) 
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
     url = f"{telegram_api_url}/sendMessage"
-    data = {"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, message), "parse_mode": "HTML"}
+    data = {"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, message), "parse_mode": "html"}
     response = requests.post(url, json=data)
     response.raise_for_status()
 
