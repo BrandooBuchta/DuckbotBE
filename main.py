@@ -10,7 +10,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from fastapi.responses import htmlResponse, PlainTextResponse
+from fastapi.responses import PlainTextResponse
 from datetime import datetime, timedelta
 from routers.bot import router as bot_router
 from routers.links import router as links_router
