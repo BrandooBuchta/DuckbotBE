@@ -1,6 +1,6 @@
 # routers/bot.py
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import SessionLocal
@@ -273,33 +273,20 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 else:
                     requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Nepodařilo se načíst události.", "parse_mode": "html"})
             else:
-                # Logika pro aktivní sekvenci s check_status=True
-                active_sequence = (
-                    db.query(Sequence)
-                    .filter(
-                        Sequence.bot_id == bot_id,
-                        Sequence.check_status == True,
-                        Sequence.is_active == True
-                    )
-                    .first()
-                )
-
-                if active_sequence and not user.is_client:  # Kontrola, zda uživatel nemá is_client
-                    # Pokud je text "ano" nebo "ne", aktualizujeme is_client
-                    if text in ["ano", "ne"]:
-                        user.is_client = text.lower() == "ano"
-                        db.commit()
-                        response_text = "Děkujeme za odpověď! Vaše volba byla zaznamenána."
-                    else:
-                        response_text = "Prosím, odpovězte pouze 'Ano' nebo 'Ne'."
-                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, response_text), "parse_mode": "html"})
-                elif user.is_client:
-                    # Pokud uživatel již má is_client nastaveno
-                    response_text = "Vaše odpověď byla již dříve zaznamenána."
-                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, response_text), "parse_mode": "html"})
-                else:
-                    # Pokud není aktivní sekvence s check_status=True
-                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Neznámý příkaz. Použijte /help pro nápovědu.", "parse_mode": "html"})
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Neznámý příkaz. Použijte /help pro nápovědu.", "parse_mode": "html"})
 
     return {"ok": True}
 
+
+@router.post("/{bot_id}/set-is-client/{chat_id}")
+async def webhook(bot_id: UUID, chat_id: int, is_client: bool = Query(False), db: Session = Depends(get_db)):
+    bot, status = get_bot(db, bot_id)
+    user = get_current_user(db, chat_id, bot_id)
+    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
+
+    user.is_client = is_client
+    db.commit()
+
+    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "", "parse_mode": "html"})
+    
+    return {"ok": True}

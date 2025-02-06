@@ -120,7 +120,7 @@ def processs_sequences(db: Session):
 
         for user in users:
             logger.info(f"Sending message to user {user.chat_id}")
-            send_message_to_user(db, sequence.bot_id, user.chat_id, sequence.message)
+            send_message_to_user(db, sequence.bot_id, user.chat_id, sequence.message, sequence.check_status)
 
         if sequence.repeat:
             if sequence.interval:
@@ -130,14 +130,28 @@ def processs_sequences(db: Session):
         else:
             update_sequence(db, sequence.id, {"send_at": None, "starts_at": None, "send_immediately": False, "is_active": True})
 
-def send_message_to_user(db, bot_id: UUID, chat_id: int, message: str):
-    """Sends a message to a user using the Telegram API."""
-    bot, status = get_bot(db, bot_id) 
+def send_message_to_user(db: Session, bot_id: UUID, chat_id: int, message: str, check_status: bool):
+    bot, status = get_bot(db, bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
     url = f"{telegram_api_url}/sendMessage"
-    data = {"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, message), "parse_mode": "html"}
+    
+    data = {
+        "chat_id": chat_id,
+        "text": replace_variables(db, bot_id, chat_id, message),
+        "parse_mode": "html"
+    }
+    
+    if check_status:
+        data["reply_markup"] = {
+            "inline_keyboard": [[
+                {"text": "ANO", "callback_data": f"https://bot-configurator-api.onrender.com/api/{bot_id}/set-is-client/{chat_id}?is_client=True"},
+                {"text": "NE", "callback_data": f"https://bot-configurator-api.onrender.com/api/{bot_id}/set-is-client/{chat_id}?is_client=False"}
+            ]]
+        }
+    
     response = requests.post(url, json=data)
     response.raise_for_status()
+
 
 # Scheduler function
 def sequence_service():
