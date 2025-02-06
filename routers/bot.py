@@ -279,15 +279,40 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
     return {"ok": True}
 
 
-@router.post("/{bot_id}/set-is-client/{chat_id}")
-async def webhook(bot_id: UUID, chat_id: int, is_client: bool = Query(False), db: Session = Depends(get_db)):
-    bot, status = get_bot(db, bot_id)
-    user = get_current_user(db, chat_id, bot_id)
-    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
+@app.post("/callback")
+async def handle_callback(request: Request, db: Session = Depends(get_db)):
+    data = await request.json()
+    callback_data = data["callback_query"]["data"]
+    chat_id = data["callback_query"]["message"]["chat"]["id"]
 
-    user.is_client = is_client
-    db.commit()
+    logger.info(f"Received callback data: {callback_data}")
 
-    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Děkujeme za odpověď! Vaše volba byla zaznamenána.", "parse_mode": "html"})
-    
-    return {"ok": True}
+    if callback_data.startswith("set_client|"):
+        parts = callback_data.split("|")
+        
+        if len(parts) < 4:
+            logger.error("Invalid callback format")
+            return {"error": "Invalid callback format"}
+        
+        bot_id = parts[1]
+        user_chat_id = parts[2]
+        is_client = parts[3] == "True"
+
+        logger.info(f"Updating user {user_chat_id} for bot {bot_id} - is_client: {is_client}")
+
+        # Fetch the user and update their is_client status
+        user = get_current_user(db, user_chat_id, bot_id)
+        if user:
+            user.is_client = is_client
+            db.commit()
+            logger.info(f"User {user_chat_id} updated successfully.")
+
+            # Send confirmation message
+            requests.post(
+                f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+                json={"chat_id": chat_id, "text": "Your preference has been updated!"}
+            )
+        else:
+            logger.warning(f"User {user_chat_id} not found for bot {bot_id}")
+
+    return {"status": "ok"}

@@ -151,11 +151,11 @@ def send_message_to_user(db: Session, bot_id: UUID, chat_id: int, message: str, 
     if check_status:
         data["reply_markup"] = {
             "inline_keyboard": [[
-                {"text": "ANO", "callback_data": f"https://bot-configurator-api.onrender.com/api/{bot_id}/set-is-client/{chat_id}?is_client=True"},
-                {"text": "NE", "callback_data": f"https://bot-configurator-api.onrender.com/api/{bot_id}/set-is-client/{chat_id}?is_client=False"}
+                {"text": "ANO", "callback_data": f"set_client|{bot_id}|{chat_id}|True"},
+                {"text": "NE", "callback_data": f"set_client|{bot_id}|{chat_id}|False"}
             ]]
         }
-    
+
     response = requests.post(url, json=data)
     if response.status_code != 200:
         logger.error(f"Failed to send message: {response.status_code} - {response.text}")
