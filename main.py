@@ -134,6 +134,11 @@ def send_message_to_user(db: Session, bot_id: UUID, chat_id: int, message: str, 
     bot, status = get_bot(db, bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
     url = f"{telegram_api_url}/sendMessage"
+
+    user = get_current_user(db, chat_id, bot_id)
+
+    if not user:
+        print("user: ", user)
     
     data = {
         "chat_id": chat_id,
