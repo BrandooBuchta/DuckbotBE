@@ -254,6 +254,12 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
         else:
             if text == "/help":
+                sub_user = get_current_user(db, chat_id, bot_id)
+
+                if not sub_user:
+                    print("sub_user doesnt exist")
+                else:
+                    print("sub_user: ", sub_user)
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, bot.help_message), "parse_mode": "html"})
             elif text == "/faq":
                 faqs, status = get_all_formated_faqs(db, bot_id)
