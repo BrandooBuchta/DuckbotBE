@@ -287,6 +287,6 @@ async def webhook(bot_id: UUID, chat_id: int, is_client: bool = Query(False), db
     user.is_client = is_client
     db.commit()
 
-    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "", "parse_mode": "html"})
+    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Děkujeme za odpověď! Vaše volba byla zaznamenána.", "parse_mode": "html"})
     
     return {"ok": True}
