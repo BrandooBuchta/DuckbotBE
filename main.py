@@ -135,7 +135,7 @@ def send_message_to_user(db, bot_id: UUID, chat_id: int, message: str):
     bot, status = get_bot(db, bot_id) 
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
     url = f"{telegram_api_url}/sendMessage"
-    data = {"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, message), "parse_mode": "MarkdownV2"}
+    data = {"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, message), "parse_mode": "HTML"}
     response = requests.post(url, json=data)
     response.raise_for_status()
 
