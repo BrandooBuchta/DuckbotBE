@@ -20,6 +20,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from crud.sequence import get_sequences, update_sequence, delete_sequence, get_sequence, update_send_at
 from crud.vars import replace_variables
 from crud.bot import get_bot
+from crud.user import get_current_user
 import logging
 from pytz import timezone
 from uuid import UUID
@@ -137,8 +138,9 @@ def send_message_to_user(db: Session, bot_id: UUID, chat_id: int, message: str, 
 
     user = get_current_user(db, chat_id, bot_id)
 
+    print ("user: ", user)
     if not user:
-        print("user: ", user)
+        print("user not found ")
     
     data = {
         "chat_id": chat_id,
