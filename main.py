@@ -20,7 +20,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from crud.sequence import get_sequences, update_sequence, delete_sequence, get_sequence, update_send_at
 from crud.vars import replace_variables
 from crud.bot import get_bot
-from crud.user import get_current_user
 import logging
 from pytz import timezone
 from uuid import UUID
@@ -138,7 +137,7 @@ def send_message_to_user(db: Session, bot_id: UUID, chat_id: int, message: str, 
 
     user = get_current_user(db, chat_id, bot_id)
 
-    print ("user: ", user)
+    print 
     if not user:
         print("user not found ")
     
@@ -151,14 +150,12 @@ def send_message_to_user(db: Session, bot_id: UUID, chat_id: int, message: str, 
     if check_status:
         data["reply_markup"] = {
             "inline_keyboard": [[
-                {"text": "ANO", "callback_data": f"{user.id}|t"},
-                {"text": "NE", "callback_data": f"{user.id}|f"}
+                {"text": "ANO", "url": f"https://bot-configurator-api.onrender.com/api/{bot_id}/set-is-client/{chat_id}?is_client=True"},
+                {"text": "NE", "url": f"https://bot-configurator-api.onrender.com/api/{bot_id}/set-is-client/{chat_id}?is_client=False"}
             ]]
         }
-
+    
     response = requests.post(url, json=data)
-    if response.status_code != 200:
-        logger.error(f"Failed to send message: {response.status_code} - {response.text}")
     response.raise_for_status()
 
 

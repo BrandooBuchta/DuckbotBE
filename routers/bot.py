@@ -1,13 +1,13 @@
 # routers/bot.py
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage, PlainBot
 from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot, get_plain_bot
 from crud.faq import get_all_formated_faqs
-from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link, get_user
+from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link
 from crud.vars import replace_variables
 from crud.links import get_all_links, update_link
 from schemas.user import UserCreate
@@ -279,18 +279,15 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
     return {"ok": True}
 
 
-@router.post("/callback")
-async def handle_callback(request: Request, db: Session = Depends(get_db)):
-    data = await request.json()
-    callback_data = data["callback_query"]["data"]
-    user = get_user(db, callback_data.split("|")[0])
-
-    bot, status = get_bot(db, user.bot_id)
+@router.post("/{bot_id}/set-is-client/{chat_id}")
+async def webhook(bot_id: UUID, chat_id: int, is_client: bool = Query(False), db: Session = Depends(get_db)):
+    bot, status = get_bot(db, bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
+    user = get_current_user(db, chat_id, bot_id)
     user.is_client = is_client
     db.commit()
 
-    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Vaše odpověď byla zaznamenána!.", "parse_mode": "html"})
-
-    return {"status": "ok"}
+    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Děkujeme za odpověď! Vaše volba byla zaznamenána.", "parse_mode": "html"})
+    
+    return {"ok": True}
