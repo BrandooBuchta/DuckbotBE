@@ -232,7 +232,9 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
         set_is_client(db, user_id, is_client.lower() == "t")
 
-        requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": update["callback_query"]["message"]["chat"]["id"], "text": "Vaše odpověď byla zaznamenána!.", "parse_mode": "html"})
+        message = "Děkuju, nyní už vím že už jsi součástí projektu a budu s tebou tak i nadále pracovt ;)" if is_client else "Děkuju, nyní už vím že ještě nejsi součástí projektu a budu s tebou tak i nadále pracovt ;)"
+
+        requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": update["callback_query"]["message"]["chat"]["id"], "text": f"<strong>{message}</strong>", "parse_mode": "html"})
 
     if "message" in update:
         message = update["message"]
