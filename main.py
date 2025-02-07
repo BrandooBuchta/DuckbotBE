@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base, SessionLocal
 from schemas.user import UserCreate
-from crud.user import get_audience, update_user_name
+from crud.user import get_audience, update_user_name, get_current_user
 import os
 import requests
 from dotenv import load_dotenv
@@ -137,7 +137,6 @@ def send_message_to_user(db: Session, bot_id: UUID, chat_id: int, message: str, 
 
     user = get_current_user(db, chat_id, bot_id)
 
-    print 
     if not user:
         print("user not found ")
     
