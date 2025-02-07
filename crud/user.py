@@ -35,6 +35,14 @@ def update_user_name(db: Session, user_id: UUID, name: str):
         db.refresh(db_user)
     return db_user
 
+def set_is_client(db: Session, user_id: UUID, is_client: bool):
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if db_user:
+        db_user.is_client = is_client
+        db.commit()
+        db.refresh(db_user)
+    return db_user
+
 def update_users_academy_link(db: Session, user_id: UUID, academy_link: str):
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user:

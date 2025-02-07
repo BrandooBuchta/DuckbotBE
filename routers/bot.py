@@ -7,7 +7,7 @@ from database import SessionLocal
 from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage, PlainBot
 from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot, get_plain_bot
 from crud.faq import get_all_formated_faqs
-from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link
+from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link, get_user, set_is_client
 from crud.vars import replace_variables
 from crud.links import get_all_links, update_link
 from schemas.user import UserCreate
@@ -278,16 +278,53 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
     return {"ok": True}
 
+@router.post("/callback")
+async def handle_callback(request: Request, db: Session = Depends(get_db)):
+    data = await request.json()
+    logger.info(f"Raw callback data received: {data}")
 
-@router.post("/{bot_id}/set-is-client/{chat_id}")
-async def webhook(bot_id: UUID, chat_id: int, is_client: bool = Query(False), db: Session = Depends(get_db)):
-    bot, status = get_bot(db, bot_id)
-    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
+    if "callback_query" not in data or "data" not in data["callback_query"]:
+        logger.error("Invalid callback request received")
+        raise HTTPException(status_code=400, detail="Invalid callback request")
 
-    user = get_current_user(db, chat_id, bot_id)
-    user.is_client = is_client
-    db.commit()
+    callback_query = data["callback_query"]
+    callback_data = callback_query["data"]
 
-    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Děkujeme za odpověď! Vaše volba byla zaznamenána.", "parse_mode": "html"})
-    
+    try:
+        user_id_str, is_client = callback_data.split("|")
+        user_id = UUID(user_id_str)
+    except ValueError:
+        logger.error(f"Invalid callback data format: {callback_data}")
+        raise HTTPException(status_code=400, detail="Invalid callback data format")
+
+    user = get_user(db, user_id)
+    if not user:
+        logger.error(f"User {user_id} not found")
+        raise HTTPException(status_code=404, detail="User not found")
+
+    bot, status = get_bot(db, user.bot_id)
+    if status != 200:
+        logger.error(f"Bot {user.bot_id} not found")
+        raise HTTPException(status_code=404, detail="Bot not found")
+
+    chat_id = callback_query["message"]["chat"]["id"]
+
+    # Aktualizace uživatelských dat
+    set_is_client(db, user_id, is_client.lower() == "t")
+
+    # Odpověď na callback query
+    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}/answerCallbackQuery"
+    requests.post(telegram_api_url, json={"callback_query_id": callback_query["id"], "text": "Odpověď uložena!"})
+
+    # Poslání zprávy uživateli
+    send_message_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}/sendMessage"
+    response = requests.post(send_message_url, json={
+        "chat_id": chat_id,
+        "text": "Děkujeme za odpověď! Vaše volba byla zaznamenána.",
+        "parse_mode": "html"
+    })
+
+    if response.status_code != 200:
+        logger.error(f"Failed to send message: {response.text}")
+
     return {"ok": True}
