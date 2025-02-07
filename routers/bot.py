@@ -22,6 +22,7 @@ from typing import List, Dict
 import requests
 from uuid import UUID
 import random
+import logging
 
 load_dotenv()
 
@@ -29,6 +30,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
 DOMAIN = os.getenv("DOMAIN")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")  
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -220,6 +224,11 @@ async def get_webhook_info(bot_id: UUID, db: Session = Depends(get_db)) -> dict:
 async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
+
+    logger.info(f"📥 Received Telegram webhook update: {update}")
+
+    if "callback_query" in update:
+        logger.info(f"🔄 Callback query received: {update['callback_query']}")
 
     if "message" in update:
         message = update["message"]
