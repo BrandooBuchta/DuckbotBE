@@ -53,7 +53,7 @@ def sign_up(db: Session, bot: SignUp):
         id=uuid.uuid4(),
         email=bot.email,
         password=hashed_password,
-        welcome_message="*Vítej, {name}*",
+        welcome_message="Vítej, {name}",
         devs_currently_assigned=0,
         devs_share=10,
         start_message="Ahoj já jsem {botName} a jak mám říkat tobě?",

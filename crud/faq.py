@@ -54,7 +54,7 @@ def get_all_formated_faqs(db: Session, bot_id: UUID):
 
     formatted_faqs = ""
     for faq in db_faqs:
-        formatted_faqs += f"*{faq.parent}*\n{faq.child}\n\n"
+        formatted_faqs += f"<strong>{faq.parent}</strong>\n{faq.child}\n\n"
 
     return formatted_faqs.strip(), 200
 
