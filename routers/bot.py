@@ -228,7 +228,15 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
     logger.info(f"📥 Received Telegram webhook update: {update}")
 
     if "callback_query" in update:
-        logger.info(f"🔄 Callback query received: {update['callback_query']}")
+        callback_data = update['callback_query']['data']
+        user_id_str, is_client = callback_data.split('|')
+        user_id = UUID(user_id_str)
+
+        set_is_client(db, user_id, is_client.lower() == "t")
+
+        telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}/answerCallbackQuery"
+        requests.post(telegram_api_url, json={"callback_query_id": update["callback_query"]["id"], "text": "Odpověď uložena!"})
+
 
     if "message" in update:
         message = update["message"]
@@ -289,21 +297,11 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
 @router.post("/callback")
 async def handle_callback(request: Request, db: Session = Depends(get_db)):
-    body = await request.body()
-    
-    if not body:
-        logger.error("❌ Received empty request body in callback")
-        raise HTTPException(status_code=400, detail="Empty request body")
-
-    try:
-        data = json.loads(body)
-        logger.info(f"📥 Received callback data: {data}")
-    except json.JSONDecodeError:
-        logger.error(f"❌ Invalid JSON received: {body}")
-        raise HTTPException(status_code=400, detail="Invalid JSON format")
+    data = await request.json()
+    logger.info(f"Raw callback data received: {data}")
 
     if "callback_query" not in data or "data" not in data["callback_query"]:
-        logger.error("❌ Invalid callback request format")
+        logger.error("Invalid callback request received")
         raise HTTPException(status_code=400, detail="Invalid callback request")
 
     callback_query = data["callback_query"]
@@ -312,46 +310,38 @@ async def handle_callback(request: Request, db: Session = Depends(get_db)):
     try:
         user_id_str, is_client = callback_data.split("|")
         user_id = UUID(user_id_str)
-        logger.info(f"🔄 Parsed callback data - user_id: {user_id}, is_client: {is_client}")
     except ValueError:
-        logger.error(f"❌ Invalid callback data format: {callback_data}")
+        logger.error(f"Invalid callback data format: {callback_data}")
         raise HTTPException(status_code=400, detail="Invalid callback data format")
 
     user = get_user(db, user_id)
     if not user:
-        logger.error(f"❌ User {user_id} not found")
+        logger.error(f"User {user_id} not found")
         raise HTTPException(status_code=404, detail="User not found")
 
     bot, status = get_bot(db, user.bot_id)
     if status != 200:
-        logger.error(f"❌ Bot {user.bot_id} not found")
+        logger.error(f"Bot {user.bot_id} not found")
         raise HTTPException(status_code=404, detail="Bot not found")
 
     chat_id = callback_query["message"]["chat"]["id"]
-    logger.info(f"💬 Sending response to chat_id: {chat_id}")
 
-    # Uložíme odpověď do databáze
+    # Aktualizace uživatelských dat
     set_is_client(db, user_id, is_client.lower() == "t")
-    logger.info(f"✅ Updated is_client status for user {user_id} to {is_client.lower()}")
 
-    # Odpověď na callback query (aby zmizelo "čekání" v Telegramu)
+    # Odpověď na callback query
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}/answerCallbackQuery"
-    response = requests.post(telegram_api_url, json={
-        "callback_query_id": callback_query["id"],
-        "text": "Odpověď uložena!"
-    })
-    logger.info(f"📤 AnswerCallbackQuery response: {response.status_code}, {response.text}")
+    requests.post(telegram_api_url, json={"callback_query_id": callback_query["id"], "text": "Odpověď uložena!"})
 
-    # Odeslání zprávy uživateli
+    # Poslání zprávy uživateli
     send_message_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}/sendMessage"
     response = requests.post(send_message_url, json={
         "chat_id": chat_id,
         "text": "Děkujeme za odpověď! Vaše volba byla zaznamenána.",
         "parse_mode": "html"
     })
-    logger.info(f"📤 SendMessage response: {response.status_code}, {response.text}")
 
     if response.status_code != 200:
-        logger.error(f"❌ Failed to send message: {response.text}")
+        logger.error(f"Failed to send message: {response.text}")
 
     return {"ok": True}
