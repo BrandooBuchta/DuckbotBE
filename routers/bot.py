@@ -225,8 +225,6 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
-    logger.info(f"📥 Received Telegram webhook update: {update}")
-
     if "callback_query" in update:
         callback_data = update['callback_query']['data']
         user_id_str, is_client = callback_data.split('|')
@@ -234,9 +232,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
         set_is_client(db, user_id, is_client.lower() == "t")
 
-        telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}/answerCallbackQuery"
-        requests.post(telegram_api_url, json={"callback_query_id": update["callback_query"]["id"], "text": "Odpověď uložena!"})
-
+        requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": update["callback_query"]["message"]["chat"]["id"], "text": "Vaše odpověď byla zaznamenána!.", "parse_mode": "html"})
 
     if "message" in update:
         message = update["message"]
