@@ -270,8 +270,9 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 print("chat_id: ", chat_id)
 
         elif user and user.name is None:
-            update_user_name(db, user.id, text.capitalize())
-            personalized_message = bot.welcome_message.replace("{name}", text)
+            user_name = text[0].upper() + text[1:]
+            update_user_name(db, user.id, user_name)
+            personalized_message = bot.welcome_message.replace("{name}", user_name)
             requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, personalized_message), "parse_mode": "html"})
 
         else:
