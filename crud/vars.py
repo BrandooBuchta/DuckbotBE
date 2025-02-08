@@ -86,4 +86,4 @@ def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
     for var in variables:
         message = message.replace(f"{{{var['key']}}}", var["value"] or "neznámá hodnota")
 
-    return message
+    return message.replace("<br>", "\n")
