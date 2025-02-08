@@ -38,7 +38,10 @@ app = FastAPI()
 
 origins = [
     "http://localhost:3000",
-    "https://don-simon-bot-manager-ui.onrender.com"
+    "http://localhost:3001",
+    "http://localhost:3002",
+    "http://localhost:3003",
+    "https://duckbot-ui.vercel.app"
 ]
 
 app.add_middleware(
