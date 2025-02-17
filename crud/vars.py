@@ -3,17 +3,9 @@ from uuid import UUID
 import requests
 from typing import Dict
 import os
-import pymorphy2
 from crud.bot import get_bot
 from crud.user import get_current_user
-
-morph = pymorphy2.MorphAnalyzer(lang='cs')  # Inicializace morfologického analyzátoru
-
-def get_vocative(name: str) -> str:
-    """Převede jméno do 5. pádu (vokativu)"""
-    parsed = morph.parse(name)[0]
-    vocative = parsed.inflect({"voct"})
-    return vocative.word if vocative else name  # Pokud není možné skloňovat, vrátí původní jméno
+from vokativ import sex, vokativ
 
 def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
     SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
@@ -61,10 +53,16 @@ def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
 
     closest_events = get_closest_events()
 
+    def get_user_name(n):
+        if (sex(n) == "w"):
+            return vokativ(n, woman=True)
+
+        return vokativ(n, woman=False) 
+
     variables = [
         {
             "key": "name",
-            "value": get_vocative(user.name) if user and user.name else "uživateli"
+            "value": get_user_name(user.name) if user and user.name else "uživateli"
         },
         {
             "key": "botName",
