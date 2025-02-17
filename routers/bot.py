@@ -240,6 +240,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
     if "message" in update:
         message = update["message"]
         name = message["chat"]["first_name"]
+        print("name: ", name)
         from_id = message["from"]["id"]
         chat_id = message["chat"]["id"]
         text = message.get("text", "").strip().lower()
