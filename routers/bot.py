@@ -7,7 +7,7 @@ from database import SessionLocal
 from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage, PlainBot
 from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot, get_plain_bot
 from crud.faq import get_all_formated_faqs
-from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link, get_user, set_is_client
+from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link, get_user, set_is_client, create_user
 from crud.vars import replace_variables
 from crud.links import get_all_links, update_link
 from schemas.user import UserCreate
@@ -240,7 +240,6 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
     if "message" in update:
         message = update["message"]
         name = message["chat"]["first_name"]
-        print("message: ", message)
         from_id = message["from"]["id"]
         chat_id = message["chat"]["id"]
         text = message.get("text", "").strip().lower()
@@ -249,7 +248,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
         if text == "/start":
             if not user:
-                user = create_or_update_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id, name=name))
+                user = create_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id, name=name))
                 assing_academy_link(db, bot_id, user.id)
             response = requests.post(f"{telegram_api_url}/sendMessage", json={
                 "chat_id": chat_id,
