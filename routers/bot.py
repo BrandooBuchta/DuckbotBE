@@ -257,36 +257,6 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 "parse_mode": "html"
             })
 
-        # if text == "/start":
-        #     if not user:
-        #         user = create_or_update_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id))
-        #         assing_academy_link(db, bot_id, user.id)
-        #         print("creating new user and assigning link")
-        #         response = requests.post(f"{telegram_api_url}/sendMessage", json={
-        #             "chat_id": chat_id,
-        #             "text": replace_variables(db, bot_id, chat_id, bot.start_message),
-        #             "parse_mode": "html"
-        #         })
-
-        #         if response.status_code != 200:
-        #             print(f"Failed to send message: {response.text}")
-        #         print("bot.start_message: ", bot.start_message)
-        #         print("chat_id: ", chat_id)
-        #     else:
-        #         personalized_message = replace_variables(db, bot_id, chat_id, bot.welcome_message)
-        #         response = requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, personalized_message), "parse_mode": "html"})
-
-        #         if response.status_code != 200:
-        #             print(f"Failed to send message: {response.text}")
-        #         print("bot.start_message: ", bot.start_message)
-        #         print("chat_id: ", chat_id)
-
-        elif user and user.name is None:
-            user_name = " ".join(word.capitalize() for word in text.split())
-            update_user_name(db, user.id, user_name)
-            personalized_message = bot.welcome_message.replace("{name}", user_name)
-            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, personalized_message), "parse_mode": "html"})
-
         else:
             if text == "/help":
                 print(f"chat_id of {bot_id}: ", chat_id)

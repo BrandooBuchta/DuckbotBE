@@ -28,6 +28,8 @@ def create_or_update_user(db: Session, user: UserCreate):
     return db_user
 
 def create_user(db: Session, user: UserCreate):
+    user_name = " ".join(user.name.capitalize() for user.name in text.split())
+
     db_user = User(
         id=uuid4(), 
         from_id=user.from_id, 
@@ -35,7 +37,7 @@ def create_user(db: Session, user: UserCreate):
         bot_id=user.bot_id,
         is_client=user.is_client,
         academy_link=None,
-        name=user.name
+        name=user_name
     )
     db.add(db_user)
     db.commit()
