@@ -2,6 +2,7 @@ fastapi
 sqlalchemy
 python-dotenv
 psycopg2-binary
+pymorphy2
 uvicorn
 requests
 passlib
