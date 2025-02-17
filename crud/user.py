@@ -27,6 +27,28 @@ def create_or_update_user(db: Session, user: UserCreate):
     db.refresh(db_user)
     return db_user
 
+def create_user(db: Session, user: UserCreate):
+    db_user = db.query(User).filter(User.chat_id == user.chat_id, User.bot_id == user.bot_id).first()
+    if db_user:
+        db_user.chat_id = user.chat_id
+        if user.name is not None:
+            db_user.name = user.name
+    else:
+        db_user = User(
+
+            id=uuid4(), 
+            from_id=user.from_id, 
+            chat_id=user.chat_id, 
+            bot_id=user.bot_id,
+            is_client=user.is_client,
+            academy_link=None,
+            name=None
+        )
+        db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
 def update_user_name(db: Session, user_id: UUID, name: str):
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user:

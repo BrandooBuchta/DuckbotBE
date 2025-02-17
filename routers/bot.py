@@ -239,6 +239,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         
     if "message" in update:
         message = update["message"]
+        name = message["chat"]["first_name"]
         print("message: ", message)
         from_id = message["from"]["id"]
         chat_id = message["chat"]["id"]
@@ -248,27 +249,37 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
         if text == "/start":
             if not user:
-                user = create_or_update_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id))
+                user = create_or_update_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id, name=name))
                 assing_academy_link(db, bot_id, user.id)
-                print("creating new user and assigning link")
-                response = requests.post(f"{telegram_api_url}/sendMessage", json={
-                    "chat_id": chat_id,
-                    "text": replace_variables(db, bot_id, chat_id, bot.start_message),
-                    "parse_mode": "html"
-                })
+            response = requests.post(f"{telegram_api_url}/sendMessage", json={
+                "chat_id": chat_id,
+                "text": replace_variables(db, bot_id, chat_id, bot.start_message),
+                "parse_mode": "html"
+            })
 
-                if response.status_code != 200:
-                    print(f"Failed to send message: {response.text}")
-                print("bot.start_message: ", bot.start_message)
-                print("chat_id: ", chat_id)
-            else:
-                personalized_message = replace_variables(db, bot_id, chat_id, bot.welcome_message)
-                response = requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, personalized_message), "parse_mode": "html"})
+        # if text == "/start":
+        #     if not user:
+        #         user = create_or_update_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id))
+        #         assing_academy_link(db, bot_id, user.id)
+        #         print("creating new user and assigning link")
+        #         response = requests.post(f"{telegram_api_url}/sendMessage", json={
+        #             "chat_id": chat_id,
+        #             "text": replace_variables(db, bot_id, chat_id, bot.start_message),
+        #             "parse_mode": "html"
+        #         })
 
-                if response.status_code != 200:
-                    print(f"Failed to send message: {response.text}")
-                print("bot.start_message: ", bot.start_message)
-                print("chat_id: ", chat_id)
+        #         if response.status_code != 200:
+        #             print(f"Failed to send message: {response.text}")
+        #         print("bot.start_message: ", bot.start_message)
+        #         print("chat_id: ", chat_id)
+        #     else:
+        #         personalized_message = replace_variables(db, bot_id, chat_id, bot.welcome_message)
+        #         response = requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, personalized_message), "parse_mode": "html"})
+
+        #         if response.status_code != 200:
+        #             print(f"Failed to send message: {response.text}")
+        #         print("bot.start_message: ", bot.start_message)
+        #         print("chat_id: ", chat_id)
 
         elif user and user.name is None:
             user_name = " ".join(word.capitalize() for word in text.split())
