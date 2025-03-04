@@ -113,7 +113,7 @@ def update_users_level(db: Session, user_id: UUID, level: int):
     return db_user
 
 def send_message_to_user(db: Session, user: UserBase):
-    bot = get_bot(db, user.bot_id)
+    bot, status = get_bot(db, user.bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
     url = f"{telegram_api_url}/sendMessage"
 
