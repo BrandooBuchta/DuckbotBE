@@ -124,28 +124,27 @@ def send_message_to_user(db: Session, user: UserBase):
     messages = get_messages(user.client_level)
     message = next((e for e in messages if e["id"] == user.next_message_id or 0), None)
 
-    print(f"message: {message}\n\n\n")
+    if message is None:
+        print("No message found for this user.")
+        return
 
-    if not user:
-        print("user not found ")
-    
     data = {
         "chat_id": user.chat_id,
-        "text": replace_variables(db, user.bot_id, user.chat_id, message.content),
+        "text": replace_variables(db, user.bot_id, user.chat_id, message["content"]),
         "parse_mode": "html"
     }
-    
-    if message.level_up_question:
+
+    if "level_up_question" in message and message["level_up_question"]:
         data["reply_markup"] = {
             "inline_keyboard": [[
                 {"text": "ANO", "callback_data": f"{user.id}|t"},
                 {"text": "NE", "callback_data": f"{user.id}|f"},
             ]]
-        }
-    
+    }
+
     response = requests.post(url, json=data)
     print(f"response: {response}\n\n\n")
 
     response.raise_for_status()
 
-    update_users_position(db, user.id, message.next_message_send_after, message.next_message_id)
+    update_users_position(db, user.id, message["next_message_send_after"], message["next_message_id"])
