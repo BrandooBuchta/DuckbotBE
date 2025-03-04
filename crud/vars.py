@@ -4,7 +4,6 @@ import requests
 from typing import Dict
 import os
 from crud.bot import get_bot
-from crud.user import get_current_user
 from vokativ import sex, vokativ
 
 def get_user_name(n):
@@ -17,7 +16,7 @@ def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
     SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
     
     bot, status = get_bot(db, bot_id)
-    user = get_current_user(db, chat_id, bot_id)
+    user = db.query(User).filter(User.chat_id == chat_id, User.bot_id == bot_id).first()
 
     if not user:
         print(f"User not found for chat_id: {chat_id}, bot_id: {bot_id}")
