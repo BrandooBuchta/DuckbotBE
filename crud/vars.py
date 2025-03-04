@@ -5,7 +5,7 @@ from typing import Dict
 import os
 from crud.bot import get_bot
 from vokativ import sex, vokativ
-from schemas import User
+from models.user import User
 
 def get_user_name(n):
     if (sex(n) == "w"):
