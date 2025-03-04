@@ -112,7 +112,6 @@ def create_sequence(db: Session, bot_id: UUID):
 
     return 200
 
-
 def delete_sequence(db: Session, sequence_id: UUID):
     db_sequence, status = get_sequence(db, sequence_id)
     if db_sequence:
