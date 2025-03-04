@@ -15,7 +15,7 @@ class User(Base):
     from_id = Column(BigInteger, nullable=False)
     chat_id = Column(BigInteger, nullable=False)
     client_level = Column(Integer, default=0)
-    send_message_at = Column(DateTime(timezone=True), server_default=func.now())
+    send_message_at = Column(DateTime(timezone=True), nullable=True)
     next_message_id = Column(Integer, default=0)
     academy_link = Column(String, nullable=True)
     name = Column(String, nullable=True)

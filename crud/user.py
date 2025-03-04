@@ -36,7 +36,9 @@ def create_user(db: Session, user: UserCreate):
         from_id=user.from_id, 
         chat_id=user.chat_id, 
         bot_id=user.bot_id,
-        client_level=user.client_level,
+        client_level=0,    
+        send_message_at=None,
+        next_message_id=0,
         academy_link=None,
         name=user.name[0].upper() + user.name[1:] if user.name else None
     )
