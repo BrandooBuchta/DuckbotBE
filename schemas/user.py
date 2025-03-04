@@ -17,8 +17,8 @@ class UserBase(BaseModel):
     from_id: int
     chat_id: int
     client_level: int = 0
-    send_message_at: datetime
-    next_message_id: int
+    send_message_at: Optional[datetime] = None
+    next_message_id: Optional[int] = 0
     academy_link: str
     name: Optional[str] = None
 

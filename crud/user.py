@@ -122,7 +122,7 @@ def send_message_to_user(db: Session, user: UserBase):
     url = f"{telegram_api_url}/sendMessage"
 
     messages = get_messages(user.client_level)
-    message = next((e for e in messages if e["id"] == user["next_message_id"]), None)
+    message = next((e for e in messages if e["id"] == user.next_message_id or 0), None)
 
     print(f"message: {message}\n\n\n")
 
