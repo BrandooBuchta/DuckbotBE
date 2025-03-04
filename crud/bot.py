@@ -39,9 +39,6 @@ def get_plain_bot(db: Session, bot_id: UUID):
         return None, 404
     return PlainBot(
         name=db_bot.name,
-        welcome_message=db_bot.welcome_message,
-        start_message=db_bot.start_message,
-        help_message=db_bot.help_message,
         support_contact=db_bot.support_contact,
     ), 200
 
@@ -53,11 +50,8 @@ def sign_up(db: Session, bot: SignUp):
         id=uuid.uuid4(),
         email=bot.email,
         password=hashed_password,
-        welcome_message="Vítej, {name}",
         devs_currently_assigned=0,
         devs_share=10,
-        start_message="Ahoj já jsem {botName} a jak mám říkat tobě?",
-        help_message="Help message; {supportContact}",
 
         token=b64encode(bot.token.encode()).decode(),
     )
@@ -80,9 +74,6 @@ def sign_in(db: Session, sign_in: SignIn):
         id=db_bot.id,
         name=db_bot.name,
         email=db_bot.email,
-        welcome_message=db_bot.welcome_message,
-        start_message=db_bot.start_message,
-        help_message=db_bot.help_message,
         support_contact=db_bot.support_contact,
     )
 

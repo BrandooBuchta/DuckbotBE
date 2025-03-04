@@ -9,11 +9,8 @@ class BaseBot(BaseModel):
     id: UUID
     name: Optional[str] = None
     email: Optional[str] = None
-    welcome_message: Optional[str] = None
     devs_currently_assigned: Optional[int] = 0
     share: Optional[int] = 5
-    start_message: Optional[str] = None
-    help_message: Optional[str] = None
     support_contact: Optional[str] = None
 
     class Config:
@@ -41,11 +38,8 @@ class SignInResponse(BaseModel):
 
 class UpdateBot(BaseModel):
     name: Optional[str] = None
-    welcome_message: Optional[str] = None
     devs_currently_assigned: Optional[int] = None
     devs_share: Optional[int] = None
-    start_message: Optional[str] = None
-    help_message: Optional[str] = None
     support_contact: Optional[str] = None
 
     class Config:
@@ -53,9 +47,6 @@ class UpdateBot(BaseModel):
 
 class PlainBot(BaseModel):
     name: str
-    welcome_message: str
-    start_message: str
-    help_message: str
     support_contact: str
 
     class Config:
