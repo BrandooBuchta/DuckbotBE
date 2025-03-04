@@ -6,6 +6,7 @@ from schemas.user import UserCreate
 from uuid import UUID, uuid4
 from typing import List
 from datetime import datetime, timedelta
+from crud.bot import get_bot
 
 def create_or_update_user(db: Session, user: UserCreate):
     db_user = db.query(User).filter(User.chat_id == user.chat_id, User.bot_id == user.bot_id).first()
@@ -107,3 +108,32 @@ def update_users_level(db: Session, user_id: UUID, level: int):
         db.commit()
         db.refresh(db_user)
     return db_user
+
+def send_message_to_user(db: Session, user: UserBase):
+    bot = get_bot(db, user.bot_id)
+    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
+    url = f"{telegram_api_url}/sendMessage"
+
+    message = get_next_message(user.next_message_id, user.client_level)
+
+    if not user:
+        print("user not found ")
+    
+    data = {
+        "chat_id": user.chat_id,
+        "text": replace_variables(db, user.bot_id, user.chat_id, message.content),
+        "parse_mode": "html"
+    }
+    
+    if message.level_up_question:
+        data["reply_markup"] = {
+            "inline_keyboard": [[
+                {"text": "ANO", "callback_data": f"{user.id}|t"},
+                {"text": "NE", "callback_data": f"{user.id}|f"},
+            ]]
+        }
+    
+    response = requests.post(url, json=data)
+    response.raise_for_status()
+
+    update_users_position(db, user.id, message.next_message_send_after, next_message_send_after.next_message_id)

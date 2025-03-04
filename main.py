@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base, SessionLocal
 from schemas.user import UserCreate, UserBase
-from crud.user import get_audience, update_user_name, get_current_user, get_users_in_queue, update_users_position
+from crud.user import get_audience, update_user_name, get_current_user, get_users_in_queue, update_users_position, send_message_to_user
 import os
 import requests
 from dotenv import load_dotenv
@@ -168,34 +168,6 @@ def send_sequence_to_user(db: Session, bot_id: UUID, chat_id: int, message: str,
     
     response = requests.post(url, json=data)
     response.raise_for_status()
-
-def send_message_to_user(db: Session, user: UserBase):
-    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
-    url = f"{telegram_api_url}/sendMessage"
-
-    message = get_next_message(user.next_message_id, user.client_level)
-
-    if not user:
-        print("user not found ")
-    
-    data = {
-        "chat_id": user.chat_id,
-        "text": replace_variables(db, user.bot_id, user.chat_id, message.content),
-        "parse_mode": "html"
-    }
-    
-    if message.level_up_question:
-        data["reply_markup"] = {
-            "inline_keyboard": [[
-                {"text": "ANO", "callback_data": f"{user.id}|t"},
-                {"text": "NE", "callback_data": f"{user.id}|f"},
-            ]]
-        }
-    
-    response = requests.post(url, json=data)
-    response.raise_for_status()
-
-    update_users_position(db, user.id, message.next_message_send_after, next_message_send_after.next_message_id)
 
 # Scheduler function
 def sequence_service():

@@ -7,7 +7,7 @@ from database import SessionLocal
 from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, PlainBot
 from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot, get_plain_bot
 from crud.faq import get_all_formated_faqs
-from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link, get_user, update_users_position, create_user, update_users_level
+from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link, get_user, update_users_position, create_user, update_users_level, send_message_to_user
 from crud.vars import replace_variables
 from crud.links import get_all_links, update_link
 from schemas.user import UserCreate
@@ -23,7 +23,6 @@ import requests
 from uuid import UUID
 import random
 import logging
-from main import send_message_to_user
 
 load_dotenv()
 
