@@ -116,18 +116,20 @@ def update_users_level(db: Session, user_id: UUID, level: int):
     return db_user
 
 def send_message_to_user(db: Session, user: UserBase):
-    print(f"starting sending message\n")
+    print(f"Starting sending message for user {user.chat_id}\n")
 
     bot, status = get_bot(db, user.bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
     url = f"{telegram_api_url}/sendMessage"
 
     messages = get_messages(user.client_level)
-    message = next((e for e in messages if e["id"] == user.next_message_id or 0), None)
+    message = next((e for e in messages if e["id"] == user.next_message_id), None)
 
     if message is None:
-        print("No message found for this user.")
+        print(f"No message found for user {user.chat_id}.")
         return
+
+    print(f"Message found: {message}")
 
     data = {
         "chat_id": user.chat_id,
@@ -135,17 +137,22 @@ def send_message_to_user(db: Session, user: UserBase):
         "parse_mode": "html"
     }
 
-    if "level_up_question" in message and message["level_up_question"]:
+    if message.get("level_up_question"):  # Použití .get() zabrání KeyError
         data["reply_markup"] = {
             "inline_keyboard": [[
                 {"text": "ANO", "callback_data": f"{user.id}|t"},
                 {"text": "NE", "callback_data": f"{user.id}|f"},
             ]]
-    }
+        }
+
+    print(f"Telegram API URL: {url}")
+    print(f"Data being sent: {data}")
 
     response = requests.post(url, json=data)
-    print(f"response: {response}\n\n\n")
+    
+    print(f"Response status code: {response.status_code}")
+    print(f"Response JSON: {response.text}")
 
-    response.raise_for_status()
+    response.raise_for_status()  # Vyvolá výjimku, pokud request selže
 
     update_users_position(db, user.id, message["next_message_send_after"], message["next_message_id"])
