@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from crud.bot import get_bot
 from base64 import b64decode
 from utils.messages import get_next_message
+from crud.vars import replace_variables
 
 def create_or_update_user(db: Session, user: UserCreate):
     db_user = db.query(User).filter(User.chat_id == user.chat_id, User.bot_id == user.bot_id).first()
