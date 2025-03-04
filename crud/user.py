@@ -8,7 +8,7 @@ from typing import List
 from datetime import datetime, timedelta
 from crud.bot import get_bot
 from base64 import b64decode
-from utils.messages import get_next_message
+from utils.messages import get_messages
 from crud.vars import replace_variables
 
 def create_or_update_user(db: Session, user: UserCreate):
@@ -121,7 +121,9 @@ def send_message_to_user(db: Session, user: UserBase):
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
     url = f"{telegram_api_url}/sendMessage"
 
-    message = get_next_message(user.next_message_id, user.client_level)
+    messages = get_messages(user.client_level)
+    message = next((e for e in messages if e["id"] == user["next_message_id"]), None)
+
     print(f"message: {message}\n\n\n")
 
     if not user:
@@ -146,4 +148,4 @@ def send_message_to_user(db: Session, user: UserBase):
 
     response.raise_for_status()
 
-    update_users_position(db, user.id, message.next_message_send_after, next_message_send_after.next_message_id)
+    update_users_position(db, user.id, message.next_message_send_after, message.next_message_id)
