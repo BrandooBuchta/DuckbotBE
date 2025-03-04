@@ -2,7 +2,7 @@
 
 from sqlalchemy.orm import Session
 from models.user import User
-from schemas.user import UserCreate
+from schemas.user import UserCreate, UserBase
 from uuid import UUID, uuid4
 from typing import List
 from datetime import datetime, timedelta
