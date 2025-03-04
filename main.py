@@ -4,8 +4,8 @@ from fastapi import FastAPI, Depends, Request
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base, SessionLocal
-from schemas.user import UserCreate
-from crud.user import get_audience, update_user_name, get_current_user
+from schemas.user import UserCreate, UserBase
+from crud.user import get_audience, update_user_name, get_current_user, get_users_in_queue, update_users_position
 import os
 import requests
 from dotenv import load_dotenv
@@ -25,6 +25,7 @@ from pytz import timezone
 from uuid import UUID
 import uvicorn
 from base64 import b64decode
+from utils.messages import get_next_message
 
 load_dotenv()
 
@@ -101,6 +102,12 @@ app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy 
 app.include_router(faq_router, prefix="/api/bot/faq", tags=["FAQ"])
 app.include_router(sequence_router, prefix="/api/bot/sequence", tags=["Sequences"])
 
+def process_customers_trace(db: Session):
+    users = get_users_in_queue(db)
+
+    for user in users:
+        send_message_to_user(db, user)
+
 def processs_sequences(db: Session):
     logger.info("Starting to process sequences...")
     
@@ -114,7 +121,7 @@ def processs_sequences(db: Session):
     for sequence in sequences:
         logger.info(f"Processing sequence ID: {sequence.id}")
         
-        users = get_audience(db, sequence.bot_id, sequence.for_client, sequence.for_new_client)
+        users = get_audience(db, sequence.bot_id, sequence.audience)
         logger.info(f"Found users: {users} for bot ID: {sequence.bot_id}")
 
         if not users:
@@ -123,7 +130,7 @@ def processs_sequences(db: Session):
 
         for user in users:
             logger.info(f"Sending message to user {user.chat_id}")
-            send_message_to_user(db, sequence.bot_id, user.chat_id, sequence.message, sequence.check_status)
+            send_sequence_to_user(db, sequence.bot_id, user.chat_id, sequence.message, sequence.check_status)
 
         if sequence.repeat:
             if sequence.interval:
@@ -133,7 +140,7 @@ def processs_sequences(db: Session):
         else:
             update_sequence(db, sequence.id, {"send_at": None, "starts_at": None, "send_immediately": False, "is_active": True})
 
-def send_message_to_user(db: Session, bot_id: UUID, chat_id: int, message: str, check_status: bool):
+def send_sequence_to_user(db: Session, bot_id: UUID, chat_id: int, message: str, check_status: bool):
     bot, status = get_bot(db, bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
     url = f"{telegram_api_url}/sendMessage"
@@ -156,10 +163,39 @@ def send_message_to_user(db: Session, bot_id: UUID, chat_id: int, message: str, 
                 {"text": "NE", "callback_data": f"{user.id}|f"},
             ]]
         }
+
+    
     
     response = requests.post(url, json=data)
     response.raise_for_status()
 
+def send_message_to_user(db: Session, user: UserBase):
+    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
+    url = f"{telegram_api_url}/sendMessage"
+
+    message = get_next_message(user.next_message_id, user.client_level)
+
+    if not user:
+        print("user not found ")
+    
+    data = {
+        "chat_id": user.chat_id,
+        "text": replace_variables(db, user.bot_id, user.chat_id, message.content),
+        "parse_mode": "html"
+    }
+    
+    if message.level_up_question:
+        data["reply_markup"] = {
+            "inline_keyboard": [[
+                {"text": "ANO", "callback_data": f"{user.id}|t"},
+                {"text": "NE", "callback_data": f"{user.id}|f"},
+            ]]
+        }
+    
+    response = requests.post(url, json=data)
+    response.raise_for_status()
+
+    update_users_position(db, user.id, message.next_message_send_after, next_message_send_after.next_message_id)
 
 # Scheduler function
 def sequence_service():

@@ -1,0 +1,39 @@
+{
+    "messages": [
+        {
+            "content": "discord + welcome",
+            "id": 0,
+            "next_message_send_after": 2, 
+            "next_message_id": 1,
+            "level_up_question": false
+        },
+        {
+            "content": "call 1",
+            "id": 1,
+            "next_message_send_after": 0, 
+            "next_message_id": 2,
+            "level_up_question": false
+        },
+        {
+            "content": "call 2",
+            "id": 2,
+            "next_message_send_after": 0, 
+            "next_message_id": 3,
+            "level_up_question": false
+        },
+        {
+            "content": "call 3",
+            "id": 3,
+            "next_message_send_after": 0, 
+            "next_message_id": 4,
+            "level_up_question": false
+        },
+        {
+            "content": "level up",
+            "id": 4,
+            "next_message_send_after": 0, 
+            "next_message_id": 5,
+            "level_up_question": true
+        }
+    ]
+}

@@ -1,0 +1,67 @@
+{
+    "messages": [
+        {
+            "content": "success story",
+            "id": 0,
+            "next_message_send_after": 2, 
+            "next_message_id": 1,
+            "level_up_question": false
+        },
+        {
+            "content": "welcome message + online webinar",
+            "id": 1,
+            "next_message_send_after": 2, 
+            "next_message_id": 2,
+            "level_up_question": false
+        },
+        {
+            "content": "academy link",
+            "id": 2,
+            "next_message_send_after": 2, 
+            "next_message_id": 3,
+            "level_up_question": false
+        },
+        {
+            "content": "level up message",
+            "id": 3,
+            "next_message_send_after": 2, 
+            "next_message_id": 0,
+            "level_up_question": true
+        },
+        {
+            "content": "Ještě jsi se nepodíval? Tady máme odkaz na live webinář!",
+            "id": 4,
+            "next_message_send_after": 0, 
+            "next_message_id": 5,
+            "level_up_question": false
+        },
+        {
+            "content": "Odkaz na webinář 2! v 9 hodin ráno v den webináře",
+            "id": 5,
+            "next_message_send_after": 540, 
+            "next_message_id": 6,
+            "level_up_question": false
+        },
+        {
+            "content": "Odkaz na webinář 3! začínáme",
+            "id": 6,
+            "next_message_send_after": 30, 
+            "next_message_id": 7,
+            "level_up_question": false
+        },
+        {
+            "content": "Academy link",
+            "id": 7,
+            "next_message_send_after": 60, 
+            "next_message_id": 8,
+            "level_up_question": false
+        },
+        {
+            "content": "level up message",
+            "id": 8,
+            "next_message_send_after": 720, 
+            "next_message_id": 0,
+            "level_up_question": true
+        }
+    ]
+}

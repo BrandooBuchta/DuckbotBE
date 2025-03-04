@@ -61,13 +61,6 @@ class PlainBot(BaseModel):
     class Config:
         form_attributes = True
 
-class SendMessage(BaseModel):
-    message: str
-    follow_up_message: Optional[str] = None
-    send_after: Optional[float] = None
-    for_new_client: bool
-    for_client: bool
-
 class UpdateSequence(BaseModel):
     name: Optional[str] = None
     message: Optional[str] = None
@@ -78,8 +71,7 @@ class UpdateSequence(BaseModel):
     interval: Optional[int] = None
     position: Optional[int] = None
     repeat: Optional[bool] = None
-    for_client: Optional[bool] = None
-    for_new_client: Optional[bool] = None
+    levels: List[int] = []
     is_active: Optional[bool] = None
     check_status: Optional[bool] = None
 
@@ -94,7 +86,6 @@ class ReadSequence(BaseModel):
     send_immediately: bool
     interval: Optional[int]
     repeat: bool
-    for_client: bool
-    for_new_client: bool
+    levels: List[int] = []
     is_active: bool
     check_status: bool

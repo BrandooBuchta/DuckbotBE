@@ -89,8 +89,8 @@ def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
             "value": closest_events["opportunity_call"]
         },
         {
-            "key": "academyLink",
-            "value": user.academy_link
+            "key": "network",
+            "value": "https://discord.gg/U5NtgQjg53"
         },
     ]
 

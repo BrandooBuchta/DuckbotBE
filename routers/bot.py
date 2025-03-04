@@ -4,10 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, SendMessage, PlainBot
+from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, PlainBot
 from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot, get_plain_bot
 from crud.faq import get_all_formated_faqs
-from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link, get_user, set_is_client, create_user
+from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link, get_user, update_users_position, create_user, update_users_level
 from crud.vars import replace_variables
 from crud.links import get_all_links, update_link
 from schemas.user import UserCreate
@@ -23,6 +23,7 @@ import requests
 from uuid import UUID
 import random
 import logging
+from main import send_message_to_user
 
 load_dotenv()
 
@@ -227,16 +228,13 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
     if "callback_query" in update:
         callback_data = update['callback_query']['data']
-        user_id_str, is_client = callback_data.split('|')
+        user_id_str, client_level_str = callback_data.split('|')
         user_id = UUID(user_id_str)
+        updated_level = int(client_level_str) + 1
 
-        set_is_client(db, user_id, is_client.lower() == "t")
+        # TODO: Test if it's not gonna be necessary to send the first messages directly
+        update_users_level(db, user_id, updated_level)
 
-        if (is_client == "t"):
-            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": update["callback_query"]["message"]["chat"]["id"], "text": f"<strong>Děkuju, nyní už vím že jsi součástí projektu a budu s tebou tak i nadále pracovat.</strong>", "parse_mode": "html"})
-        else:
-            requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": update["callback_query"]["message"]["chat"]["id"], "text": f"<strong>Děkuju, nyní už vím že ještě nejsi součástí projektu a budu s tebou tak i nadále pracovat ;)</strong>", "parse_mode": "html"})
-        
     if "message" in update:
         message = update["message"]
         name = message["chat"]["first_name"]
@@ -251,15 +249,13 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
             if not user:
                 user = create_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id, name=name))
                 assing_academy_link(db, bot_id, user.id)
-            response = requests.post(f"{telegram_api_url}/sendMessage", json={
-                "chat_id": chat_id,
-                "text": replace_variables(db, bot_id, chat_id, bot.start_message),
-                "parse_mode": "html"
-            })
+                send_message_to_user(db, user)
 
         else:
             if text == "/help":
                 print(f"chat_id of {bot_id}: ", chat_id)
+                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, bot.help_message), "parse_mode": "html"})
+            elif text == "/network":
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, bot.help_message), "parse_mode": "html"})
             elif text == "/faq":
                 faqs, status = get_all_formated_faqs(db, bot_id)
@@ -280,56 +276,5 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                     requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Nepodařilo se načíst události.", "parse_mode": "html"})
             else:
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Neznámý příkaz. Použijte /help pro nápovědu.", "parse_mode": "html"})
-
-    return {"ok": True}
-
-@router.post("/callback")
-async def handle_callback(request: Request, db: Session = Depends(get_db)):
-    data = await request.json()
-    logger.info(f"Raw callback data received: {data}")
-
-    if "callback_query" not in data or "data" not in data["callback_query"]:
-        logger.error("Invalid callback request received")
-        raise HTTPException(status_code=400, detail="Invalid callback request")
-
-    callback_query = data["callback_query"]
-    callback_data = callback_query["data"]
-
-    try:
-        user_id_str, is_client = callback_data.split("|")
-        user_id = UUID(user_id_str)
-    except ValueError:
-        logger.error(f"Invalid callback data format: {callback_data}")
-        raise HTTPException(status_code=400, detail="Invalid callback data format")
-
-    user = get_user(db, user_id)
-    if not user:
-        logger.error(f"User {user_id} not found")
-        raise HTTPException(status_code=404, detail="User not found")
-
-    bot, status = get_bot(db, user.bot_id)
-    if status != 200:
-        logger.error(f"Bot {user.bot_id} not found")
-        raise HTTPException(status_code=404, detail="Bot not found")
-
-    chat_id = callback_query["message"]["chat"]["id"]
-
-    # Aktualizace uživatelských dat
-    set_is_client(db, user_id, is_client.lower() == "t")
-
-    # Odpověď na callback query
-    telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}/answerCallbackQuery"
-    requests.post(telegram_api_url, json={"callback_query_id": callback_query["id"], "text": "Odpověď uložena!"})
-
-    # Poslání zprávy uživateli
-    send_message_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}/sendMessage"
-    response = requests.post(send_message_url, json={
-        "chat_id": chat_id,
-        "text": "Děkujeme za odpověď! Vaše volba byla zaznamenána.",
-        "parse_mode": "html"
-    })
-
-    if response.status_code != 200:
-        logger.error(f"Failed to send message: {response.text}")
 
     return {"ok": True}
