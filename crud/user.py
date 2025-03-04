@@ -95,7 +95,7 @@ def update_users_position(db: Session, user_id: UUID, next_message_send_after: i
 
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user:
-        db_user.message_id = next_message_id
+        db_user.next_message_id = next_message_id
         db_user.send_message_at = now + timedelta(minutes=next_message_send_after)
 
         db.commit()
