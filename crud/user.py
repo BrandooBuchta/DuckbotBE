@@ -7,6 +7,7 @@ from uuid import UUID, uuid4
 from typing import List
 from datetime import datetime, timedelta
 from crud.bot import get_bot
+from base64 import b64decode
 
 def create_or_update_user(db: Session, user: UserCreate):
     db_user = db.query(User).filter(User.chat_id == user.chat_id, User.bot_id == user.bot_id).first()
@@ -117,6 +118,7 @@ def send_message_to_user(db: Session, user: UserBase):
     url = f"{telegram_api_url}/sendMessage"
 
     message = get_next_message(user.next_message_id, user.client_level)
+    print(f"message: {message}\n\n\n")
 
     if not user:
         print("user not found ")
@@ -136,6 +138,8 @@ def send_message_to_user(db: Session, user: UserBase):
         }
     
     response = requests.post(url, json=data)
+    print(f"response: {response}\n\n\n")
+
     response.raise_for_status()
 
     update_users_position(db, user.id, message.next_message_send_after, next_message_send_after.next_message_id)
