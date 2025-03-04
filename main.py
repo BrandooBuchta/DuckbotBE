@@ -25,7 +25,6 @@ from pytz import timezone
 from uuid import UUID
 import uvicorn
 from base64 import b64decode
-from utils.messages import get_next_message
 
 load_dotenv()
 
