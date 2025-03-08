@@ -102,12 +102,12 @@ def update_users_position(db: Session, user_id: UUID, next_message_send_after: i
         db.refresh(db_user)
     return db_user
 
-def update_users_level(db: Session, user_id: UUID, level: int):
+def update_users_level(db: Session, user_id: UUID):
     now = datetime.now()
 
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user:
-        db_user.client_level = level
+        db_user.client_level = db_user.client_level + 1
         db_user.message_id = 0
         db_user.send_message_at = now
 

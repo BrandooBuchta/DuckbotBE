@@ -227,12 +227,11 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
     if "callback_query" in update:
         callback_data = update['callback_query']['data']
-        user_id_str, client_level_str = callback_data.split('|')
+        user_id_str, user_res = callback_data.split('|')
         user_id = UUID(user_id_str)
-        updated_level = int(client_level_str) + 1
 
-        # TODO: Test if it's not gonna be necessary to send the first messages directly
-        update_users_level(db, user_id, updated_level)
+        if user_res == "t":
+            update_users_level(db, user_id)
 
     if "message" in update:
         message = update["message"]
