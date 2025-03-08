@@ -113,6 +113,8 @@ def update_users_level(db: Session, user_id: UUID):
 
         db.commit()
         db.refresh(db_user)
+
+    send_message_to_user(db, db_user)
     return db_user
 
 def send_message_to_user(db: Session, user: UserBase):
