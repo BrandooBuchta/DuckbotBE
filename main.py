@@ -104,6 +104,7 @@ app.include_router(sequence_router, prefix="/api/bot/sequence", tags=["Sequences
 
 def process_customers_trace(db: Session):
     users = get_users_in_queue(db)
+    print("users: ", users)
 
     for user in users:
         send_message_to_user(db, user)
