@@ -108,7 +108,7 @@ def update_users_level(db: Session, user_id: UUID):
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user:
         db_user.client_level = db_user.client_level + 1
-        db_user.message_id = 0
+        db_user.next_message_id = 0
         db_user.send_message_at = now
 
         db.commit()

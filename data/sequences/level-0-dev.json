@@ -24,8 +24,8 @@
         {
             "content": "level up message",
             "id": 3,
-            "next_message_send_after": 2, 
-            "next_message_id": 20000,
+            "next_message_send_after": 20000, 
+            "next_message_id": 4,
             "level_up_question": true
         },
         {
