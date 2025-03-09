@@ -4,7 +4,7 @@ import os
 import requests
 import logging
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)  # Změněno na DEBUG pro lepší logy
 logger = logging.getLogger(__name__)
 
 def get_event_date(event_name: str) -> Optional[datetime]:
@@ -25,20 +25,27 @@ def get_event_date(event_name: str) -> Optional[datetime]:
     events = response.json()
     now_timestamp = datetime.utcnow().timestamp()
 
-    # Filtrujeme eventy podle názvu a hledáme nejbližší budoucí
+    logger.debug(f"Fetched {len(events)} events from API.")
+
+    # Opravená filtrace - bereme i český i anglický název eventu
     future_events = [
         event for event in events
-        if event_name.lower() in event.get("title", {}).get("en", "").lower()
-        and event.get("timestamp") > now_timestamp
+        if (
+            event_name.lower() in event.get("title", {}).get("en", "").lower()
+            or event_name.lower() in event.get("title", {}).get("cs", "").lower()
+        )
+        and event.get("timestamp", 0) > now_timestamp  # Zabránění KeyError a chybným timestampům
     ]
+
+    logger.debug(f"Found {len(future_events)} future events for '{event_name}'.")
 
     if not future_events:
         logger.warning(f"No upcoming event found for {event_name}.")
         return None
 
-    # Seřadíme podle timestampu a vezmeme nejbližší
-    next_event = sorted(future_events, key=lambda e: e["timestamp"])[0]
+    # Seřazení a výběr nejbližšího eventu
+    next_event = min(future_events, key=lambda e: e["timestamp"])
     next_event_date = datetime.utcfromtimestamp(next_event["timestamp"])
 
-    logger.info(f"Next event for {event_name}: {next_event_date}")
+    logger.info(f"Next event for '{event_name}' found: {next_event_date} (ID: {next_event['id']})")
     return next_event_date
