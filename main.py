@@ -164,8 +164,6 @@ def send_sequence_to_user(db: Session, bot_id: UUID, chat_id: int, message: str,
                 {"text": "NE", "callback_data": f"{user.id}|f"},
             ]]
         }
-
-    
     
     response = requests.post(url, json=data)
     response.raise_for_status()
@@ -193,7 +191,7 @@ scheduler.add_job(
 scheduler.add_job(
     trace_service,
     "interval",
-    minutes=1,
+    minutes=0.5,
     max_instances=10,  # Umožní až 10 instancí najednou
     misfire_grace_time=300  # Povolené zpoždění až 5 minut
 )
