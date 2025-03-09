@@ -3,28 +3,28 @@
         {
             "content": "success story",
             "id": 0,
-            "next_message_send_after": 2, 
+            "next_message_send_after": 1, 
             "next_message_id": 1,
             "level_up_question": false
         },
         {
             "content": "welcome message + online webinar",
             "id": 1,
-            "next_message_send_after": 2, 
+            "next_message_send_after": 1, 
             "next_message_id": 2,
             "level_up_question": false
         },
         {
             "content": "academy link",
             "id": 2,
-            "next_message_send_after": 2, 
+            "next_message_send_after": 1, 
             "next_message_id": 3,
             "level_up_question": false
         },
         {
             "content": "level up message",
             "id": 3,
-            "next_message_send_after": 2, 
+            "next_message_send_after": 1, 
             "next_message_id": 4,
             "level_up_question": true
         },

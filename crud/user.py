@@ -93,7 +93,7 @@ def get_users_in_queue(db: Session):
 
 def get_next_msessage_sent_at_by_id(message_id: str, level: str):
     if level == 0:
-        match message_id: 
+        match message_id:
             case 5:
                 return get_event_date("opportunity_call") - timedelta(hours=9)
     else:
@@ -113,8 +113,10 @@ def update_users_position(db: Session, user_id: UUID, next_message_id: str, next
     if db_user:
         db_user.next_message_id = next_message_id
         if next_message_send_after:
-             db_user.send_message_at = now + timedelta(minutes=next_message_send_after)
+            print("next_message_send_after is none")
+            db_user.send_message_at = now + timedelta(minutes=next_message_send_after)
         else:
+            print("no next_message_send_after is not none")
             db_user.send_message_at = get_next_msessage_sent_at_by_id(next_message_id, db_user.client_level)
 
         db.commit()
