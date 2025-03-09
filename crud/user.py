@@ -95,7 +95,7 @@ def get_next_msessage_sent_at_by_id(message_id: str, level: str):
     if level == 0:
         match message_id:
             case 5:
-                print ("event_date: ", get_event_date("opportunity_call"))
+                print("event_date: ", get_event_date("opportunity_call"))
                 return get_event_date("opportunity_call") - timedelta(hours=9)
     else:
         match message_id:
