@@ -12,6 +12,11 @@ from utils.messages import get_messages
 from crud.vars import replace_variables
 from crud.events import get_event_date
 import requests
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 def create_or_update_user(db: Session, user: UserCreate):
     db_user = db.query(User).filter(User.chat_id == user.chat_id, User.bot_id == user.bot_id).first()
@@ -95,7 +100,7 @@ def get_next_msessage_sent_at_by_id(message_id: str, level: str):
     if level == 0:
         match message_id:
             case 5:
-                print("event_date: ", get_event_date("opportunity_call"))
+                logger.info("event_date: ", get_event_date("opportunity_call"))
                 return get_event_date("opportunity_call") - timedelta(hours=9)
     else:
         match message_id:
@@ -114,10 +119,10 @@ def update_users_position(db: Session, user_id: UUID, next_message_id: str, next
     if db_user:
         db_user.next_message_id = next_message_id
         if next_message_send_after:
-            print("next_message_send_after is none")
+            logger.info("next_message_send_after is none")
             db_user.send_message_at = now + timedelta(minutes=next_message_send_after)
         else:
-            print("no next_message_send_after is not none")
+            logger.info("no next_message_send_after is not none")
             db_user.send_message_at = get_next_msessage_sent_at_by_id(next_message_id, db_user.client_level)
 
         db.commit()
@@ -143,7 +148,7 @@ def update_users_level(db: Session, user_id: UUID):
     return db_user
 
 def send_message_to_user(db: Session, user: UserBase):
-    print(f"Starting sending message for user {user.chat_id}\n")
+    logger.info(f"Starting sending message for user {user.chat_id}\n")
 
     bot, status = get_bot(db, user.bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
@@ -153,10 +158,10 @@ def send_message_to_user(db: Session, user: UserBase):
     message = next((e for e in messages if e["id"] == user.next_message_id), None)
 
     if message is None:
-        print(f"No message found for user {user.chat_id}.")
+        logger.info(f"No message found for user {user.chat_id}.")
         return
 
-    print(f"Message found: {message}")
+    logger.info(f"Message found: {message}")
 
     data = {
         "chat_id": user.chat_id,
