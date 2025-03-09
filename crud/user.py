@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from models.user import User
 from schemas.user import UserCreate, UserBase
 from uuid import UUID, uuid4
-from typing import List
+from typing import List, Optional
 from datetime import datetime, timedelta
 from crud.bot import get_bot
 from base64 import b64decode
@@ -111,7 +111,7 @@ def get_next_msessage_sent_at_by_id(message_id: str, level: str):
             case 3:
                 return get_event_date("build_your_business") - timedelta(hours=9)
 
-def update_users_position(db: Session, user_id: UUID, next_message_id: str, next_message_send_after: int):
+def update_users_position(db: Session, user_id: UUID, next_message_id: str, next_message_send_after: Optional[int] = None):
     now = datetime.now()
 
     db_user = db.query(User).filter(User.id == user_id).first()
@@ -185,6 +185,6 @@ def send_message_to_user(db: Session, user: UserBase):
     print(f"Response status code: {response.status_code}")
     print(f"Response JSON: {response.text}")
 
-    response.raise_for_status()  # Vyvolá výjimku, pokud request selže
+    response.raise_for_status()
 
-    update_users_position(db, user.id, message["next_message_id"], message["next_message_send_after"])
+    update_users_position(db, user.id, message["next_message_id"], message.get("next_message_send_after"))
