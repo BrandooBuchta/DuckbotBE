@@ -37,15 +37,17 @@ def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
                 "launch_for_beginners": "Žádné události nenalezeny",
                 "build_your_business": "Žádné události nenalezeny",
                 "opportunity_call": "Žádné události nenalezeny",
+                "cryptocurrency_basics_and_security": "Žádné události nenalezeny",
             }
 
         events = response.json()
 
-        keywords = ["Launch for Beginners", "Build Your Business", "Opportunity Call"]
+        keywords = ["Launch for Beginners", "Build Your Business", "Opportunity Call", "Základy a bezpečnost kryptoměn"]
         closest_events = {
             "launch_for_beginners": "Žádné události nenalezeny",
             "build_your_business": "Žádné události nenalezeny",
             "opportunity_call": "Žádné události nenalezeny",
+            "cryptocurrency_basics_and_security": "Žádné události nenalezeny",
         }
 
         for keyword in keywords:

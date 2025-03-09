@@ -3,36 +3,32 @@
         {
             "content": "discord + welcome",
             "id": 0,
-            "next_message_send_after": 2, 
             "next_message_id": 1,
             "level_up_question": false
         },
         {
-            "content": "call 1",
+            "content": "launch",
             "id": 1,
-            "next_message_send_after": 0, 
             "next_message_id": 2,
             "level_up_question": false
         },
         {
-            "content": "call 2",
+            "content": "crypto",
             "id": 2,
-            "next_message_send_after": 0, 
             "next_message_id": 3,
             "level_up_question": false
         },
         {
-            "content": "call 3",
+            "content": "business",
             "id": 3,
-            "next_message_send_after": 0, 
+            "next_message_send_after": 60, 
             "next_message_id": 4,
             "level_up_question": false
         },
         {
-            "content": "level up",
+            "content": "level up 2",
             "id": 4,
-            "next_message_send_after": 0, 
-            "next_message_id": 5,
+            "next_message_id": 2,
             "level_up_question": true
         }
     ]

@@ -1,0 +1,10 @@
+{
+    "messages": [
+        {
+            "content": "transfer to leader",
+            "id": 0,
+            "next_message_id": 1,
+            "level_up_question": false
+        }
+    ]
+}

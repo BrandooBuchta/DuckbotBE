@@ -10,6 +10,7 @@ from crud.bot import get_bot
 from base64 import b64decode
 from utils.messages import get_messages
 from crud.vars import replace_variables
+from crud.events import get_event_date
 import requests
 
 def create_or_update_user(db: Session, user: UserCreate):
@@ -90,13 +91,31 @@ def get_user(db: Session, user_id: UUID):
 def get_users_in_queue(db: Session):
     return db.query(User).filter(User.send_message_at <= datetime.utcnow()).all()
 
-def update_users_position(db: Session, user_id: UUID, next_message_send_after: int, next_message_id: str):
+def get_next_msessage_sent_at_by_id(message_id: str, level: str):
+    if level == 0:
+        match message_id: 
+            case 5:
+                return get_event_date("opportunity_call") - timedelta(hours=9)
+    else:
+        match message_id:
+            case 1:
+                return get_event_date("launch_for_begginers") - timedelta(hours=9)
+            case 2:
+                return get_event_date("cryptocurrency_basics_and_security") - timedelta(hours=9)
+            case 3:
+                return get_event_date("build_your_business") - timedelta(hours=9)
+
+def update_users_position(db: Session, user_id: UUID, next_message_id: str, next_message_send_after: int):
     now = datetime.now()
 
     db_user = db.query(User).filter(User.id == user_id).first()
+
     if db_user:
         db_user.next_message_id = next_message_id
-        db_user.send_message_at = now + timedelta(minutes=next_message_send_after)
+        if next_message_send_after:
+             db_user.send_message_at = now + timedelta(minutes=next_message_send_after)
+        else:
+            db_user.send_message_at = get_next_msessage_sent_at_by_id(next_message_id, db_user.client_level)
 
         db.commit()
         db.refresh(db_user)
@@ -106,6 +125,9 @@ def update_users_level(db: Session, user_id: UUID):
     now = datetime.now()
 
     db_user = db.query(User).filter(User.id == user_id).first()
+    if db_user.client_level == 0:
+        return 
+
     if db_user:
         db_user.client_level = db_user.client_level + 1
         db_user.next_message_id = 0
