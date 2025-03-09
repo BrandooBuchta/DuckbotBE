@@ -14,6 +14,15 @@ from crud.events import get_event_date
 import requests
 import logging
 
+def get_next_weekday_at(weekday: int, hour: int):
+    now = datetime.utcnow()
+    days_until_target = (weekday - now.weekday()) % 7
+    if days_until_target == 0 and now.hour >= hour:
+        days_until_target = 7
+
+    target_day = now + timedelta(days=days_until_target)
+    return target_day.replace(hour=hour, minute=0, second=0, microsecond=0)
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -100,16 +109,19 @@ def get_next_msessage_sent_at_by_id(message_id: str, level: str):
     if level == 0:
         match message_id:
             case 5:
-                logger.info("event_date: ", get_event_date("opportunity_call"))
-                return get_event_date("opportunity_call") - timedelta(hours=9)
+                event_date = get_event_date("Opportunity Call")
+                return (event_date - timedelta(hours=9)) if event_date else get_next_weekday_at(6, 18)
     else:
         match message_id:
             case 1:
-                return get_event_date("launch_for_begginers") - timedelta(hours=9)
+                event_date = get_event_date("Launch for Beginners") - timedelta(hours=9)
+                return (event_date - timedelta(hours=9)) if event_date else get_next_weekday_at(0, 20) # TODO: even friday
             case 2:
-                return get_event_date("cryptocurrency_basics_and_security") - timedelta(hours=9)
+                event_date = get_event_date("Základy a bezpečnost kryptoměn") - timedelta(hours=9)
+                return (event_date - timedelta(hours=9)) if event_date else get_next_weekday_at(2, 20)
             case 3:
-                return get_event_date("build_your_business") - timedelta(hours=9)
+                event_date = get_event_date("Build Your Business") - timedelta(hours=9)
+                return (event_date - timedelta(hours=9)) if event_date else get_next_weekday_at(3, 20)
 
 def update_users_position(db: Session, user_id: UUID, next_message_id: str, next_message_send_after: Optional[int] = None):
     now = datetime.now()
