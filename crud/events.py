@@ -21,7 +21,9 @@ def get_event_date(event_name: str) -> Optional[datetime]:
         if event_name.lower() in event.get("title", {}).get("en", "").lower():
             event_timestamp = event.get("timestamp")
             try:
-                return datetime.strptime(event_timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")  # Převod na datetime
+                parsed_date = datetime.strptime(event_timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+                logger.info(f"Found event {event_name}: {parsed_date}")
+                return parsed_date
             except ValueError as e:
                 logger.error(f"Failed to parse event date: {event_timestamp} - {e}")
                 return None
