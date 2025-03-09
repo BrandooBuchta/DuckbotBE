@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional
 import os
+import requests
 
 def get_event_date(event_name: str) -> Optional[datetime]:
     SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
