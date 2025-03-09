@@ -119,10 +119,10 @@ def update_users_position(db: Session, user_id: UUID, next_message_id: str, next
     if db_user:
         db_user.next_message_id = next_message_id
         if next_message_send_after:
-            logger.info("next_message_send_after is none")
+            logger.info("next_message_send_after exists")
             db_user.send_message_at = now + timedelta(minutes=next_message_send_after)
         else:
-            logger.info("no next_message_send_after is not none")
+            logger.info("no next_message_send_after doesn't exists")
             db_user.send_message_at = get_next_msessage_sent_at_by_id(next_message_id, db_user.client_level)
 
         db.commit()

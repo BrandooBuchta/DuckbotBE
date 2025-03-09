@@ -2,6 +2,10 @@ from datetime import datetime
 from typing import Optional
 import os
 import requests
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def get_event_date(event_name: str) -> Optional[datetime]:
     SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
