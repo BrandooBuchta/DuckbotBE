@@ -181,4 +181,4 @@ def send_message_to_user(db: Session, user: UserBase):
 
     response.raise_for_status()  # Vyvolá výjimku, pokud request selže
 
-    update_users_position(db, user.id, message["next_message_send_after"], message["next_message_id"])
+    update_users_position(db, user.id, message["next_message_id"], message["next_message_send_after"])
