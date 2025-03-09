@@ -95,6 +95,7 @@ def get_next_msessage_sent_at_by_id(message_id: str, level: str):
     if level == 0:
         match message_id:
             case 5:
+                print ("event_date: ", get_event_date("opportunity_call"))
                 return get_event_date("opportunity_call") - timedelta(hours=9)
     else:
         match message_id:
@@ -127,7 +128,7 @@ def update_users_level(db: Session, user_id: UUID):
     now = datetime.now()
 
     db_user = db.query(User).filter(User.id == user_id).first()
-    if db_user.client_level == 0:
+    if db_user.client_level == 2:
         return 
 
     if db_user:
