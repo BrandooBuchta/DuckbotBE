@@ -23,6 +23,12 @@ def get_next_weekday_at(weekday: int, hour: int):
 
     target_day = now + timedelta(days=days_until_target)
     return target_day.replace(hour=hour, minute=0, second=0, microsecond=0)
+
+def get_next_friday_or_monday_at(hour: int):
+    now = datetime.utcnow()
+    if now.weekday() in [4, 5]:
+        return get_next_weekday_at(0, hour)
+    return get_next_weekday_at(4, hour)
      
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -110,19 +116,23 @@ def get_next_msessage_sent_at_by_id(message_id: str, level: str):
     if level == 0:
         match message_id:
             case 5:
-                event_date = get_event_date("Opportunity Call")
-                return (event_date if event_date else get_next_weekday_at(6, 18)) - timedelta(hours=9)
+                # event_date = get_event_date("Opportunity Call")
+                # return (event_date if event_date else get_next_weekday_at(6, 18)) - timedelta(hours=9)
+                return datetime.now() + timedelta(minutes=1)
     else:
         match message_id:
             case 1:
-                event_date = get_event_date("Launch for Beginners") - timedelta(hours=9)
-                return (event_date if event_date else get_next_weekday_at(0, 20)) - timedelta(hours=9)
+                # event_date = get_event_date("Launch for Beginners")
+                # return (event_date if event_date else get_next_friday_or_monday_at(20)) - timedelta(hours=9)
+                return datetime.now() + timedelta(minutes=1)
             case 2:
-                event_date = get_event_date("Základy a bezpečnost kryptoměn") - timedelta(hours=9)
-                return (event_date if event_date else get_next_weekday_at(2, 20)) - timedelta(hours=9)
+                # event_date = get_event_date("Základy a bezpečnost kryptoměn")
+                # return (event_date if event_date else get_next_weekday_at(2, 20)) - timedelta(hours=9)
+                return datetime.now() + timedelta(minutes=1)
             case 3:
-                event_date = get_event_date("Build Your Business") - timedelta(hours=9)
-                return (event_date if event_date else get_next_weekday_at(3, 20)) - timedelta(hours=9)
+                # event_date = get_event_date("Build Your Business")
+                # return (event_date if event_date else get_next_weekday_at(3, 20)) - timedelta(hours=9)
+                return datetime.now() + timedelta(minutes=1)
 
 def update_users_position(db: Session, user_id: UUID, next_message_id: str, next_message_send_after: Optional[int] = None):
     now = datetime.now()
