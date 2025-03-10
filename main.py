@@ -172,13 +172,13 @@ def send_sequence_to_user(db: Session, bot_id: UUID, chat_id: int, message: str,
 # Scheduler function
 def sequence_service():
     logger.info("Scheduler started scheduling...")
-    db = next(get_db())
-    processs_sequences(db)
+    with get_db() as db:
+        processs_sequences(db)
 
 def trace_service():
     logger.info("Scheduler started scheduling...")
-    db = next(get_db())
-    process_customers_trace(db)
+    with get_db() as db:
+        process_customers_trace(db)
 
 # Initialize APScheduler
 scheduler = BackgroundScheduler()
