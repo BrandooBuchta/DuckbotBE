@@ -21,7 +21,7 @@
         {
             "content": "business",
             "id": 3,
-            "next_message_send_after": 60, 
+            "next_message_send_after": 1, 
             "next_message_id": 4,
             "level_up_question": false
         },
