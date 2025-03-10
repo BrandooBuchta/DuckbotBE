@@ -110,7 +110,10 @@ def get_user(db: Session, user_id: UUID):
     return db.query(User).filter(User.id == user_id).first()
 
 def get_users_in_queue(db: Session):
-    return db.query(User).filter(User.send_message_at <= datetime.utcnow()).all()
+    try:
+        return db.query(User).filter(User.send_message_at <= datetime.utcnow()).limit(100).all()
+    finally:
+        db.close()
 
 def get_next_msessage_sent_at_by_id(message_id: str, level: str):
     if level == 0:

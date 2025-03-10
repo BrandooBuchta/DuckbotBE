@@ -25,6 +25,7 @@ from pytz import timezone
 from uuid import UUID
 import uvicorn
 from base64 import b64decode
+from contextlib import contextmanager
 
 load_dotenv()
 
@@ -56,7 +57,7 @@ app.add_middleware(
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
-# Dependency to get the database session
+@contextmanager
 def get_db():
     db = SessionLocal()
     try:
