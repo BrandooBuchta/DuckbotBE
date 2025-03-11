@@ -6,7 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-@celery_app.task(name="app.tasks.process_customers_trace")
+@celery_app.task(name="tasks.process_customers_trace")
 def process_customers_trace():
     logger.info("✅ Spouštím Celery úlohu: process_customers_trace")
     db: Session = SessionLocal()

@@ -16,7 +16,7 @@ celery_app = Celery(
 
 celery_app.conf.update(
     task_routes={
-        "app.tasks.process_customers_trace": {"queue": "default"},
+        "tasks.process_customers_trace": {"queue": "default"},
     },
     task_serializer="json",
 )
@@ -24,7 +24,7 @@ celery_app.conf.update(
 # ✅ Přidání Celery Beat plánování úloh
 celery_app.conf.beat_schedule = {
     "run-process_customers_trace-every-minute": {
-        "task": "app.tasks.process_customers_trace",
+        "task": "tasks.process_customers_trace",
         "schedule": crontab(minute="*/1"),  # Spustí se každou minutu
     },
 }
