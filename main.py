@@ -97,11 +97,10 @@ async def events():
 async def root():
     return {"message": "Telegram Bot is running!"}
 
-@app.get("/run-trace-task")
-async def run_trace_task():
-    process_customers_trace.delay()
-    return {"message": "Úloha byla spuštěna!"}
-
+@app.get("/start-task")
+def start_task():
+    celery_app.send_task("app.tasks.process_customers_trace")
+    return {"message": "Úloha byla spuštěna"}
 
 app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
 app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy Links"])
