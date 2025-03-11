@@ -15,6 +15,8 @@ class Bot(Base):
     email = Column(String, nullable=True)
     password = Column(String, nullable=True)
     token = Column(String, nullable=True)
+    ss_url = Column(String, nullable=True)
+    ss_landing_url = Column(String, nullable=True)
     devs_share = Column(Float, nullable=True)
     devs_currently_assigned = Column(Integer, nullable=True)
     support_contact = Column(String, nullable=True)

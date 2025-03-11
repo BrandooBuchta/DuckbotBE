@@ -26,6 +26,7 @@ from uuid import UUID
 import uvicorn
 from base64 import b64decode
 from contextlib import contextmanager
+from tasks import process_customers_trace
 
 load_dotenv()
 
@@ -98,17 +99,16 @@ async def events():
 async def root():
     return {"message": "Telegram Bot is running!"}
 
+@app.get("/run-trace-task")
+async def run_trace_task():
+    process_customers_trace.delay()
+    return {"message": "Úloha byla spuštěna!"}
+
+
 app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
 app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy Links"])
 app.include_router(faq_router, prefix="/api/bot/faq", tags=["FAQ"])
 app.include_router(sequence_router, prefix="/api/bot/sequence", tags=["Sequences"])
-
-def process_customers_trace(db: Session):
-    users = get_users_in_queue(db)
-    print("users: ", users)
-
-    for user in users:
-        send_message_to_user(db, user)
 
 def processs_sequences(db: Session):
     logger.info("Starting to process sequences...")
@@ -169,32 +169,18 @@ def send_sequence_to_user(db: Session, bot_id: UUID, chat_id: int, message: str,
     response = requests.post(url, json=data)
     response.raise_for_status()
 
-# Scheduler function
 def sequence_service():
     logger.info("Scheduler started scheduling...")
     with get_db() as db:
         processs_sequences(db)
 
-def trace_service():
-    logger.info("Scheduler started scheduling...")
-    with get_db() as db:
-        process_customers_trace(db)
-
-# Initialize APScheduler
 scheduler = BackgroundScheduler()
 scheduler.add_job(
     sequence_service,
     "interval",
     minutes=1,
-    max_instances=10,  # Umožní až 10 instancí najednou
-    misfire_grace_time=300  # Povolené zpoždění až 5 minut
-)
-scheduler.add_job(
-    trace_service,
-    "interval",
-    minutes=0.5,
-    max_instances=10,  # Umožní až 10 instancí najednou
-    misfire_grace_time=300  # Povolené zpoždění až 5 minut
+    max_instances=10,
+    misfire_grace_time=300
 )
 scheduler.start()
 
