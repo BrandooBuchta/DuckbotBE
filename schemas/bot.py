@@ -10,7 +10,9 @@ class BaseBot(BaseModel):
     name: Optional[str] = None
     email: Optional[str] = None
     devs_currently_assigned: Optional[int] = 0
-    share: Optional[int] = 5
+    ss_url: Optional[str] = None
+    ss_landing_url: Optional[str] = None
+    devs_share: Optional[int] = 10
     support_contact: Optional[str] = None
 
     class Config:
@@ -40,6 +42,8 @@ class UpdateBot(BaseModel):
     name: Optional[str] = None
     devs_currently_assigned: Optional[int] = None
     devs_share: Optional[int] = None
+    ss_url: Optional[str] = None
+    ss_landing_url: Optional[str] = None
     support_contact: Optional[str] = None
 
     class Config:
