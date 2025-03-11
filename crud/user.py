@@ -116,8 +116,6 @@ def get_users_in_queue(db: Session):
         now = datetime.utcnow()
         users = db.query(User).filter(User.send_message_at <= now).limit(100).all()
         
-        logging.debug(f"🔍 [Celery Debug] Načteno {len(users)} uživatelů pro odeslání zpráv (čas UTC: {now})")
-
         return users
     finally:
         db.close()
@@ -181,11 +179,8 @@ def update_users_level(db: Session, user_id: UUID):
     return db_user
 
 def send_message_to_user(db: Session, user: UserBase):
-    logger.info(f"📩 [Celery] Zahajuji odesílání zprávy pro uživatele {user.chat_id}")
-
     bot, status = get_bot(db, user.bot_id)
     if status != 200:
-        logger.error(f"❌ [Celery] Nepodařilo se načíst bota pro uživatele {user.chat_id}")
         return
 
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
@@ -195,10 +190,8 @@ def send_message_to_user(db: Session, user: UserBase):
     message = next((e for e in messages if e["id"] == user.next_message_id), None)
 
     if message is None:
-        logger.warning(f"⚠️ [Celery] Žádná zpráva nenalezena pro uživatele {user.chat_id}. Přeskakuji.")
+        logger.warning(f"⚠️ Žádná zpráva nenalezena pro uživatele {user.chat_id}. Přeskakuji.")
         return
-
-    logger.info(f"📨 [Celery] Odesílám zprávu uživateli {user.chat_id}: {message['content']}")
 
     data = {
         "chat_id": user.chat_id,
@@ -214,16 +207,10 @@ def send_message_to_user(db: Session, user: UserBase):
             ]]
         }
 
-    logger.debug(f"🔗 [Celery] Telegram API URL: {url}")
-    logger.debug(f"📤 [Celery] Data being sent: {data}")
-
     try:
         response = requests.post(url, json=data)
         response.raise_for_status()
-        logger.info(f"✅ [Celery] Zpráva úspěšně odeslána uživateli {user.chat_id} (status code: {response.status_code})")
     except requests.RequestException as e:
-        logger.error(f"❌ [Celery] Chyba při odesílání zprávy uživateli {user.chat_id}: {str(e)}")
         return
 
     update_users_position(db, user.id, message["next_message_id"], message.get("next_message_send_after"))
-    logger.info(f"📌 [Celery] Aktualizována pozice uživatele {user.chat_id} na zprávu {message['next_message_id']}")

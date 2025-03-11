@@ -9,5 +9,3 @@ passlib
 apscheduler
 pytz
 uvicorn
-celery
-redis
