@@ -2,8 +2,13 @@ from celery import Celery
 from celery.schedules import crontab
 import os
 
-# Správné připojení k Redis Upstash
 REDIS_URL = os.getenv("REDIS_URL")
+
+# Pokud používáme rediss:// (šifrované spojení na Redis), musíme přidat správný certifikát
+if REDIS_URL and REDIS_URL.startswith("rediss://"):
+    REDIS_URL += "?ssl_cert_reqs=CERT_NONE"  # ✅ Přidání správné SSL konfigurace
+
+# Ověření, že REDIS_URL existuje
 if not REDIS_URL:
     raise ValueError("❌ REDIS_URL není nastaven!")
 
