@@ -30,7 +30,6 @@ from tasks import process_customers_trace
 
 load_dotenv()
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
