@@ -1,7 +1,7 @@
-from app.celery_config import celery_app
+from celery_config import celery_app
 from sqlalchemy.orm import Session
-from app.database import SessionLocal
-from app.crud.user import get_users_in_queue, send_message_to_user
+from database import SessionLocal
+from crud.user import get_users_in_queue, send_message_to_user
 import logging
 
 logger = logging.getLogger(__name__)
