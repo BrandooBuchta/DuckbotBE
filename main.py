@@ -55,7 +55,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
 @contextmanager
