@@ -93,14 +93,29 @@ async def events():
     formatted_text = format_events(events_data)
     return PlainTextResponse(content=formatted_text)
 
+def process_customers_trace():
+    logger.info("✅ Spouštím úlohu process_customers_trace")
+    db: Session = SessionLocal()
+    try:
+        users = get_users_in_queue(db)
+        logger.info(f"🔍 Nalezeno {len(users)} uživatelů ke zpracování.")
+        
+        for user in users:
+            send_message_to_user(db, user)
+    except Exception as e:
+        logger.error(f"❌ Chyba při zpracování uživatelů: {str(e)}")
+    finally:
+        db.close()
+
+@app.post("/run-process")
+def run_process(background_tasks: BackgroundTasks):
+    """Endpoint pro spuštění úlohy."""
+    background_tasks.add_task(process_customers_trace)
+    return {"status": "ok", "message": "Zpracování spuštěno"}
+
 @app.get("/")
 async def root():
     return {"message": "Telegram Bot is running!"}
-
-@app.get("/start-task")
-def start_task():
-    celery_app.send_task("tasks.process_customers_trace")
-    return {"message": "Úloha byla spuštěna"}
 
 app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
 app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy Links"])
