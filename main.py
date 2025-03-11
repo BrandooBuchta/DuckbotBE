@@ -99,7 +99,7 @@ async def root():
 
 @app.get("/start-task")
 def start_task():
-    celery_app.send_task("app.tasks.process_customers_trace")
+    celery_app.send_task("tasks.process_customers_trace")
     return {"message": "Úloha byla spuštěna"}
 
 app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
