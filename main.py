@@ -26,7 +26,6 @@ from uuid import UUID
 import uvicorn
 from base64 import b64decode
 from contextlib import contextmanager
-from tasks import process_customers_trace
 
 load_dotenv()
 
