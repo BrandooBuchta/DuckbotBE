@@ -280,9 +280,9 @@ def fetch_statistics(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Sess
     if not verify_token(db, bot_id, token):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    db_bot, status = get_plain_bot(db, bot_id, update_bot_body)
+    db_bot, status = get_bot(db, bot_id)
 
     if status == 404:
         raise HTTPException(status_code=404, detail="Tento bot neexistuje!")
 
-    return get_statistics(db, bot_id, update_bot_body)
+    return get_statistics(db, bot_id)
