@@ -35,7 +35,6 @@ def get_next_friday_or_monday_at(hour: int):
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 def create_or_update_user(db: Session, user: UserCreate):
     db_user = db.query(User).filter(User.chat_id == user.chat_id, User.bot_id == user.bot_id).first()
     if db_user:

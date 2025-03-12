@@ -84,3 +84,7 @@ class ReadSequence(BaseModel):
     levels: List[int] = []
     is_active: bool
     check_status: bool
+
+class Statistic(BaseModel):
+    title: str
+    value: int

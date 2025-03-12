@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models.bot import Bot, Sequence
-from schemas.bot import SignUp, SignIn, SignInResponse, BaseBot, UpdateBot, PlainBot
+from schemas.bot import SignUp, SignIn, SignInResponse, BaseBot, UpdateBot, PlainBot, Statistic
 from security import get_password_hash, verify_password
 from base64 import b64decode, b64encode
 import uuid
@@ -88,3 +88,18 @@ def update_bot(db: Session, bot_id: UUID, bot: UpdateBot):
     db.commit()
     db.refresh(db_bot)
     return db_bot, 200
+
+def get_statistics(db: Session, bot_id: UUID):
+    users = db.query(User).filter(User.bot_id == bot_id).all()
+
+    level_counts = {0: 0, 1: 0, 2: 0}
+    for user in users:
+        if user.client_level in level_counts:
+            level_counts[user.client_level] += 1
+
+    return [
+        Statistic(title="0", value=level_counts[0]),
+        Statistic(title="1", value=level_counts[1]),
+        Statistic(title="2", value=level_counts[2]),
+        Statistic(title="Total", value=len(users))
+    ]

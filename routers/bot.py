@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, PlainBot
-from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot, get_plain_bot
+from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, PlainBot, Statistic
+from crud.bot import sign_in, sign_up, get_bot_by_email, get_bot, verify_token, update_bot, get_plain_botm, get_statistics
 from crud.faq import get_all_formated_faqs
 from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link, get_user, create_user, update_users_level, send_message_to_user
 from crud.vars import replace_variables
@@ -136,16 +136,14 @@ def put_bot(bot_id: UUID, update_bot_body: UpdateBot, token: str = Depends(oauth
 
 @router.get("/{bot_id}", response_model=PlainBot)
 def fetch_bot(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    if status == 404:
-        raise HTTPException(status_code=404, detail="Tento bot neexistuje!")
 
     if not verify_token(db, bot_id, token):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     db_bot, status = get_plain_bot(db, bot_id, update_bot_body)
 
-    if status != 200:
-        raise HTTPException(status_code=400, detail="Chyba při aktualizaci bota.")
+    if status == 404:
+        raise HTTPException(status_code=404, detail="Tento bot neexistuje!")
 
     return db_bot
 
@@ -276,3 +274,15 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Neznámý příkaz. Použijte /help pro nápovědu.", "parse_mode": "html"})
 
     return {"ok": True}
+
+@router.get("/statistics/{bot_id}", response_model=List[Statistic])
+def fetch_statistics(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    if not verify_token(db, bot_id, token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    db_bot, status = get_plain_bot(db, bot_id, update_bot_body)
+
+    if status == 404:
+        raise HTTPException(status_code=404, detail="Tento bot neexistuje!")
+
+    return get_statistics(db, bot_id, update_bot_body)
