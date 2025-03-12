@@ -103,6 +103,6 @@ def get_statistics(db: Session, bot_id: UUID):
     return [
         Statistic(title="Nezastakováno", value=level_counts[0]),
         Statistic(title="Zastakováno", value=level_counts[1]),
-        Statistic(title="Aff", value=level_counts[2]),
-        Statistic(title="Total", value=len(users))
+        Statistic(title="Affiliate", value=level_counts[2]),
+        Statistic(title="Celkem", value=len(users))
     ]
