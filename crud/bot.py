@@ -75,6 +75,8 @@ def sign_in(db: Session, sign_in: SignIn):
         id=db_bot.id,
         name=db_bot.name,
         email=db_bot.email,
+        ss_url=db_bot.ss_url,
+        ss_landing_url=db_bot.ss_landing_url,
         support_contact=db_bot.support_contact,
     )
 
@@ -99,8 +101,8 @@ def get_statistics(db: Session, bot_id: UUID):
             level_counts[user.client_level] += 1
 
     return [
-        Statistic(title="0", value=level_counts[0]),
-        Statistic(title="1", value=level_counts[1]),
-        Statistic(title="2", value=level_counts[2]),
+        Statistic(title="Nezastakováno", value=level_counts[0]),
+        Statistic(title="Zastakováno", value=level_counts[1]),
+        Statistic(title="Aff", value=level_counts[2]),
         Statistic(title="Total", value=len(users))
     ]
