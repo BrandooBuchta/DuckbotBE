@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from models.bot import Bot, Sequence
 from schemas.bot import SignUp, SignIn, SignInResponse, BaseBot, UpdateBot, PlainBot, Statistic
+from models.user import User
 from security import get_password_hash, verify_password
 from base64 import b64decode, b64encode
 import uuid
