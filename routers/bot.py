@@ -36,6 +36,17 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+def get_founder_academy_link(currently_assigned: int):
+    match currently_assigned:
+        case 0:
+            return "2"
+        case 1:
+            return "3"
+        case 2 | 3:
+            return "4"
+        case 4 | 5 | 6 | 7 | 8 | 9:
+            return "1"
+
 def reset_all_links(db: Session, bot_id: UUID):
     links, status = get_all_links(db, bot_id)
     if status != 200 or not links:
@@ -60,7 +71,7 @@ def assing_academy_link(db: Session, bot_id: UUID, user_id: UUID):
             update_users_academy_link(
                 db,
                 user_id,
-                os.getenv(f"FOUNDERS_ACADEMY_LINK{'1' if bot.devs_currently_assigned % 2 == 0 else '2'}")
+                os.getenv(f"FOUNDERS_ACADEMY_LINK{get_founder_academy_link(bot.devs_currently_assigned )}")
             )            
             update_bot(db, bot_id, UpdateBot(devs_currently_assigned=bot.devs_currently_assigned + 1))
             return
