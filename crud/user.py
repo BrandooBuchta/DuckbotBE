@@ -122,9 +122,10 @@ def get_users_in_queue(db: Session):
 def get_next_msessage_sent_at_by_id(message_id: str, level: str):
     if level == 0:
         match message_id:
-            case 5:
+            case 4:
                 # event_date = get_event_date("Opportunity Call")
                 # return (event_date if event_date else get_next_weekday_at(6, 18)) - timedelta(hours=9)
+                logger.info("assigning")
                 return datetime.now() + timedelta(minutes=1)
     else:
         match message_id:
