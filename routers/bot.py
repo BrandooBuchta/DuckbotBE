@@ -116,7 +116,7 @@ def create_bot(sign_up_body: SignUp, db: Session = Depends(get_db)):
     sign_up_status = sign_up(db, sign_up_body)
     if sign_up_status != 200:
         raise HTTPException(status_code=400, detail="Stala se chyba při vytváření bota.")
-    return {"detail": "Nový bot byl úspěšně vytvořen!"}
+    return {"detail": "Nový bot byl úspěšně vytvořen!", "id": bot.id}
 
 @router.post("/sign-in", response_model=SignInResponse)
 def login_bot(sign_in_body: SignIn, db: Session = Depends(get_db)):
