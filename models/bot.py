@@ -21,7 +21,7 @@ class Bot(Base):
     support_contact = Column(String, nullable=True)
     is_event = Column(Boolean, nullable=True)
     event_capacity = Column(Integer, nullable=True)
-    event_date: Column(DateTime(timezone=True), server_default=func.now())
+    event_date = Column(DateTime(timezone=True), server_default=func.now())
     event_location = Column(String, nullable=True)
     lang = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
