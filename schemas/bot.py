@@ -44,6 +44,7 @@ class SignUp(BaseModel):
     password: str
     token: str
     is_event: bool
+    lang: Optional[str] = "cs"
 
     class Config:
         form_attributes = True
