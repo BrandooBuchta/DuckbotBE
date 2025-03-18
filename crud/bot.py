@@ -37,14 +37,15 @@ def get_public_bot(db: Session, bot_id: UUID):
     db_bot = db.query(Bot).filter(Bot.id == bot_id).first()
     if not db_bot:
         return None, 404
+
     return PublicBot(
-        video_url=bot.video_url,
-        bot_url=bot.bot_url,
-        is_event=bot.is_event,
-        event_capacity=bot.event_capacity,
-        event_date=bot.event_date,
-        event_location=bot.event_location,
-        lang=bot.lang,
+        video_url=db_bot.video_url,
+        bot_url=db_bot.bot_url,
+        is_event=db_bot.is_event,
+        event_capacity=db_bot.event_capacity,
+        event_date=db_bot.event_date,
+        event_location=db_bot.event_location,
+        lang=db_bot.lang,
     ), 200
 
 def sign_up(db: Session, bot: SignUp):
