@@ -9,9 +9,7 @@ from uuid import UUID
 
 def verify_token(db: Session, bot_id: UUID, token: str) -> bool:
     bot, status = get_bot(db, bot_id)
-    print("bot_id: ", bot_id, " token: ", token)
     if bot and bot.token == token:
-        print("true")
         return True
     return False
 
@@ -40,6 +38,7 @@ def get_public_bot(db: Session, bot_id: UUID):
         return None, 404
     return PublicBot(
         video_url=bot.video_url,
+        bot_url=bot.bot_url,
         is_event=bot.is_event,
         event_capacity=bot.event_capacity,
         event_date=bot.event_date,
@@ -53,6 +52,18 @@ def sign_up(db: Session, bot: SignUp):
 
     bot_id = uuid.uuid4()
 
+    telegram_api_url = f"https://api.telegram.org/bot{bot.token}/getMe"
+    response = requests.get(telegram_api_url)
+
+    bot_url = None
+    if response.status_code == 200:
+        data = response.json()
+        if data.get("ok"):
+            username = data["result"].get("username")
+            if username:
+                bot_url = f"https://t.me/{username}"
+
+
     db_bot = Bot(
         id=bot_id,
         email=bot.email,
@@ -60,6 +71,7 @@ def sign_up(db: Session, bot: SignUp):
         password=hashed_password,
         devs_currently_assigned=0,
         devs_share=10,
+        bot_url=bot_url,
 
         token=b64encode(bot.token.encode()).decode(),
     )
