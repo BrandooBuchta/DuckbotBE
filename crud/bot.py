@@ -47,8 +47,10 @@ def sign_up(db: Session, bot: SignUp):
     decoded_password = _decode_base64_with_padding(bot.password)
     hashed_password = get_password_hash(decoded_password)
 
+    bot_id = uuid.uuid4()
+
     db_bot = Bot(
-        id=uuid.uuid4(),
+        id=bot_id,
         email=bot.email,
         password=hashed_password,
         devs_currently_assigned=0,
@@ -59,7 +61,7 @@ def sign_up(db: Session, bot: SignUp):
     db.add(db_bot)
     db.commit()
     db.refresh(db_bot)
-    return 200
+    return bot_id, 200
 
 def sign_in(db: Session, sign_in: SignIn):
     db_bot, status_code = get_bot_by_email(db, sign_in.email)

@@ -113,10 +113,10 @@ def create_bot(sign_up_body: SignUp, db: Session = Depends(get_db)):
     if status == 200:
         raise HTTPException(status_code=400, detail="Tento bot už existuje!")
 
-    sign_up_status = sign_up(db, sign_up_body)
+    bot_id, sign_up_status = sign_up(db, sign_up_body)
     if sign_up_status != 200:
         raise HTTPException(status_code=400, detail="Stala se chyba při vytváření bota.")
-    return {"detail": "Nový bot byl úspěšně vytvořen!", "id": bot.id}
+    return {"detail": "Nový bot byl úspěšně vytvořen!", "id": bot_id}
 
 @router.post("/sign-in", response_model=SignInResponse)
 def login_bot(sign_in_body: SignIn, db: Session = Depends(get_db)):
