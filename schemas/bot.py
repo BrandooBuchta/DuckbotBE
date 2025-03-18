@@ -18,6 +18,7 @@ class BaseBot(BaseModel):
     event_capacity: Optional[int] = 0
     event_date: Optional[datetime] = None
     event_location: Optional[str] = None
+    event_name: Optional[str] = None
     lang: Optional[str] = None
 
     class Config:
@@ -30,6 +31,7 @@ class PublicBot(BaseModel):
     event_capacity: Optional[int] = 0
     event_date: Optional[datetime] = None
     event_location: Optional[str] = None
+    event_name: Optional[str] = None
     lang: Optional[str] = None
 
     class Config:
@@ -67,6 +69,7 @@ class UpdateBot(BaseModel):
     event_capacity: Optional[int] = 0
     event_date: Optional[datetime] = None
     event_location: Optional[str] = None
+    event_name: Optional[str] = None
     lang: Optional[str] = None
 
     class Config:

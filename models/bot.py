@@ -24,6 +24,7 @@ class Bot(Base):
     event_capacity = Column(Integer, nullable=True)
     event_date = Column(DateTime(timezone=True), server_default=func.now())
     event_location = Column(String, nullable=True)
+    event_name = Column(String, nullable=True)
     lang = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

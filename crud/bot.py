@@ -45,6 +45,7 @@ def get_public_bot(db: Session, bot_id: UUID):
         event_capacity=db_bot.event_capacity,
         event_date=db_bot.event_date,
         event_location=db_bot.event_location,
+        event_name=db_bot.event_name,
         lang=db_bot.lang,
     ), 200
 
@@ -102,6 +103,7 @@ def sign_in(db: Session, sign_in: SignIn):
         event_capacity=db_bot.event_capacity,
         event_date=db_bot.event_date,
         event_location=db_bot.event_location,
+        event_name=db_bot.event_name,
         lang=db_bot.lang,
     )
 
