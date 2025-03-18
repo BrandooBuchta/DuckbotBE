@@ -11,7 +11,7 @@ class BaseBot(BaseModel):
     email: Optional[str] = None
     devs_currently_assigned: Optional[int] = 0
     video_url: Optional[str] = None
-    bot_url: bot_url[str] = None
+    bot_url[str] = None
     devs_share: Optional[int] = 10
     support_contact: Optional[str] = None
     is_event: Optional[bool] = False

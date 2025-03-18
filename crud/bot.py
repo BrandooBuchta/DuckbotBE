@@ -6,6 +6,7 @@ from security import get_password_hash, verify_password
 from base64 import b64decode, b64encode
 import uuid
 from uuid import UUID
+from fastapi import requests
 
 def verify_token(db: Session, bot_id: UUID, token: str) -> bool:
     bot, status = get_bot(db, bot_id)
