@@ -102,7 +102,6 @@ def sign_in(db: Session, sign_in: SignIn):
         event_date=db_bot.event_date,
         event_location=db_bot.event_location,
         lang=db_bot.lang,
-
     )
 
     return SignInResponse(token=db_bot.token, bot=bot_data), 200
