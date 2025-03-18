@@ -40,7 +40,6 @@ def get_public_bot(db: Session, bot_id: UUID):
         return None, 404
     return PublicBot(
         video_url=bot.video_url,
-        bot_url=bot.bot_url,
         is_event=bot.is_event,
         event_capacity=bot.event_capacity,
         event_date=bot.event_date,

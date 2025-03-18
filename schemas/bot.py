@@ -24,7 +24,6 @@ class BaseBot(BaseModel):
 
 class PublicBot(BaseModel):
     video_url: Optional[str] = None
-    bot_url: Optional[str] = None
     is_event: Optional[bool] = False
     event_capacity: Optional[int] = 0
     event_date: Optional[datetime] = None
