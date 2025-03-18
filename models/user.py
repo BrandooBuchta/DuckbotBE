@@ -8,7 +8,7 @@ from sqlalchemy.sql import func
 from datetime import timedelta
 
 class User(Base):
-    __tablename__ = "telegram_users"
+    __tablename__ = "users"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     bot_id = Column(UUID(as_uuid=True), nullable=False)

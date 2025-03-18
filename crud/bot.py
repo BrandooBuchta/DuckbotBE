@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models.bot import Bot, Sequence
-from schemas.bot import SignUp, SignIn, SignInResponse, BaseBot, UpdateBot, PlainBot, Statistic
+from schemas.bot import SignUp, SignIn, SignInResponse, BaseBot, UpdateBot, PublicBot, Statistic
 from models.user import User
 from security import get_password_hash, verify_password
 from base64 import b64decode, b64encode
@@ -34,13 +34,18 @@ def get_bot(db: Session, bot_id: UUID):
         return None, 404
     return db_bot, 200
 
-def get_plain_bot(db: Session, bot_id: UUID):
+def get_public_bot(db: Session, bot_id: UUID):
     db_bot = db.query(Bot).filter(Bot.id == bot_id).first()
     if not db_bot:
         return None, 404
-    return PlainBot(
-        name=db_bot.name,
-        support_contact=db_bot.support_contact,
+    return PublicBot(
+        video_url=bot.video_url,
+        bot_url=bot.bot_url,
+        is_event=bot.is_event,
+        event_capacity=bot.event_capacity,
+        event_date=bot.event_date,
+        event_location=bot.event_location,
+        lang=bot.lang,
     ), 200
 
 def sign_up(db: Session, bot: SignUp):
@@ -52,6 +57,7 @@ def sign_up(db: Session, bot: SignUp):
     db_bot = Bot(
         id=bot_id,
         email=bot.email,
+        is_event=bot.is_event,
         password=hashed_password,
         devs_currently_assigned=0,
         devs_share=10,
@@ -77,9 +83,14 @@ def sign_in(db: Session, sign_in: SignIn):
         id=db_bot.id,
         name=db_bot.name,
         email=db_bot.email,
-        ss_url=db_bot.ss_url,
-        ss_landing_url=db_bot.ss_landing_url,
+        video_url=db_bot.video_url,
         support_contact=db_bot.support_contact,
+        is_event=db_bot.is_event,
+        event_capacity=db_bot.event_capacity,
+        event_date=db_bot.event_date,
+        event_location=db_bot.event_location,
+        lang=db_bot.lang,
+
     )
 
     return SignInResponse(token=db_bot.token, bot=bot_data), 200

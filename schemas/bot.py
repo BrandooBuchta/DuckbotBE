@@ -10,19 +10,37 @@ class BaseBot(BaseModel):
     name: Optional[str] = None
     email: Optional[str] = None
     devs_currently_assigned: Optional[int] = 0
-    ss_url: Optional[str] = None
-    ss_landing_url: Optional[str] = None
+    video_url: Optional[str] = None
     devs_share: Optional[int] = 10
     support_contact: Optional[str] = None
+    is_event: Optional[bool] = False
+    event_capacity: Optional[int] = 0
+    event_date: Optional[datetime] = None
+    event_location: Optional[str] = None
+    lang: Optional[str] = None
 
     class Config:
         form_attributes = True
+
+class PublicBot(BaseModel):
+    video_url: Optional[str] = None
+    bot_url: Optional[str] = None
+    is_event: Optional[bool] = False
+    event_capacity: Optional[int] = 0
+    event_date: Optional[datetime] = None
+    event_location: Optional[str] = None
+    lang: Optional[str] = None
+
+    class Config:
+        form_attributes = True
+
 
 class SignUp(BaseModel):
     name: str
     email: str
     password: str
     token: str
+    is_event: bool
 
     class Config:
         form_attributes = True
@@ -42,16 +60,13 @@ class UpdateBot(BaseModel):
     name: Optional[str] = None
     devs_currently_assigned: Optional[int] = None
     devs_share: Optional[int] = None
-    ss_url: Optional[str] = None
-    ss_landing_url: Optional[str] = None
+    video_url: Optional[str] = None
     support_contact: Optional[str] = None
-
-    class Config:
-        form_attributes = True
-
-class PlainBot(BaseModel):
-    name: str
-    support_contact: str
+    is_event: Optional[bool] = False
+    event_capacity: Optional[int] = 0
+    event_date: Optional[datetime] = None
+    event_location: Optional[str] = None
+    lang: Optional[str] = None
 
     class Config:
         form_attributes = True
