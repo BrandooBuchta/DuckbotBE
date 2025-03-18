@@ -146,11 +146,7 @@ def put_bot(bot_id: UUID, update_bot_body: UpdateBot, token: str = Depends(oauth
     return UpdateBot(**db_bot.__dict__)
 
 @router.get("/{bot_id}/public", response_model=PublicBot)
-def fetch_bot(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-
-    if not verify_token(db, bot_id, token):
-        raise HTTPException(status_code=401, detail="Unauthorized")
-
+def fetch_bot(bot_id: UUID, db: Session = Depends(get_db)):
     db_bot, status = get_public_bot(db, bot_id)
 
     if status == 404:
