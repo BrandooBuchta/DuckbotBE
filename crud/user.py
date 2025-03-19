@@ -184,8 +184,11 @@ def update_users_level(db: Session, user_id: UUID):
     send_message_to_user(db, db_user)
     return db_user
 
+from datetime import datetime, timedelta, timezone
+import requests
+from base64 import b64decode
+
 def send_message_to_user(db: Session, user: UserBase):
-    logger.debug("start send_message_to_user")
     bot, status = get_bot(db, user.bot_id)
     if status != 200:
         return
@@ -193,24 +196,19 @@ def send_message_to_user(db: Session, user: UserBase):
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
     url = f"{telegram_api_url}/sendMessage"
 
-    messages = get_messages(user.client_level, bot.lang, bot.is_event)
+    messages = get_messages(user.client_level, bot.lang)
     message = next((e for e in messages if e["id"] == user.next_message_id), None)
 
     if message is None:
         logger.warning(f"⚠️ Žádná zpráva nenalezena pro uživatele {user.chat_id}. Přeskakuji.")
         return
 
-    if user.send_message_at:
-        logger.debug("send_message_at exists")
-        now = datetime.utcnow()
-        send_time = user.send_message_at
-        if isinstance(send_time, str):
-            send_time = datetime.fromisoformat(send_time)
+    should_send = True  # Výchozí hodnota: zpráva se odešle
 
-        if now - send_time > timedelta(minutes=15):
-            logger.info(f"📌 Zpráva pro uživatele {user.chat_id} se neodeslala, protože send_message_at je starší než 5 minut.")
-            update_users_position(db, user.id, message["next_message_id"], message.get("next_message_send_after"))
-            return
+    if user.send_message_at:
+        now = datetime.now(timezone.utc)
+        if now - user.send_message_at > timedelta(minutes=5):
+            should_send = False  # Pokud je `send_message_at` starší než 5 minut, zpráva se nepošle
 
     data = {
         "chat_id": user.chat_id,
@@ -226,10 +224,11 @@ def send_message_to_user(db: Session, user: UserBase):
             ]]
         }
 
-    try:
-        response = requests.post(url, json=data)
-        response.raise_for_status()
-    except requests.RequestException as e:
-        return
+    if should_send:
+        try:
+            response = requests.post(url, json=data)
+            response.raise_for_status()
+        except requests.RequestException:
+            return
 
     update_users_position(db, user.id, message["next_message_id"], message.get("next_message_send_after"))
