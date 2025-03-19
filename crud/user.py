@@ -189,30 +189,33 @@ import requests
 from base64 import b64decode
 
 def send_message_to_user(db: Session, user: UserBase):
+    logger.debug(f"Preparing to send message to user: {user.chat_id}")
     bot, status = get_bot(db, user.bot_id)
     if status != 200:
+        logger.error(f"Failed to get bot data, status: {status}")
         return
 
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
     url = f"{telegram_api_url}/sendMessage"
+    logger.debug(f"Telegram API URL: {url}")
 
     messages = get_messages(user.client_level, bot.lang, bot.is_event)
     message = next((e for e in messages if e["id"] == user.next_message_id), None)
 
     if message is None:
-        logger.warning(f"⚠️ Žádná zpráva nenalezena pro uživatele {user.chat_id}. Přeskakuji.")
+        logger.warning(f"⚠️ No message found for user {user.chat_id}. Skipping.")
         return
 
-    logger.debug(f"message: {message}.")
-
+    logger.debug(f"Message content: {message}")
+    
     should_send = False
+    now = datetime.now(timezone.utc)
 
     if user.send_message_at is None:
-        logger.info(f"send_message_at doesn't exist, sending message immediately.")
+        logger.info(f"send_message_at is None, sending immediately.")
         should_send = True
     else:
         logger.info(f"send_message_at exists: {user.send_message_at}")
-        now = datetime.now(timezone.utc)
         if now - user.send_message_at > timedelta(minutes=5):
             logger.info(f"Message is expired for more than 5 minutes. Sending now.")
             should_send = True
@@ -222,6 +225,7 @@ def send_message_to_user(db: Session, user: UserBase):
         "text": replace_variables(db, user.bot_id, user.chat_id, message["content"]),
         "parse_mode": "html"
     }
+    logger.debug(f"Message payload: {data}")
 
     if message.get("level_up_question"):  
         data["reply_markup"] = {
@@ -230,13 +234,18 @@ def send_message_to_user(db: Session, user: UserBase):
                 {"text": "NE", "callback_data": f"{user.id}|f"},
             ]]
         }
+        logger.debug("Added level-up question buttons.")
 
     if should_send:
-        logger.info(f"sending message")
+        logger.info("Sending message...")
         try:
             response = requests.post(url, json=data)
             response.raise_for_status()
-        except requests.RequestException:
+            logger.info(f"Message sent successfully to {user.chat_id}")
+        except requests.RequestException as e:
+            logger.error(f"Failed to send message: {e}")
             return
+    else:
+        logger.info("Message was not sent due to conditions not being met.")
 
     update_users_position(db, user.id, message["next_message_id"], message.get("next_message_send_after"))
