@@ -196,12 +196,14 @@ def send_message_to_user(db: Session, user: UserBase):
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
     url = f"{telegram_api_url}/sendMessage"
 
-    messages = get_messages(user.client_level, bot.lang)
+    messages = get_messages(user.client_level, bot.lang, bot.is_event)
     message = next((e for e in messages if e["id"] == user.next_message_id), None)
 
     if message is None:
         logger.warning(f"⚠️ Žádná zpráva nenalezena pro uživatele {user.chat_id}. Přeskakuji.")
         return
+
+    logger.debug(f"message: {message}.")
 
     should_send = True  # Výchozí hodnota: zpráva se odešle
 
