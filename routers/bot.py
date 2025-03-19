@@ -253,7 +253,6 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
             if not user:
                 user = create_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id, name=name))
                 assing_academy_link(db, bot_id, user.id)
-                print("send message to user")
                 send_message_to_user(db, user)
 
         else:

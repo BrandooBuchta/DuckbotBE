@@ -185,6 +185,7 @@ def update_users_level(db: Session, user_id: UUID):
     return db_user
 
 def send_message_to_user(db: Session, user: UserBase):
+    logger.debug("start send_message_to_user")
     bot, status = get_bot(db, user.bot_id)
     if status != 200:
         return
@@ -200,6 +201,7 @@ def send_message_to_user(db: Session, user: UserBase):
         return
 
     if user.send_message_at:
+        logger.debug("send_message_at exists")
         now = datetime.utcnow()
         send_time = user.send_message_at
         if isinstance(send_time, str):
