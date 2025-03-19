@@ -1,7 +1,7 @@
 import json
 import os
 
-def get_messages(level: int):
+def get_messages(level: int, lang: str):
     SEQUENCES_FILE_PATH = f"data/sequences/level-{level}-dev.json"
 
     if not os.path.exists(SEQUENCES_FILE_PATH):

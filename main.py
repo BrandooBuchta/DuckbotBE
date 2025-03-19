@@ -42,9 +42,9 @@ origins = [
     "http://localhost:3002",
     "http://localhost:3003",
     "https://duckbot-ui.vercel.app",
-    "https://app.duckbot.cz"
-    "https://ducknation.vercel.app"
-    "https://www.ducknation.io"
+    "https://app.duckbot.cz",
+    "https://ducknation.vercel.app",
+    "https://www.ducknation.io",
 ]
 
 app.add_middleware(

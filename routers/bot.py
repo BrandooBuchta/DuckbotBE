@@ -234,8 +234,9 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
         callback_data = update['callback_query']['data']
         user_id_str, user_res = callback_data.split('|')
         user_id = UUID(user_id_str)
+        user = get_user(db, user_id)
 
-        if user_res == "t":
+        if user_res == "t" and user.next_message_id > 1:
             update_users_level(db, user_id)
 
     if "message" in update:
