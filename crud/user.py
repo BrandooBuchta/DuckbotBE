@@ -232,7 +232,7 @@ def send_message_to_user(db: Session, user: UserBase):
         }
 
     if should_send:
-        logger.info(f"sending another message")
+        logger.info(f"sending message")
         try:
             response = requests.post(url, json=data)
             response.raise_for_status()
