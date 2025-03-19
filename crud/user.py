@@ -217,8 +217,6 @@ def send_message_to_user(db: Session, user: UserBase):
             logger.info(f"Message is expired for more than 5 minutes. Sending now.")
             should_send = True
 
-
-
     data = {
         "chat_id": user.chat_id,
         "text": replace_variables(db, user.bot_id, user.chat_id, message["content"]),
@@ -234,6 +232,7 @@ def send_message_to_user(db: Session, user: UserBase):
         }
 
     if should_send:
+        logger.info(f"sending another message")
         try:
             response = requests.post(url, json=data)
             response.raise_for_status()
