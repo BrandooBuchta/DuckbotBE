@@ -207,7 +207,7 @@ def send_message_to_user(db: Session, user: UserBase):
         return
 
     logger.debug(f"Message content: {message}")
-    
+        
     should_send = False
     now = datetime.now(timezone.utc)
 
@@ -216,8 +216,16 @@ def send_message_to_user(db: Session, user: UserBase):
         should_send = True
     else:
         logger.info(f"send_message_at exists: {user.send_message_at}")
-        if now - user.send_message_at > timedelta(minutes=15):
-            logger.info(f"Message is expired for more than 15 minutes. Sending now.")
+        time_diff = (now - user.send_message_at).total_seconds()
+        
+        if time_diff < 0:
+            logger.info(f"❌ Zpráva je naplánovaná na budoucnost. Nebudu ji posílat.")
+            should_send = False
+        elif time_diff > 900:  # 900 sekund = 15 minut
+            logger.info(f"❌ Zpráva je starší než 15 minut ({time_diff:.2f} s). Přeskakuji odeslání.")
+            should_send = False
+        else:
+            logger.info(f"✅ Čas je správný, odesílám zprávu.")
             should_send = True
 
     data = {
