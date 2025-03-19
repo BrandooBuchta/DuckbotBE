@@ -205,8 +205,9 @@ def send_message_to_user(db: Session, user: UserBase):
         if isinstance(send_time, str):
             send_time = datetime.fromisoformat(send_time)
 
-        if now - send_time > timedelta(minutes=5):
+        if now - send_time > timedelta(minutes=15):
             logger.info(f"📌 Zpráva pro uživatele {user.chat_id} se neodeslala, protože send_message_at je starší než 5 minut.")
+            update_users_position(db, user.id, message["next_message_id"], message.get("next_message_send_after"))
             return
 
     data = {
