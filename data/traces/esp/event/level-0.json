@@ -1,0 +1,59 @@
+{
+    "messages": [
+        {
+            "content": "<strong>Ahoj, {name}! </strong>🔥<br> Mám pro tebe exkluzivní vstup na náš event <strong>{eventName}</strong>, kde ti odhalíme <strong>příležitost desetiletí</strong>! 📈💰<br> Doposud <strong>1-7% měsíční výnosy</strong> a více než <strong>1000% zhodnocení aktiva</strong> – a tohle je teprve začátek!<br> 🎥 <strong>Kdy?</strong> {eventDate}<br> <strong>Kde?</strong> {eventLocation}<br>",
+            "id": 0,
+            "next_message_id": 1,
+            "level_up_question": false
+        },
+        {
+            "content": "‼️ <strong>Už zítra je velký den!</strong> 🔥<br><br>📅 <strong>{eventName}</strong> začíná už zítra! Připrav se na akci, která může změnit tvůj pohled na investování a zhodnocování majetku. 💰🚀<br><br>🔹 Získáš přístup k informacím, které dosud znali jen ti nejúspěšnější.<br>🔹 Ukážeme ti, jak dosáhnout <strong>stabilních pasivních příjmů</strong> s minimálním rizikem.<br>🔹 Seznámíš se s lidmi, kteří už touto cestou prošli a dnes žijí svůj sen.<br><br>🎟️ Nezapomeň si zkontrolovat svou vstupenku a připravit si otázky, protože na eventu bude i exkluzivní Q&A s odborníky!<br><br>📍 <strong>Místo konání:</strong> {eventLocation}<br>🕕 <strong>Začátek:</strong> {eventDate} v 18:00<br><br>Buď připraven! 💡🔥",
+            "id": 1,
+            "next_message_send_after": 1, 
+            "next_message_id": 2,
+            "level_up_question": false
+        },
+        {
+            "content": "📢 <strong>Už dnes to vypukne! </strong>⏳<br><br>🔹 <strong>{eventName}</strong> startuje už dnes a ty u toho nesmíš chybět! Čekají tě exkluzivní informace, které mohou změnit tvůj přístup k investování a byznysu. 📈💰<br><br>🌟 Co tě čeká?<br>✅ <strong>Odhalíme nejnovější trendy</strong> v investicích a digitální ekonomice.<br>✅ <strong>Získáš strategie</strong>, které ti pomohou efektivně zhodnotit svůj kapitál.<br>✅ <strong>Propojíš se s komunitou</strong> lidí, kteří sdílejí stejný mindset a směr.<br><br>🎯 Nenech si ujít tuto příležitost! 📅 Připomeň si čas a místo:<br>📍 <strong>Místo konání:</strong> {eventLocation}<br>🕕 <strong>Start:</strong> {eventDate} v 18:00<br><br>🔥 <strong>Jsi připraven?</strong> Sleduj e-mail a notifikace pro další podrobnosti! 🚀",
+            "id": 2,
+            "next_message_send_after": 1, 
+            "next_message_id": 3,
+            "level_up_question": false
+        },
+        {
+            "content": "⏳ <strong>Už za hodinu začínáme! </strong>🔥<br><br>Jsi připraven vstoupit do světa nových příležitostí? 💡 <strong>{eventName}</strong> startuje už za hodinu a pokud chceš být u toho, teď je ten správný čas si vše připravit!<br><br>📌 <strong>Co bys měl/a mít nachystané?</strong><br>✅ Připojení k internetu, abys měl/a plynulý přístup k prezentacím.<br>✅ Otázky, na které chceš znát odpovědi.<br>✅ Otevřenou mysl, protože informace, které se dozvíš, ti mohou změnit život!<br><br>💡 Nezapomeň si připomenout, kde a kdy:<br>📍 <strong>Místo:</strong> {eventLocation}<br>🕕 <strong>Start:</strong> {eventDate} v 18:00<br><br>🎟️ Připoj se včas a buď připraven na něco velkého! 🚀",
+            "id": 3,
+            "next_message_id": 4,
+            "next_message_send_after": 1, 
+            "level_up_question": false
+        },
+        {
+            "content": "Jsi připraven <strong>udělat první krok</strong>? 🌟 Tady je tvůj <strong>unikátní Academy Link</strong>, kde najdeš <strong>podrobný plán</strong>, jak začít:<br><br>✅ <strong>Vytvoříš a připojíš svou peněženku</strong><br>💳 <strong>Nakoupíš POLs</strong><br>🎟️ <strong>Získáš vstupenku do světa Betfinu</strong><br>🔄 <strong>Vyměníš POLs za BETs</strong><br>💎 <strong>Zastakuješ své BET Tokeny a začneš se podílet na zisku!</strong><br><br>👉 <strong>Tvůj Academy Link:</strong><br>{academyLink}<br><br>💬 Máš otázky? Připoj se k naší <strong>komunitě na Discordu</strong> a zeptej se zkušenějších členů! 🚀<br>{network}<br><br><br>",
+            "id": 4,
+            "next_message_send_after": 1, 
+            "next_message_id": 5,
+            "level_up_question": false
+        },
+        {
+            "content": "Tak co, <strong>zvládl/a jsi zastakovat</strong>? 🏆 Už teď jsi na správné cestě! <strong>Pokračuj dál a nenech si ujít další kroky k maximálním výnosům.</strong> 💰🚀<br><br><br>",
+            "id": 5,
+            "next_message_send_after": 1, 
+            "next_message_id": 6,
+            "level_up_question": true
+        },
+        {
+            "content": "Vytovřit FOMO, odeslat znovu odkaz na webinář",
+            "id": 6,
+            "next_message_send_after": 1, 
+            "next_message_id": 7,
+            "level_up_question": false
+        },
+        {
+            "content": "Jsi připraven <strong>udělat první krok</strong>? 🌟 Tady je tvůj <strong>unikátní Academy Link</strong>, kde najdeš <strong>podrobný plán</strong>, jak začít:<br><br>✅ <strong>Vytvoříš a připojíš svou peněženku</strong><br>💳 <strong>Nakoupíš POLs</strong><br>🎟️ <strong>Získáš vstupenku do světa Betfinu</strong><br>🔄 <strong>Vyměníš POLs za BETs</strong><br>💎 <strong>Zastakuješ své BET Tokeny a začneš se podílet na zisku!</strong><br><br>👉 <strong>Tvůj Academy Link:</strong><br>{academyLink}<br><br>💬 Máš otázky? Připoj se k naší <strong>komunitě na Discordu</strong> a zeptej se zkušenějších členů! 🚀<br>{network}<br><br><br>",
+            "id": 7,
+            "next_message_send_after": 1, 
+            "next_message_id": 5,
+            "level_up_question": false
+        }
+    ]
+}

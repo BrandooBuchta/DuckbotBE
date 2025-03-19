@@ -4,21 +4,18 @@
             "content": "Vítej v naší komunitě! 🚀 Jsi na správném místě, kde <strong>se dozvíš, jak využít tuhle jedinečnou příležitost na maximum</strong>! 💰💎<br>📅 <strong>Co teď?</strong><br>✅ Připoj se k našim <strong>exkluzivním webinářům</strong>, kde ti odhalíme všechny detaily projektu! 🎥<br>✅ Staň se součástí naší <strong>komunity na Discordu</strong> – kde najdeš odpovědi, podporu a tipy od zkušenějších členů!<br>💬 <strong>Připoj se k nám teď:</strong><br>{network}<br><br><br>",
             "id": 0,
             "next_message_id": 1,
-            "next_event": "launchForBeginners",
             "level_up_question": false
         },
         {
             "content": "🔔 <strong>Jsi nováček?</strong> Skvělá zpráva! Připravili jsme pro tebe <strong>speciální call pro začátečníky</strong>, kde tě provedeme <strong>všemi technickými detaily</strong> projektu!<br>✅ Jak začít <strong>bez chyb a zbytečných ztrát</strong><br>✅ Jak <strong>bezpečně vstoupit do ekosystému</strong><br>✅ <strong>LIVE Q&amp;A</strong> – zeptej se na cokoliv!<br>📅 <strong>Rezervuj si místo teď:</strong><br>{launchForBeginners}<br><br><br>",
             "id": 1,
             "next_message_id": 2,
-            "next_event": "crypto",
             "level_up_question": false
         },
         {
             "content": "💡 <strong>Chceš se dozvědět víc o kryptoměnách a jak s nimi bezpečně zacházet?</strong> Nezmeškej náš <strong>exkluzivní webinář o základech a bezpečnosti krypta</strong>!<br>✅ Jak <strong>uchovávat a chránit</strong> své kryptoměny 🛡️<br>✅ Nejčastější chyby, které <strong>tě mohou stát peníze</strong> ❌<br>✅ Jak <strong>bezpečně investovat</strong> a vyhnout se podvodům<br>📅 <strong>Registruj se teď:</strong><br>{crypto}<br><br><br>",
             "id": 2,
             "next_message_id": 3,
-            "next_event": "buildYourBusiness",
             "level_up_question": false
         },
         {

@@ -1,0 +1,32 @@
+{
+    "messages": [
+        {
+            "content": "<strong>Ahoj, {name}! </strong>🔥<br>Mám pro tebe exkluzivní záznam z webináře, kde ti odhalím <strong>příležitost desetiletí</strong>! 📈💰<br>Doposud <strong>1-7% měsíční výnosy</strong> a více než <strong>1000% zhodnocení aktiva</strong> – a tohle je teprve začátek!<br>🎥 <strong>Podívej se na záznam teď, než ho stáhneme z webu!</strong><br><br><br>",
+            "id": 0,
+            "next_message_send_after": 1, 
+            "next_message_id": 1,
+            "level_up_question": false
+        },
+        {
+            "content": "Jsi připraven <strong>udělat první krok</strong>? 🌟 Tady je tvůj <strong>unikátní Academy Link</strong>, kde najdeš <strong>podrobný plán</strong>, jak začít:<br><br>✅ <strong>Vytvoříš a připojíš svou peněženku</strong><br>💳 <strong>Nakoupíš POLs</strong><br>🎟️ <strong>Získáš vstupenku do světa Betfinu</strong><br>🔄 <strong>Vyměníš POLs za BETs</strong><br>💎 <strong>Zastakuješ své BET Tokeny a začneš se podílet na zisku!</strong><br><br>👉 <strong>Tvůj Academy Link:</strong><br>{academyLink}<br><br>💬 Máš otázky? Připoj se k naší <strong>komunitě na Discordu</strong> a zeptej se zkušenějších členů! 🚀<br>{network}<br><br><br>",
+            "id": 1,
+            "next_message_send_after": 1, 
+            "next_message_id": 2,
+            "level_up_question": false
+        },
+        {
+            "content": "Tak co, <strong>zvládl/a jsi zastakovat</strong>? 🏆 Už teď jsi na správné cestě! <strong>Pokračuj dál a nenech si ujít další kroky k maximálním výnosům.</strong> 💰🚀<br><br><br>",
+            "id": 2,
+            "next_message_send_after": 1, 
+            "next_message_id": 3,
+            "level_up_question": true
+        },
+        {
+            "content": "Vytovřit FOMO, odeslat znovu odkaz na webinář",
+            "id": 3,
+            "next_message_send_after": 1, 
+            "next_message_id": 1,
+            "level_up_question": false
+        }
+    ]
+}

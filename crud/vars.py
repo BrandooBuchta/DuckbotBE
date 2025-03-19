@@ -110,6 +110,10 @@ def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
             "key": "eventLocation",
             "value": bot.event_location
         },
+        {
+            "key": "academyLink",
+            "value": user.academy_link
+        }
     ]
 
     for var in variables:

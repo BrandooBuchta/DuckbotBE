@@ -1,35 +1,25 @@
 {
     "messages": [
         {
-            "content": "Vítej v naší komunitě! 🚀 Jsi na správném místě, kde <strong>se dozvíš, jak využít tuhle jedinečnou příležitost na maximum</strong>! 💰💎<br>📅 <strong>Co teď?</strong><br>✅ Připoj se k našim <strong>exkluzivním webinářům</strong>, kde ti odhalíme všechny detaily projektu! 🎥<br>✅ Staň se součástí naší <strong>komunity na Discordu</strong> – kde najdeš odpovědi, podporu a tipy od zkušenějších členů!<br>💬 <strong>Připoj se k nám teď:</strong><br>{network}<br><br><br>",
+            "content": "Welcome to our community! 🚀 You’re in the right place to <strong>learn how to make the most of this unique opportunity</strong>! 💰💎<br>📅 <strong>What’s next?</strong><br>✅ Join our <strong>exclusive webinars</strong>, where we’ll reveal all the details of the project! 🎥<br>✅ Become part of our <strong>community on Discord</strong> – where you’ll find answers, support, and tips from experienced members!<br>💬 <strong>Join us now:</strong><br>{network}<br><br>👉 <strong>Want to take it to the next level?</strong> Access advanced strategies and expert insights at <a href='https://betfin.network/academy/advanced'>Betfin Academy – Advanced</a>! 🚀",
             "id": 0,
             "next_message_id": 1,
+            "next_message_send_after": 10800, 
             "level_up_question": false
         },
         {
-            "content": "🔔 <strong>Jsi nováček?</strong> Skvělá zpráva! Připravili jsme pro tebe <strong>speciální call pro začátečníky</strong>, kde tě provedeme <strong>všemi technickými detaily</strong> projektu!<br>✅ Jak začít <strong>bez chyb a zbytečných ztrát</strong><br>✅ Jak <strong>bezpečně vstoupit do ekosystému</strong><br>✅ <strong>LIVE Q&amp;A</strong> – zeptej se na cokoliv!<br>📅 <strong>Rezervuj si místo teď:</strong><br>{launchForBeginners}<br><br><br>",
+            "content": "💡 <strong>Have you understood how it all works? What if you could start earning from it too?</strong> 💰<br>📢 <strong>Do you want to build your own business and benefit from what you already know?</strong> This is your chance!<br>✅ Become part of the <strong>affiliate program</strong><br>✅ <strong>Start generating income</strong> right away!<br>✅ Connect with successful people who <strong>are already making money</strong> from this opportunity.<br>👉 <strong>Want to learn more?</strong> Just ask! 💬<br>{supportContact}<br><br><br>",
             "id": 1,
             "next_message_id": 2,
-            "level_up_question": false
-        },
-        {
-            "content": "💡 <strong>Chceš se dozvědět víc o kryptoměnách a jak s nimi bezpečně zacházet?</strong> Nezmeškej náš <strong>exkluzivní webinář o základech a bezpečnosti krypta</strong>!<br>✅ Jak <strong>uchovávat a chránit</strong> své kryptoměny 🛡️<br>✅ Nejčastější chyby, které <strong>tě mohou stát peníze</strong> ❌<br>✅ Jak <strong>bezpečně investovat</strong> a vyhnout se podvodům<br>📅 <strong>Registruj se teď:</strong><br>{crypto}<br><br><br>",
-            "id": 2,
-            "next_message_id": 3,
-            "level_up_question": false
-        },
-        {
-            "content": "🔥 <strong>Připrav se na něco velkého!</strong> Pokud chceš <strong>posunout svůj byznys na novou úroveň</strong>, tenhle call je pro tebe.<br>✅ Jak si <strong>vybudovat pasivní příjem</strong> 💰<br>✅ Strategie pro <strong>dlouhodobý růst</strong> 📈<br>✅ Praktické kroky, které <strong>můžeš hned aplikovat</strong><br>📅 <strong>Buď u toho, rezervuj si místo teď:</strong><br>{buildYourBusiness}<br><br><br>",
-            "id": 3,
-            "next_message_send_after": 1, 
-            "next_message_id": 4,
-            "level_up_question": false
-        },
-        {
-            "content": "💡 <strong>Už jsi pochopil/a, jak to celé funguje? Co kdybys na tom začal/a i vydělávat?</strong> 💰<br>📢 <strong>Chceš si vybudovat svůj vlastní byznys a těžit z toho, co už víš?</strong> To je tvoje šance!<br>✅ Staň se součástí <strong>affil programu</strong><br>✅ <strong>Začni generovat příjem</strong> už teď!<br>✅ Připoj se k úspěšným lidem, kteří <strong>už na tom vydělávají</strong><br>👉 <strong>Chceš vědět víc?</strong> Stačí říct! 💬<br>{supportContact}<br><br><br>",
-            "id": 4,
-            "next_message_id": 2,
+            "next_message_send_after": 1440, 
             "level_up_question": true
+        },
+        {
+            "content": "🚀 <strong>Take your knowledge to the next level!</strong> <br><br>Are you ready to unlock <strong>advanced investment strategies</strong> and discover how to <strong>maximize your earnings</strong>? 💰📈<br><br>✅ Gain <strong>insider insights</strong> from top industry experts.<br>✅ Learn the <strong>most effective techniques</strong> for growing your wealth.<br>✅ Get an exclusive look at our <strong>affiliate system</strong> and find out how you can earn even more!<br><br>👉 <strong>Join now:</strong> <a href='https://betfin.network/academy/advanced'>Betfin Academy – Advanced</a> 🚀<br><br>Don’t miss this opportunity to become a top earner in our network!",
+            "id": 2,
+            "next_message_id": 1,
+            "next_message_send_after": 10800, 
+            "level_up_question": false
         }
     ]
 }

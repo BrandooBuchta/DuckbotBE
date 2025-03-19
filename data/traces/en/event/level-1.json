@@ -1,0 +1,25 @@
+{
+    "messages": [
+        {
+            "content": "Welcome to our community! 🚀 You’re in the right place to <strong>learn how to make the most of this unique opportunity</strong>! 💰💎<br>📅 <strong>What’s next?</strong><br>✅ Join our <strong>exclusive webinars</strong>, where we’ll reveal all the details of the project! 🎥<br>✅ Become part of our <strong>community on Discord</strong> – where you’ll find answers, support, and tips from experienced members!<br>💬 <strong>Join us now:</strong><br>{network}<br><br>👉 <strong>Want to take it to the next level?</strong> Access advanced strategies and expert insights at <a href='https://betfin.network/academy/advanced'>Betfin Academy – Advanced</a>! 🚀",
+            "id": 0,
+            "next_message_id": 1,
+            "next_message_send_after": 10800, 
+            "level_up_question": false
+        },
+        {
+            "content": "💡 <strong>Have you understood how it all works? What if you could start earning from it too?</strong> 💰<br>📢 <strong>Do you want to build your own business and benefit from what you already know?</strong> This is your chance!<br>✅ Become part of the <strong>affiliate program</strong><br>✅ <strong>Start generating income</strong> right away!<br>✅ Connect with successful people who <strong>are already making money</strong> from this opportunity.<br>👉 <strong>Want to learn more?</strong> Just ask! 💬<br>{supportContact}<br><br><br>",
+            "id": 1,
+            "next_message_id": 2,
+            "next_message_send_after": 1440, 
+            "level_up_question": true
+        },
+        {
+            "content": "🚀 <strong>Take your knowledge to the next level!</strong> <br><br>Are you ready to unlock <strong>advanced investment strategies</strong> and discover how to <strong>maximize your earnings</strong>? 💰📈<br><br>✅ Gain <strong>insider insights</strong> from top industry experts.<br>✅ Learn the <strong>most effective techniques</strong> for growing your wealth.<br>✅ Get an exclusive look at our <strong>affiliate system</strong> and find out how you can earn even more!<br><br>👉 <strong>Join now:</strong> <a href='https://betfin.network/academy/advanced'>Betfin Academy – Advanced</a> 🚀<br><br>Don’t miss this opportunity to become a top earner in our network!",
+            "id": 2,
+            "next_message_id": 1,
+            "next_message_send_after": 10800, 
+            "level_up_question": false
+        }
+    ]
+}

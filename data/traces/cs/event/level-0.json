@@ -1,7 +1,7 @@
 {
     "messages": [
         {
-            "content": "<strong>Ahoj, {name}! </strong>🔥<br> Mám pro tebe exkluzivní vstup na náš event <strong>{eventName}</strong>, kde ti odhalíme <strong>příležitost této dekády</strong>! 📈💰<br> Doposud <strong>1-7% měsíční výnosy</strong> a více než <strong>1000% zhodnocení aktiva</strong> – a tohle je teprve začátek!<br> 🎥 <strong>Kdy?</strong> {eventDate}<br> <strong>Kde?</strong> {eventLocation}<br>",
+            "content": "<strong>Ahoj, {name}! </strong>🔥<br> Mám pro tebe exkluzivní vstup na náš event <strong>{eventName}</strong>, kde ti odhalíme <strong>příležitost desetiletí</strong>! 📈💰<br> Doposud <strong>1-7% měsíční výnosy</strong> a více než <strong>1000% zhodnocení aktiva</strong> – a tohle je teprve začátek!<br> 🎥 <strong>Kdy?</strong> {eventDate}<br> <strong>Kde?</strong> {eventLocation}<br>",
             "id": 0,
             "next_message_id": 1,
             "level_up_question": false
