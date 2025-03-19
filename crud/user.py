@@ -198,6 +198,16 @@ def send_message_to_user(db: Session, user: UserBase):
         logger.warning(f"⚠️ Žádná zpráva nenalezena pro uživatele {user.chat_id}. Přeskakuji.")
         return
 
+    if user.send_message_at:
+        now = datetime.utcnow()
+        send_time = user.send_message_at
+        if isinstance(send_time, str):
+            send_time = datetime.fromisoformat(send_time)
+
+        if now - send_time > timedelta(minutes=5):
+            logger.info(f"📌 Zpráva pro uživatele {user.chat_id} se neodeslala, protože send_message_at je starší než 5 minut.")
+            return
+
     data = {
         "chat_id": user.chat_id,
         "text": replace_variables(db, user.bot_id, user.chat_id, message["content"]),
