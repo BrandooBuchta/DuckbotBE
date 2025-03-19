@@ -205,12 +205,17 @@ def send_message_to_user(db: Session, user: UserBase):
 
     logger.debug(f"message: {message}.")
 
-    # should_send = True  # Výchozí hodnota: zpráva se odešle
+    should_send = True  # Výchozí hodnota: zpráva se odešle
 
-    # if user.send_message_at:
-    #     now = datetime.now(timezone.utc)
-    #     if now - user.send_message_at > timedelta(minutes=5):
-    #         should_send = False  # Pokud je `send_message_at` starší než 5 minut, zpráva se nepošle
+    if not user.send_message_at:
+        logger.info(f"send_message_at doesnt exists {user.send_message_at}")
+    else:
+        logger.info(f"send_message_at exists {user.send_message_at}")
+        now = datetime.now(timezone.utc)
+        if now - user.send_message_at > timedelta(minutes=5):
+            should_send
+
+
 
     data = {
         "chat_id": user.chat_id,
@@ -226,11 +231,11 @@ def send_message_to_user(db: Session, user: UserBase):
             ]]
         }
 
-    # if should_send:
-    try:
-        response = requests.post(url, json=data)
-        response.raise_for_status()
-    except requests.RequestException:
-        return
+    if should_send:
+        try:
+            response = requests.post(url, json=data)
+            response.raise_for_status()
+        except requests.RequestException:
+            return
 
     update_users_position(db, user.id, message["next_message_id"], message.get("next_message_send_after"))
