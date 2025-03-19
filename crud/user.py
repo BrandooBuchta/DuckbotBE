@@ -119,7 +119,7 @@ def get_users_in_queue(db: Session):
     finally:
         db.close()
 
-def get_next_msessage_sent_at_by_id(message_id: str, level: str):
+def get_next_msessage_sent_at_by_id(message_id: str, level: str, bot_id: UUID):
     if level == 0:
         match message_id:
             case 4:
@@ -127,6 +127,11 @@ def get_next_msessage_sent_at_by_id(message_id: str, level: str):
                 # return (event_date if event_date else get_next_weekday_at(6, 18)) - timedelta(hours=9)
                 logger.info("assigning")
                 return datetime.now() + timedelta(minutes=1)
+            case _:
+                bot, status = get_bot(db, bot_id)
+                new_date = bot.event_date - timedelta(days=1)
+                new_date = new_date.replace(hour=12, minute=0, second=0, microsecond=0)
+                return new_date
     else:
         match message_id:
             case 1:
@@ -154,7 +159,7 @@ def update_users_position(db: Session, user_id: UUID, next_message_id: str, next
             db_user.send_message_at = now + timedelta(minutes=next_message_send_after)
         else:
             logger.info("no next_message_send_after doesn't exists")
-            db_user.send_message_at = get_next_msessage_sent_at_by_id(next_message_id, db_user.client_level)
+            db_user.send_message_at = get_next_msessage_sent_at_by_id(next_message_id, db_user.client_level, db_user.bot_id)
 
         db.commit()
         db.refresh(db_user)
@@ -186,7 +191,7 @@ def send_message_to_user(db: Session, user: UserBase):
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
     url = f"{telegram_api_url}/sendMessage"
 
-    messages = get_messages(user.client_level)
+    messages = get_messages(user.client_level, bot.lang)
     message = next((e for e in messages if e["id"] == user.next_message_id), None)
 
     if message is None:
