@@ -205,15 +205,17 @@ def send_message_to_user(db: Session, user: UserBase):
 
     logger.debug(f"message: {message}.")
 
-    should_send = True  # Výchozí hodnota: zpráva se odešle
+    should_send = False
 
-    if not user.send_message_at:
-        logger.info(f"send_message_at doesnt exists {user.send_message_at}")
+    if user.send_message_at is None:
+        logger.info(f"send_message_at doesn't exist, sending message immediately.")
+        should_send = True
     else:
-        logger.info(f"send_message_at exists {user.send_message_at}")
+        logger.info(f"send_message_at exists: {user.send_message_at}")
         now = datetime.now(timezone.utc)
         if now - user.send_message_at > timedelta(minutes=5):
-            should_send
+            logger.info(f"Message is expired for more than 5 minutes. Sending now.")
+            should_send = True
 
 
 
