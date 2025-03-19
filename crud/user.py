@@ -128,10 +128,11 @@ def get_next_msessage_sent_at_by_id(message_id: str, level: str, bot_id: UUID):
                 logger.info("assigning")
                 return datetime.now() + timedelta(minutes=1)
             case _:
-                bot, status = get_bot(db, bot_id)
-                new_date = bot.event_date - timedelta(days=1)
-                new_date = new_date.replace(hour=12, minute=0, second=0, microsecond=0)
-                return new_date
+                # bot, status = get_bot(db, bot_id)
+                # new_date = bot.event_date - timedelta(days=1)
+                # new_date = new_date.replace(hour=12, minute=0, second=0, microsecond=0)
+                # return new_date
+                return datetime.now() + timedelta(minutes=1)
     else:
         match message_id:
             case 1:
