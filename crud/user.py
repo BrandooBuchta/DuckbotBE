@@ -216,8 +216,8 @@ def send_message_to_user(db: Session, user: UserBase):
         should_send = True
     else:
         logger.info(f"send_message_at exists: {user.send_message_at}")
-        if now - user.send_message_at > timedelta(minutes=5):
-            logger.info(f"Message is expired for more than 5 minutes. Sending now.")
+        if now - user.send_message_at > timedelta(minutes=15):
+            logger.info(f"Message is expired for more than 15 minutes. Sending now.")
             should_send = True
 
     data = {

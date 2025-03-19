@@ -104,7 +104,7 @@ def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
         },
         {
             "key": "eventDate",
-            "value": bot.event_date
+            "value": bot.event_date.strftime("%d.%m.%Y %H:%M") if bot and bot.event_date else "Datum nenalezeno"
         },
         {
             "key": "eventLocation",
