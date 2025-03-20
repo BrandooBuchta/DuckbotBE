@@ -16,7 +16,6 @@ from routers.bot import router as bot_router
 from routers.links import router as links_router
 from routers.faq import router as faq_router
 from routers.sequence import router as sequence_router
-from apscheduler.schedulers.background import BackgroundScheduler
 from crud.sequence import get_sequences, update_sequence, delete_sequence, get_sequence, update_send_at
 from crud.vars import replace_variables
 from crud.bot import get_bot
@@ -108,21 +107,6 @@ def process_customers_trace():
     finally:
         db.close()
 
-@app.post("/run-process")
-def run_process(background_tasks: BackgroundTasks):
-    """Endpoint pro spuštění úlohy."""
-    background_tasks.add_task(process_customers_trace)
-    return {"status": "ok", "message": "Zpracování spuštěno"}
-
-@app.get("/")
-async def root():
-    return {"message": "Telegram Bot is running!"}
-
-app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
-app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy Links"])
-app.include_router(faq_router, prefix="/api/bot/faq", tags=["FAQ"])
-app.include_router(sequence_router, prefix="/api/bot/sequence", tags=["Sequences"])
-
 def processs_sequences(db: Session):
     logger.info("Starting to process sequences...")
     
@@ -182,26 +166,25 @@ def send_sequence_to_user(db: Session, bot_id: UUID, chat_id: int, message: str,
     response = requests.post(url, json=data)
     response.raise_for_status()
 
-def sequence_service():
-    logger.info("Scheduler started scheduling...")
-    with get_db() as db:
-        processs_sequences(db)
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(
-    sequence_service,
-    "interval",
-    minutes=1,
-    max_instances=10,
-    misfire_grace_time=300
-)
-scheduler.start()
+@app.post("/run-customers-trace")
+def run_customers_trace(background_tasks: BackgroundTasks):
+    background_tasks.add_task(process_customers_trace)
+    return {"status": "ok", "message": "Zpracování spuštěno"}
 
+@app.post("/run-sequences")
+def run_sequences(background_tasks: BackgroundTasks):
+    background_tasks.add_task(processs_sequences)
+    return {"status": "ok", "message": "Zpracování spuštěno"}
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    logger.info("Shutting down scheduler...")
-    scheduler.shutdown()
+@app.get("/")
+async def root():
+    return {"message": "Telegram Bot is running!"}
+
+app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
+app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy Links"])
+app.include_router(faq_router, prefix="/api/bot/faq", tags=["FAQ"])
+app.include_router(sequence_router, prefix="/api/bot/sequence", tags=["Sequences"])
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT"))
