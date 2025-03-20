@@ -93,53 +93,6 @@ async def events():
     formatted_text = format_events(events_data)
     return PlainTextResponse(content=formatted_text)
 
-def process_customers_trace():
-    logger.info("✅ Spouštím úlohu process_customers_trace")
-    db: Session = SessionLocal()
-    try:
-        users = get_users_in_queue(db)
-        logger.info(f"🔍 Nalezeno {len(users)} uživatelů ke zpracování.")
-        
-        for user in users:
-            send_message_to_user(db, user)
-    except Exception as e:
-        logger.error(f"❌ Chyba při zpracování uživatelů: {str(e)}")
-    finally:
-        db.close()
-
-def processs_sequences():
-    db: Session = SessionLocal()
-    logger.info("Starting to process sequences...")
-    
-    sequences, status = get_sequences(db)
-    logger.info(f"Retrieved sequences: {sequences}, Status: {status}")
-
-    if status != 200:
-        logger.error(f"Failed to retrieve sequences from the database. {sequences}")
-        return
-
-    for sequence in sequences:
-        logger.info(f"Processing sequence ID: {sequence.id}")
-        
-        users = get_audience(db, sequence.bot_id, sequence.audience)
-        logger.info(f"Found users: {users} for bot ID: {sequence.bot_id}")
-
-        if not users:
-            logger.warning(f"No users found for bot ID: {sequence.bot_id}")
-            continue
-
-        for user in users:
-            logger.info(f"Sending message to user {user.chat_id}")
-            send_sequence_to_user(db, sequence.bot_id, user.chat_id, sequence.message, sequence.check_status)
-
-        if sequence.repeat:
-            if sequence.interval:
-                updated_date = sequence.send_at + timedelta(days=sequence.interval)
-                update_sequence(db, sequence.id, {"send_at": updated_date, "starts_at": updated_date, "send_immediately": False})
-                logger.info(f"Sequence {sequence.id} rescheduled to send_at: {updated_date}")
-        else:
-            update_sequence(db, sequence.id, {"send_at": None, "starts_at": None, "send_immediately": False, "is_active": True})
-
 def send_sequence_to_user(db: Session, bot_id: UUID, chat_id: int, message: str, check_status: bool):
     bot, status = get_bot(db, bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
@@ -167,15 +120,59 @@ def send_sequence_to_user(db: Session, bot_id: UUID, chat_id: int, message: str,
     response = requests.post(url, json=data)
     response.raise_for_status()
 
+async def process_customers_trace():
+    logger.info("✅ Spouštím úlohu process_customers_trace")
+    db = SessionLocal()
+    try:
+        users = get_users_in_queue(db)
+        logger.info(f"🔍 Nalezeno {len(users)} uživatelů ke zpracování.")
+        
+        for user in users:
+            send_message_to_user(db, user)
+    except Exception as e:
+        logger.error(f"❌ Chyba při zpracování uživatelů: {str(e)}")
+    finally:
+        db.close()
 
 @app.post("/run-customers-trace")
-def run_customers_trace(background_tasks: BackgroundTasks):
+async def run_customers_trace(background_tasks: BackgroundTasks):
     background_tasks.add_task(process_customers_trace)
     return {"status": "ok", "message": "Zpracování spuštěno"}
 
+async def process_sequences():
+    db = SessionLocal()
+    logger.info("✅ Spouštím úlohu process_sequences")
+    
+    try:
+        sequences, status = get_sequences(db)
+        if status != 200:
+            logger.error(f"❌ Nepodařilo se načíst sekvence: {sequences}")
+            return
+        
+        for sequence in sequences:
+            users = get_audience(db, sequence.bot_id, sequence.audience)
+            if not users:
+                logger.warning(f"⚠️ Žádní uživatelé pro sekvenci {sequence.id}")
+                continue
+
+            for user in users:
+                send_sequence_to_user(db, sequence.bot_id, user.chat_id, sequence.message, sequence.check_status)
+
+            if sequence.repeat and sequence.interval:
+                updated_date = sequence.send_at + timedelta(days=sequence.interval)
+                update_sequence(db, sequence.id, {"send_at": updated_date, "starts_at": updated_date, "send_immediately": False})
+            else:
+                update_sequence(db, sequence.id, {"send_at": None, "starts_at": None, "send_immediately": False, "is_active": False})
+
+    except Exception as e:
+        logger.error(f"❌ Chyba při zpracování sekvencí: {e}")
+    
+    finally:
+        db.close()
+
 @app.post("/run-sequences")
-def run_sequences(background_tasks: BackgroundTasks):
-    background_tasks.add_task(processs_sequences)
+async def run_sequences(background_tasks: BackgroundTasks):
+    background_tasks.add_task(process_sequences)
     return {"status": "ok", "message": "Zpracování spuštěno"}
 
 @app.get("/")
