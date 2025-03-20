@@ -150,7 +150,7 @@ async def process_sequences():
             return
         
         for sequence in sequences:
-            users = get_audience(db, sequence.bot_id, sequence.audience)
+            users = get_audience(db, sequence.bot_id, sequence.levels)
             if not users:
                 logger.warning(f"⚠️ Žádní uživatelé pro sekvenci {sequence.id}")
                 continue
