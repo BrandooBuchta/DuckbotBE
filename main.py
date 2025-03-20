@@ -107,7 +107,8 @@ def process_customers_trace():
     finally:
         db.close()
 
-def processs_sequences(db: Session):
+def processs_sequences():
+    db: Session = SessionLocal()
     logger.info("Starting to process sequences...")
     
     sequences, status = get_sequences(db)
