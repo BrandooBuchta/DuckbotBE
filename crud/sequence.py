@@ -30,7 +30,7 @@ def get_all_sequences(db: Session, bot_id: UUID):
 from datetime import datetime, timezone
 
 def get_sequences(db: Session):
-    now = datetime.now(timezone.utc).replace(microsecond=0) + timedelta(hours=1)
+    now = datetime.now(timezone.utc).replace(microsecond=0)
 
     db_sequences = db.query(Sequence).filter(
         Sequence.is_active == True,
