@@ -206,6 +206,7 @@ def send_message_to_user(db: Session, user: UserBase):
         return
 
     if message.event:
+        print("message.event exists")
         match message.event:
             case "opportunityCall":
                 date = get_event_date("Opportunity Call")
@@ -258,6 +259,7 @@ def send_message_to_user(db: Session, user: UserBase):
         }
         logger.debug("Added level-up question buttons.")
 
+    print ("should_send before sending", should_send)
     if should_send:
         logger.info("Sending message...")
         try:
