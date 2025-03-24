@@ -125,7 +125,6 @@ def get_next_msessage_sent_at_by_id(message_id: str, level: str, bot_id: UUID):
             case 4:
                 # event_date = get_event_date("Opportunity Call")
                 # return (event_date if event_date else get_next_weekday_at(6, 18)) - timedelta(hours=9)
-                logger.info("assigning")
                 return datetime.now() + timedelta(minutes=1)
             case _:
                 # bot, status = get_bot(db, bot_id)
@@ -205,6 +204,21 @@ def send_message_to_user(db: Session, user: UserBase):
     if message is None:
         logger.warning(f"⚠️ No message found for user {user.chat_id}. Skipping.")
         return
+
+    if message.event:
+        match message.event:
+            case "opportunityCall":
+                date = get_event_date("Opportunity Call")
+                should_send = True if date else False
+            case "launchForBeginners":
+                date = get_event_date("Launch for Beginners")
+                should_send = True if date else False
+            case "crypto":
+                date = get_event_date("Základy a bezpečnost kryptoměn")
+                should_send = True if date else False
+            case "buildYourBusiness":
+                date = get_event_date("Build Your Business")
+                should_send = True if date else False
 
     logger.debug(f"Message content: {message}")
         
