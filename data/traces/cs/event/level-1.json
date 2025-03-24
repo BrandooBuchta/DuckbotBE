@@ -1,38 +1,38 @@
 {
     "messages": [
         {
-            "content": "Vítej v naší komunitě! 🚀 Jsi na správném místě, kde <strong>se dozvíš, jak využít tuhle jedinečnou příležitost na maximum</strong>! 💰💎<br>📅 <strong>Co teď?</strong><br>✅ Připoj se k našim <strong>exkluzivním webinářům</strong>, kde ti odhalíme všechny detaily projektu! 🎥<br>✅ Staň se součástí naší <strong>komunity na Discordu</strong> – kde najdeš odpovědi, podporu a tipy od zkušenějších členů!<br>💬 <strong>Připoj se k nám teď:</strong><br>{network}<br><br><br>",
+            "content": "Vítej v naší komunitě! 🚀 Jsi na správném místě, kde <strong>se dozvíš, jak využít tuhle jedinečnou příležitost na maximum</strong>! 💰💎<br><br>📅 <strong>Co teď?</strong><br>✅ Podívej se na naší <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://betfin.network/academy/advanced\"><strong>Akademii</strong></a> kde se dozvíš více o projektu, kryptoměnách a taky o našem Affiliate Systému<br><br>✅ Podívej se na naše <a rel=\"noopener noreferrer\" href=\"https://betfin.network/academy/events\"><strong>Webináře</strong></a><strong> </strong>na kterých všechno pochopíš lépe a rychleji, zároveň můžeš využít Live QnA! <br><br>✅ Staň se součástí naší <a rel=\"noopener noreferrer\" href=\"{network}\"><strong>komunity na Discordu</strong></a> – kde najdeš odpovědi, podporu a tipy od zkušenějších členů!",
             "id": 0,
-            "next_message_id": 1,
-            "level_up_question": false
+            "level_up_question": false,
+            "next_message_id": 1
         },
         {
-            "content": "🔔 <strong>Jsi nováček?</strong> Skvělá zpráva! Připravili jsme pro tebe <strong>speciální call pro začátečníky</strong>, kde tě provedeme <strong>všemi technickými detaily</strong> projektu!<br>✅ Jak začít <strong>bez chyb a zbytečných ztrát</strong><br>✅ Jak <strong>bezpečně vstoupit do ekosystému</strong><br>✅ <strong>LIVE Q&amp;A</strong> – zeptej se na cokoliv!<br>📅 <strong>Rezervuj si místo teď:</strong><br>{launchForBeginners}<br><br><br>",
+            "content": "🔔 <strong>Jsi nováček?</strong> Skvělá zpráva! Připravili jsme pro tebe <strong>speciální call pro začátečníky</strong>, kde tě provedeme <strong>všemi technickými detaily</strong> projektu!<br><br>✅ Jak začít <strong>bez chyb a zbytečných ztrát</strong><br>✅ Jak <strong>bezpečně vstoupit do ekosystému</strong><br>✅ <strong>LIVE Q&amp;A</strong> – zeptej se na cokoliv!<br><br>📅 <strong>Datum: </strong>{launchForBeginnersDate}<br><br>📅 <strong>Rezervuj si místo teď: </strong><a rel=\"noopener noreferrer\" href=\"{launchForBeginners}\"><strong>Launch For Beginners</strong></a>",
+            "event": "launchForBeginners",
             "id": 1,
-            "next_message_id": 2,
             "level_up_question": false,
-            "event": "launchForBeginners"
+            "next_message_id": 2
         },
         {
-            "content": "💡 <strong>Chceš se dozvědět víc o kryptoměnách a jak s nimi bezpečně zacházet?</strong> Nezmeškej náš <strong>exkluzivní webinář o základech a bezpečnosti krypta</strong>!<br>✅ Jak <strong>uchovávat a chránit</strong> své kryptoměny 🛡️<br>✅ Nejčastější chyby, které <strong>tě mohou stát peníze</strong> ❌<br>✅ Jak <strong>bezpečně investovat</strong> a vyhnout se podvodům<br>📅 <strong>Registruj se teď:</strong><br>{crypto}<br><br><br>",
+            "content": "💡 <strong>Chceš se dozvědět víc o kryptoměnách a jak s nimi bezpečně zacházet?</strong> Nezmeškej náš <strong>exkluzivní webinář o základech a bezpečnosti krypta</strong>!<br><br>✅ Jak <strong>uchovávat a chránit</strong> své kryptoměny 🛡️<br>✅ Nejčastější chyby, které <strong>tě mohou stát peníze</strong> ❌<br>✅ Jak <strong>bezpečně investovat</strong> a vyhnout se podvodům<br><br>📅 <strong>Datum: </strong>{cryptoDate}<br><br><strong>Registruj se teď: </strong><a rel=\"noopener noreferrer\" href=\"{crypto}\"><strong>Základy a bezpečnost kryptoměn</strong></a>",
+            "event": "crypto",
             "id": 2,
-            "next_message_id": 3,
             "level_up_question": false,
-            "event": "crypto"
+            "next_message_id": 3
         },
         {
-            "content": "🔥 <strong>Připrav se na něco velkého!</strong> Pokud chceš <strong>posunout svůj byznys na novou úroveň</strong>, tenhle call je pro tebe.<br>✅ Jak si <strong>vybudovat pasivní příjem</strong> 💰<br>✅ Strategie pro <strong>dlouhodobý růst</strong> 📈<br>✅ Praktické kroky, které <strong>můžeš hned aplikovat</strong><br>📅 <strong>Buď u toho, rezervuj si místo teď:</strong><br>{buildYourBusiness}<br><br><br>",
+            "content": "🔥 <strong>Připrav se na něco velkého!</strong> Využí našeho Affiliate systému a postav si na projektu svůj vlastní byznys! <br><br>✅ Jak si <strong>vybudovat pasivní příjem</strong> 💰<br>✅ Strategie pro <strong>dlouhodobý růst</strong> 📈<br>✅ Praktické kroky, které <strong>můžeš hned aplikovat</strong><br><br>📅 <strong>Datum: </strong>{buildYourBusinessDate}<br><br><strong>Buď u toho, rezervuj si místo teď: </strong><a rel=\"noopener noreferrer\" href=\"{buildYourBusiness}\"><strong>Build Your Business</strong></a>",
+            "event": "buildYourBusiness",
             "id": 3,
-            "next_message_send_after": 1, 
-            "next_message_id": 4,
             "level_up_question": false,
-            "event": "buildYourBusiness"
+            "next_message_id": 4,
+            "next_message_send_after": 1
         },
         {
-            "content": "💡 <strong>Už jsi pochopil/a, jak to celé funguje? Co kdybys na tom začal/a i vydělávat?</strong> 💰<br>📢 <strong>Chceš si vybudovat svůj vlastní byznys a těžit z toho, co už víš?</strong> To je tvoje šance!<br>✅ Staň se součástí <strong>affil programu</strong><br>✅ <strong>Začni generovat příjem</strong> už teď!<br>✅ Připoj se k úspěšným lidem, kteří <strong>už na tom vydělávají</strong><br>👉 <strong>Chceš vědět víc?</strong> Stačí říct! 💬<br>{supportContact}<br><br><br>",
+            "content": "💡 <strong>Už jsi pochopil/a, jak to celé funguje? Co to posunout na jiný level?</strong> 💰<br><br>📢 <strong>Chceš si vybudovat svůj vlastní byznys a těžit z toho, co už víš?</strong> To je tvoje šance!<br><br>✅ Staň se součástí <strong>affiliate programu</strong><br>✅ <strong>Začni generovat příjem</strong> už teď!<br>✅ Připoj se k úspěšným lidem, kteří <strong>už na tom vydělávají</strong><br><br>👉 <strong>Chceš vědět víc?</strong> Stačí říct! 💬 {supportContact}",
             "id": 4,
-            "next_message_id": 2,
-            "level_up_question": true
+            "level_up_question": true,
+            "next_message_id": 2
         }
     ]
 }

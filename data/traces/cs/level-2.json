@@ -1,10 +1,10 @@
 {
     "messages": [
         {
-            "content": "💡 <strong>Chceš nejen využívat tento systém, ale i na něm vydělávat?</strong> Teď je ta správná chvíle! 🌟<br>📢 <strong>Jak to funguje?</strong><br>✅ <strong>Sdílej tuto příležitost</strong> s ostatními a <strong>získej provize</strong> za každého, kdo se přidá!<br>✅ Vybuduj si <strong>pasivní příjem</strong> – čím více lidí zapojíš, tím víc vyděláváš! 💰<br>✅ Máš podporu – <strong>pomůžeme ti s prvními kroky, strategií a technikami pro maximální úspěch</strong>! 🚀<br>🔗 <strong>Nevíš, jak začít? Spoj se s naším leaderem, který ti vše vysvětlí a pomůže:</strong><br>📞 <strong>Kontakt:</strong> {supportContact}<br>🔥 <strong>Tahle šance tu nebude navždy – chyť ji za pačesy a začni budovat svůj byznys teď!</strong> 💎",
+            "content": "💡 <strong>Chceš nejen využívat tento systém, ale i na něm vydělávat?</strong> Teď je ta správná chvíle! 🌟<br><br>📢 <strong>Jak to funguje?</strong><br>✅ <strong>Sdílej tuto příležitost</strong> s ostatními a <strong>získej provize</strong> za každého, kdo se přidá!<br>✅ Vybuduj si <strong>pasivní příjem</strong> – čím více lidí zapojíš, tím víc vyděláváš! 💰<br>✅ Máš podporu – <strong>pomůžeme ti s prvními kroky, strategií a technikami pro maximální úspěch</strong>! 🚀<br><br>🔗 <strong>Nevíš, jak začít? Spoj se s naším leaderem, který ti vše vysvětlí a pomůže:</strong><br>📞 <strong>Kontakt:</strong> {supportContact}<br>🔥 <strong>Tahle šance tu nebude navždy – chyť ji za pačesy a začni budovat svůj byznys teď!</strong> 💎",
             "id": 0,
-            "next_message_id": 1,
-            "level_up_question": false
+            "level_up_question": false,
+            "next_message_id": 1
         }
     ]
 }

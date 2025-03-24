@@ -13,6 +13,7 @@ def get_user_name(n):
         return vokativ(n, woman=True)
     return vokativ(n, woman=False) 
 
+# getting correct events by lang 
 def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
     SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
