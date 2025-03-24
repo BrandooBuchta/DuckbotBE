@@ -205,9 +205,10 @@ def send_message_to_user(db: Session, user: UserBase):
         logger.warning(f"⚠️ No message found for user {user.chat_id}. Skipping.")
         return
 
-    if message.event:
-        print("message.event exists")
-        match message.event:
+    event = message.get("event")
+
+    if event:
+        match event:
             case "opportunityCall":
                 date = get_event_date("Opportunity Call")
                 should_send = True if date else False
