@@ -1,45 +1,49 @@
 {
     "messages": [
-        {
-            "content": "<strong>Ahoj, {name}! </strong>🔥<br>Mám pro tebe exkluzivní záznam z webináře, kde ti odhalím <strong>příležitost desetiletí</strong>! 📈💰<br>Doposud <strong>1-7% měsíční výnosy</strong> a více než <strong>1000% zhodnocení aktiva</strong> – a tohle je teprve začátek!<br>🎥 <strong>Podívej se na záznam teď, než ho stáhneme z webu!</strong><br><br><br>",
-            "id": 0,
-            "next_message_send_after": 1, 
-            "next_message_id": 1,
-            "level_up_question": false
-        },
-        {
-            "content": "Jsi připraven <strong>udělat první krok</strong>? 🌟 Tady je tvůj <strong>unikátní Academy Link</strong>, kde najdeš <strong>podrobný plán</strong>, jak začít:<br><br>✅ <strong>Vytvoříš a připojíš svou peněženku</strong><br>💳 <strong>Nakoupíš POLs</strong><br>🎟️ <strong>Získáš vstupenku do světa Betfinu</strong><br>🔄 <strong>Vyměníš POLs za BETs</strong><br>💎 <strong>Zastakuješ své BET Tokeny a začneš se podílet na zisku!</strong><br><br>👉 <strong>Tvůj Academy Link:</strong><br>{academyLink}<br><br>💬 Máš otázky? Připoj se k naší <strong>komunitě na Discordu</strong> a zeptej se zkušenějších členů! 🚀<br>{network}<br><br><br>",
-            "id": 1,
-            "next_message_send_after": 1, 
-            "next_message_id": 2,
-            "level_up_question": false
-        },
-        {
-            "content": "Tak co, <strong>zvládl/a jsi zastakovat</strong>? 🏆 Už teď jsi na správné cestě! <strong>Pokračuj dál a nenech si ujít další kroky k maximálním výnosům.</strong> 💰🚀<br><br><br>",
-            "id": 2,
-            "next_message_send_after": 1, 
-            "next_message_id": 3,
-            "level_up_question": true
-        },
-        {
-            "content": "‼️ <strong>Ještě ses nepodíval/a?</strong> Přichází tvoje šance! 🔥<br><br>📅 <strong>Datum a čas nejbližšího callu:</strong><br>{opportunityCall}<br><br>🌟 <strong>Co se dozvíš?</strong><br>✅ <strong>Jak to celé funguje</strong><br>✅ <strong>Jak dosáhnout vysokých výnosů s minimálním rizikem</strong><br>✅ <strong>LIVE Q&amp;A – můžeš se ptát na cokoliv!</strong><br>🎟️ <strong>Registrace je ZDARMA, ale místa jsou omezená! Připoj se teď, než bude plno!</strong><br><br><br>",
-            "id": 3,
-            "next_message_id": 4,
-            "level_up_question": false
-        },
-        {
-            "content": "⏳ <strong>Dnes v 18:00</strong> startuje webinář, který <strong>ti může změnit život</strong>! 🚀<br>❌ <strong>Neprošvihni svoji šanci – už dnes večer se dozvíš, jak využít tuto příležitost na maximum!</strong> 💰💎<br>📌 <strong>Připoj se včas, ať ti nic neuteče!</strong><br><br><br>",
-            "id": 4,
-            "next_message_send_after": 1, 
-            "next_message_id": 5,
-            "level_up_question": false
-        },
-        {
-            "content": "🚀 <strong>ZAČÍNÁME ZA CHVÍLI!</strong><br>📢 <strong>Poslední šance připojit se k webináři a být u toho!</strong><br>🔴 <strong>Klikni a sleduj LIVE!</strong> 🎥👇<br><br><br>",
-            "id": 5,
-            "next_message_send_after": 1, 
-            "next_message_id": 1,
-            "level_up_question": false
-        }
+      {
+        "content": "<strong>Ahoj, {name}!</strong> 🔥<br><br>Mám pre teba exkluzívny záznam z webinára, kde ti odhalím <strong>príležitosť desaťročia</strong>! 📈💰<br><br>Doteraz <strong>1–7 % mesačné výnosy</strong> a viac než <strong>1000 % zhodnotenie aktíva</strong> – a toto je len začiatok! 💸<br><br>🎥 <strong>Pozri si záznam teraz, kým ho stiahneme z webu!</strong><br><br><a rel=\"noopener noreferrer\" href=\"https://ducknation.vercel.app/video?lang=cs\"><strong>Záznam z webinára</strong></a>",
+        "id": 0,
+        "level_up_question": false,
+        "next_message_id": 1,
+        "next_message_send_after": 30
+      },
+      {
+        "content": "Si pripravený <strong>urobiť prvý krok?</strong> 🌟 Tu je tvoj <strong>unikátny Academy Link</strong>, kde nájdeš <strong>podrobný plán</strong>, ako začať:<br><br>✅ <strong>Vytvoríš a prepojíš svoju peňaženku</strong><br>💳 <strong>Kúpiš POLs</strong><br>🎟️ <strong>Získaš vstupenku do sveta Betfinu</strong><br>🔄 <strong>Vymeníš POLs za BETs</strong><br>💎 <strong>Začneš stakeovať svoje BET tokeny a podieľať sa na zisku!</strong><br><br>👉 <strong>Tvoj Academy Link:</strong><br>{academyLink}<br><br>💬 Máš otázky? Pripoj sa do našej <strong>komunity na Discorde</strong> a opýtaj sa skúsenejších členov! 🚀<br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\"><strong>Discord komunita</strong></a>",
+        "id": 1,
+        "level_up_question": false,
+        "next_message_id": 2,
+        "next_message_send_after": 120
+      },
+      {
+        "content": "Tak čo, <strong>zvládol/a si stakeovanie?</strong> 🏆 Už teraz si na správnej ceste! <strong>Pokračuj ďalej a nenechaj si ujsť ďalšie kroky k maximálnym výnosom.</strong> 💰🚀",
+        "id": 2,
+        "level_up_question": true,
+        "next_message_id": 3,
+        "next_message_send_after": 1440
+      },
+      {
+        "content": "‼️ <strong>Stále ti nie je všetko jasné?</strong> Prichádza tvoja šanca! 🔥<br><br>📅 <strong>Dátum a čas najbližšieho hovoru:</strong><br>{opportunityCallDate}<br><br>🌟 <strong>Čo sa dozvieš?</strong><br>✅ <strong>Ako to celé funguje</strong><br>✅ <strong>Ako dosiahnuť vysoké výnosy s minimálnym rizikom</strong><br>✅ <strong>LIVE Q&amp;A – môžeš sa spýtať na čokoľvek!</strong><br>🎟️ <strong>Registrácia je ZADARMO, ale miesta sú obmedzené! Pripoj sa teraz, kým je voľno!</strong><br><br><strong>Odkaz:</strong> {opportunityCall}",
+        "event": "opportunityCall",
+        "id": 3,
+        "level_up_question": false,
+        "next_message_id": 4
+      },
+      {
+        "content": "⏳ <strong>Dnes o 18:00</strong> začína webinár, ktorý <strong>ti môže zmeniť život</strong>! 🚀<br>❌ <strong>Nepremeškaj svoju šancu – už dnes večer sa dozvieš, ako túto príležitosť využiť naplno!</strong> 💰💎<br>📌 <strong>Pripoj sa včas, aby ti nič neušlo!</strong><br><br><strong>Odkaz:</strong> {opportunityCall}",
+        "event": "opportunityCall",
+        "id": 4,
+        "level_up_question": false,
+        "next_message_id": 5,
+        "next_message_send_after": 540
+      },
+      {
+        "content": "🚀 <strong>ZAČÍNAME UŽ O CHVÍĽU!</strong><br>📢 <strong>Posledná šanca pripojiť sa na webinár a byť pri tom!</strong><br>🔴 <strong>Klikni a sleduj LIVE!</strong> 🎥👇<br><br><strong>Odkaz:</strong> {opportunityCall}",
+        "event": "opportunityCall",
+        "id": 5,
+        "level_up_question": false,
+        "next_message_id": 1,
+        "next_message_send_after": 40
+      }
     ]
-}
+  }
+  

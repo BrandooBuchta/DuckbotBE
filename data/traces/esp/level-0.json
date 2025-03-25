@@ -1,32 +1,48 @@
 {
     "messages": [
         {
-            "content": "<strong>Ahoj, {name}! </strong>🔥<br>Mám pro tebe exkluzivní záznam z webináře, kde ti odhalím <strong>příležitost desetiletí</strong>! 📈💰<br>Doposud <strong>1-7% měsíční výnosy</strong> a více než <strong>1000% zhodnocení aktiva</strong> – a tohle je teprve začátek!<br>🎥 <strong>Podívej se na záznam teď, než ho stáhneme z webu!</strong><br><br><br>",
+            "content": "<strong>¡Hola, {name}!</strong> 🔥<br><br>¡Tengo para ti una grabación exclusiva del webinar, donde revelo la <strong>oportunidad de la década</strong>! 📈💰<br><br>Hasta ahora, <strong>rendimientos mensuales del 1 al 7%</strong> y más de <strong>1000% de crecimiento de activos</strong> – ¡y esto es solo el comienzo! 💸<br><br>🎥 <strong>¡Mira la repetición ahora antes de que la retiremos!</strong><br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://ducknation.vercel.app/video?lang=en\"><strong>Grabación del Webinar</strong></a>",
             "id": 0,
-            "next_message_send_after": 1, 
+            "level_up_question": false,
             "next_message_id": 1,
-            "level_up_question": false
+            "next_message_send_after": 30
         },
         {
-            "content": "Jsi připraven <strong>udělat první krok</strong>? 🌟 Tady je tvůj <strong>unikátní Academy Link</strong>, kde najdeš <strong>podrobný plán</strong>, jak začít:<br><br>✅ <strong>Vytvoříš a připojíš svou peněženku</strong><br>💳 <strong>Nakoupíš POLs</strong><br>🎟️ <strong>Získáš vstupenku do světa Betfinu</strong><br>🔄 <strong>Vyměníš POLs za BETs</strong><br>💎 <strong>Zastakuješ své BET Tokeny a začneš se podílet na zisku!</strong><br><br>👉 <strong>Tvůj Academy Link:</strong><br>{academyLink}<br><br>💬 Máš otázky? Připoj se k naší <strong>komunitě na Discordu</strong> a zeptej se zkušenějších členů! 🚀<br>{network}<br><br><br>",
+            "content": "¿Estás listo para <strong>dar el primer paso?</strong> 🌟 Aquí tienes tu <strong>enlace único de la Academia</strong> con un <strong>plan detallado</strong> para comenzar:<br><br>✅ <strong>Crea y conecta tu billetera</strong><br>💳 <strong>Compra POLs</strong><br>🎟️ <strong>Consigue tu entrada al mundo de Betfin</strong><br>🔄 <strong>Intercambia POLs por BETs</strong><br>💎 <strong>Haz staking con tus BET Tokens y empieza a ganar beneficios</strong><br><br>👉 <strong>Tu enlace de la Academia:</strong><br>{academyLink}<br><br>💬 ¿Tienes preguntas? Únete a nuestra <strong>comunidad en Discord</strong> y consulta con miembros más experimentados. 🚀<br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\"><strong>Comunidad en Discord</strong></a>",
             "id": 1,
-            "next_message_send_after": 1, 
+            "level_up_question": false,
             "next_message_id": 2,
-            "level_up_question": false
+            "next_message_send_after": 120
         },
         {
-            "content": "Tak co, <strong>zvládl/a jsi zastakovat</strong>? 🏆 Už teď jsi na správné cestě! <strong>Pokračuj dál a nenech si ujít další kroky k maximálním výnosům.</strong> 💰🚀<br><br><br>",
+            "content": "Entonces, <strong>¿lograste hacer staking?</strong> 🏆 ¡Ya estás en el camino correcto! <strong>Sigue adelante y no te pierdas los siguientes pasos para obtener el máximo rendimiento.</strong> 💰🚀",
             "id": 2,
-            "next_message_send_after": 1, 
+            "level_up_question": true,
             "next_message_id": 3,
-            "level_up_question": true
+            "next_message_send_after": 1440
         },
         {
-            "content": "Vytovřit FOMO, odeslat znovu odkaz na webinář",
+            "content": "‼️ <strong>¿Aún tienes preguntas?</strong> ¡Esta es tu oportunidad! 🔥<br><br>📅 <strong>Fecha y hora de la próxima llamada:</strong><br>{opportunityCallDate}<br><br>🌟 <strong>¿Qué aprenderás?</strong><br>✅ <strong>Cómo funciona todo el sistema</strong><br>✅ <strong>Cómo obtener altos rendimientos con bajo riesgo</strong><br>✅ <strong>Q&amp;A EN VIVO – ¡pregunta lo que quieras!</strong><br>🎟️ <strong>¡La inscripción es GRATIS, pero los cupos son limitados! ¡Únete ahora antes de que se llene!</strong><br><br><strong>Enlace:</strong> {opportunityCall}",
+            "event": "opportunityCall",
             "id": 3,
-            "next_message_send_after": 1, 
+            "level_up_question": false,
+            "next_message_id": 4
+        },
+        {
+            "content": "⏳ <strong>Hoy a las 18:00</strong> comienza el webinar que <strong>¡podría cambiar tu vida!</strong> 🚀<br>❌ <strong>No pierdas tu oportunidad – esta noche aprenderás cómo aprovecharla al máximo.</strong> 💰💎<br>📌 <strong>Únete a tiempo para no perderte nada.</strong><br><br><strong>Enlace:</strong> {opportunityCall}",
+            "event": "opportunityCall",
+            "id": 4,
+            "level_up_question": false,
+            "next_message_id": 5,
+            "next_message_send_after": 540
+        },
+        {
+            "content": "🚀 <strong>¡EMPEZAMOS EN BREVE!</strong><br>📢 <strong>¡Última oportunidad para unirte al webinar y ser parte de esto!</strong><br>🔴 <strong>¡Haz clic y míralo EN VIVO!</strong> 🎥👇<br><br><strong>Enlace:</strong> {opportunityCall}",
+            "event": "opportunityCall",
+            "id": 5,
+            "level_up_question": false,
             "next_message_id": 1,
-            "level_up_question": false
+            "next_message_send_after": 40
         }
     ]
 }

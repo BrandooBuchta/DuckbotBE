@@ -1,72 +1,69 @@
 {
     "messages": [
         {
-            "content": "<strong>Ahoj, {name}! </strong>🔥<br> Mám pro tebe exkluzivní vstup na náš event <strong>{eventName}</strong>, kde ti odhalíme <strong>příležitost desetiletí</strong>! 📈💰<br> Doposud <strong>1-7% měsíční výnosy</strong> a více než <strong>1000% zhodnocení aktiva</strong> – a tohle je teprve začátek!<br> 🎥 <strong>Kdy?</strong> {eventDate}<br> <strong>Kde?</strong> {eventLocation}<br>",
+            "content": "<strong>Ahoj, {name}!</strong> 🔥<br>Mám pre teba exkluzívny vstup na náš event <strong>{eventName}</strong>, kde ti odhalíme <strong>príležitosť desaťročia</strong>! 📈💰<br>Doteraz <strong>1–7 % mesačné výnosy</strong> a viac než <strong>1000 % zhodnotenie aktíva</strong> – a toto je len začiatok!<br><br>📍 <strong>Miesto konania:</strong> {eventLocation}<br>🕕 <strong>Začiatok:</strong> {eventDate}<br><br>Tešíme sa na teba! 💡🔥",
             "id": 0,
-            "next_message_id": 1,
-            "level_up_question": false
+            "level_up_question": false,
+            "next_message_id": 1
         },
         {
-            "content": "‼️ <strong>Už zítra je velký den!</strong> 🔥<br><br>📅 <strong>{eventName}</strong> začíná už zítra! Připrav se na akci, která může změnit tvůj pohled na investování a zhodnocování majetku. 💰🚀<br><br>🔹 Získáš přístup k informacím, které dosud znali jen ti nejúspěšnější.<br>🔹 Ukážeme ti, jak dosáhnout <strong>stabilních pasivních příjmů</strong> s minimálním rizikem.<br>🔹 Seznámíš se s lidmi, kteří už touto cestou prošli a dnes žijí svůj sen.<br><br>🎟️ Nezapomeň si zkontrolovat svou vstupenku a připravit si otázky, protože na eventu bude i exkluzivní Q&A s odborníky!<br><br>📍 <strong>Místo konání:</strong> {eventLocation}<br>🕕 <strong>Začátek:</strong> {eventDate} v 18:00<br><br>Buď připraven! 💡🔥",
+            "content": "‼️<strong>Už zajtra je veľký deň!</strong> 🔥<br><br>📅 <strong>{eventName}</strong> začína už zajtra! Priprav sa na udalosť, ktorá môže zmeniť tvoj pohľad na investovanie a zhodnocovanie majetku. 💰🚀<br><br>🔹 Získaš prístup k informáciám, ktoré doteraz poznali len tí najúspešnejší.<br>🔹 Ukážeme ti, ako dosiahnuť <strong>stabilné pasívne príjmy</strong> s minimálnym rizikom.<br>🔹 Spoznáš ľudí, ktorí už touto cestou prešli a dnes žijú svoj sen.<br><br>🎟️ Tvoje meno je už na zozname, takže si priprav len dobrú náladu a veľa energie, aby si všetko pochopil!<br><br>📍 <strong>Miesto konania:</strong> {eventLocation}<br>🕕 <strong>Začiatok:</strong> {eventDate}<br><br>Buď pripravený! 💡🔥",
             "id": 1,
-            "next_message_send_after": 1, 
+            "level_up_question": false,
             "next_message_id": 2,
-            "level_up_question": false
+            "next_message_send_after": 960
         },
         {
-            "content": "📢 <strong>Už dnes to vypukne! </strong>⏳<br><br>🔹 <strong>{eventName}</strong> startuje už dnes a ty u toho nesmíš chybět! Čekají tě exkluzivní informace, které mohou změnit tvůj přístup k investování a byznysu. 📈💰<br><br>🌟 Co tě čeká?<br>✅ <strong>Odhalíme nejnovější trendy</strong> v investicích a digitální ekonomice.<br>✅ <strong>Získáš strategie</strong>, které ti pomohou efektivně zhodnotit svůj kapitál.<br>✅ <strong>Propojíš se s komunitou</strong> lidí, kteří sdílejí stejný mindset a směr.<br><br>🎯 Nenech si ujít tuto příležitost! 📅 Připomeň si čas a místo:<br>📍 <strong>Místo konání:</strong> {eventLocation}<br>🕕 <strong>Start:</strong> {eventDate} v 18:00<br><br>🔥 <strong>Jsi připraven?</strong> Sleduj e-mail a notifikace pro další podrobnosti! 🚀",
+            "content": "📢 <strong>Už dnes to vypukne!</strong> ⏳<br><br>🔹 <strong>{eventName}</strong> štartuje už dnes a ty pri tom nesmieš chýbať! Čakajú ťa exkluzívne informácie, ktoré môžu zmeniť tvoj prístup k investovaniu a biznisu. 📈💰<br><br>🌟 Čo ťa čaká?<br>🔹 Získaš prístup k informáciám, ktoré doteraz poznali len tí najúspešnejší.<br>🔹 Ukážeme ti, ako dosiahnuť <strong>stabilné pasívne príjmy</strong> s minimálnym rizikom.<br>🔹 Spoznáš ľudí, ktorí už touto cestou prešli a dnes žijú svoj sen.<br><br>🎯 Nenechaj si ujsť túto príležitosť! 📅<br><br>📍 <strong>Miesto konania:</strong> {eventLocation}<br>🕕 <strong>Štart:</strong> {eventDate}<br><br>🔥 <strong>Si pripravený?</strong> Budeme ti sem posielať novinky a aktuality! 🚀",
             "id": 2,
-            "next_message_send_after": 1, 
+            "level_up_question": false,
             "next_message_id": 3,
-            "level_up_question": false
+            "next_message_send_after": 420
         },
         {
-            "content": "⏳ <strong>Už za hodinu začínáme! </strong>🔥<br><br>Jsi připraven vstoupit do světa nových příležitostí? 💡 <strong>{eventName}</strong> startuje už za hodinu a pokud chceš být u toho, teď je ten správný čas si vše připravit!<br><br>📌 <strong>Co bys měl/a mít nachystané?</strong><br>✅ Připojení k internetu, abys měl/a plynulý přístup k prezentacím.<br>✅ Otázky, na které chceš znát odpovědi.<br>✅ Otevřenou mysl, protože informace, které se dozvíš, ti mohou změnit život!<br><br>💡 Nezapomeň si připomenout, kde a kdy:<br>📍 <strong>Místo:</strong> {eventLocation}<br>🕕 <strong>Start:</strong> {eventDate} v 18:00<br><br>🎟️ Připoj se včas a buď připraven na něco velkého! 🚀",
+            "content": "⏳ <strong>Začíname už o hodinu!</strong> 🔥<br><br>Si pripravený vstúpiť do sveta nových príležitostí? 💡 <strong>{eventName}</strong> štartuje už o hodinu a ak chceš byť pri tom, teraz je ten správny čas si všetko pripraviť!<br><br>📌 <strong>Čo by si mal/a mať nachystané?</strong><br>✅ Internetové pripojenie pre plynulý prístup k prezentáciám.<br>✅ Otázky, na ktoré chceš poznať odpovede.<br>✅ Otvorenú myseľ, pretože informácie, ktoré sa dozvieš, ti môžu zmeniť život!<br><br>📍 <strong>Miesto:</strong> {eventLocation}<br>🕕 <strong>Štart:</strong> {eventDate}<br><br>🎟️ Pripoj sa včas a buď pripravený na niečo veľké! 🚀",
             "id": 3,
+            "level_up_question": false,
             "next_message_id": 4,
-            "next_message_send_after": 1, 
-            "level_up_question": false
+            "next_message_send_after": 1440
         },
         {
-            "content": "Jsi připraven <strong>udělat první krok</strong>? 🌟 Tady je tvůj <strong>unikátní Academy Link</strong>, kde najdeš <strong>podrobný plán</strong>, jak začít:<br><br>✅ <strong>Vytvoříš a připojíš svou peněženku</strong><br>💳 <strong>Nakoupíš POLs</strong><br>🎟️ <strong>Získáš vstupenku do světa Betfinu</strong><br>🔄 <strong>Vyměníš POLs za BETs</strong><br>💎 <strong>Zastakuješ své BET Tokeny a začneš se podílet na zisku!</strong><br><br>👉 <strong>Tvůj Academy Link:</strong><br>{academyLink}<br><br>💬 Máš otázky? Připoj se k naší <strong>komunitě na Discordu</strong> a zeptej se zkušenějších členů! 🚀<br>{network}<br><br><br>",
+            "content": "Tak čo, <strong>zvládol/a si zastakovať?</strong> 🏆 Už teraz si na správnej ceste! <strong>Pokračuj ďalej a nenechaj si ujsť ďalšie kroky k maximálnym výnosom.</strong> 💰🚀",
             "id": 4,
-            "next_message_send_after": 1, 
+            "level_up_question": true,
             "next_message_id": 5,
-            "level_up_question": false
+            "next_message_send_after": 1440
         },
         {
-            "content": "Tak co, <strong>zvládl/a jsi zastakovat</strong>? 🏆 Už teď jsi na správné cestě! <strong>Pokračuj dál a nenech si ujít další kroky k maximálním výnosům.</strong> 💰🚀<br><br><br>",
+            "content": "‼️ <strong>Ešte ti nie je všetko jasné?</strong> Prichádza tvoja šanca! 🔥<br><br>📅 <strong>Dátum a čas najbližšieho callu:</strong><br>{opportunityCallDate}<br><br>🌟 <strong>Čo sa dozvieš?</strong><br>✅ <strong>Ako to celé funguje</strong><br>✅ <strong>Ako dosiahnuť vysoké výnosy s minimálnym rizikom</strong><br>✅ <strong>LIVE Q&amp;A – môžeš sa opýtať na čokoľvek!</strong><br>🎟️ <strong>Registrácia je ZADARMO, ale miesta sú obmedzené! Pripoj sa hneď, kým je ešte voľno!</strong><br><br><strong>Odkaz:</strong> {opportunityCall}",
+            "event": "opportunityCall",
             "id": 5,
-            "next_message_send_after": 1, 
-            "next_message_id": 6,
-            "level_up_question": true
+            "level_up_question": false,
+            "next_message_id": 6
         },
         {
-            "content": "‼️ <strong>Ještě ti není vše jasné?</strong> Přichází tvoje šance! 🔥<br><br>📅 <strong>Datum a čas nejbližšího callu:</strong><br>{opportunityCall}<br><br>🌟 <strong>Co se dozvíš?</strong><br>✅ <strong>Jak to celé funguje</strong><br>✅ <strong>Jak dosáhnout vysokých výnosů s minimálním rizikem</strong><br>✅ <strong>LIVE Q&amp;A – můžeš se ptát na cokoliv!</strong><br>🎟️ <strong>Registrace je ZDARMA, ale místa jsou omezená! Připoj se teď, než bude plno!</strong><br><br><br>",
+            "content": "⏳ <strong>Dnes o 18:00</strong> začína webinár, ktorý <strong>ti môže zmeniť život</strong>! 🚀<br><br>❌ <strong>Nepremeškaj svoju šancu – už dnes večer sa dozvieš, ako využiť túto príležitosť naplno!</strong> 💰💎<br>📌 <strong>Pripoj sa včas, aby ti nič neušlo!</strong><br><br><strong>Odkaz:</strong> {opportunityCall}",
+            "event": "opportunityCall",
             "id": 6,
+            "level_up_question": false,
             "next_message_id": 7,
-            "level_up_question": false
+            "next_message_send_after": 540
         },
         {
-            "content": "⏳ <strong>Dnes v 18:00</strong> startuje webinář, který <strong>ti může změnit život</strong>! 🚀<br>❌ <strong>Neprošvihni svoji šanci – už dnes večer se dozvíš, jak využít tuto příležitost na maximum!</strong> 💰💎<br>📌 <strong>Připoj se včas, ať ti nic neuteče!</strong><br><br><br>",
+            "content": "🚀 <strong>ZAČÍNAME UŽ ČOSKORO!</strong><br>📢 <strong>Posledná šanca pripojiť sa k webináru a byť pri tom!</strong><br>🔴 <strong>Klikni a sleduj LIVE!</strong> 🎥👇<br><br><strong>Odkaz:</strong> {opportunityCall}",
+            "event": "opportunityCall",
             "id": 7,
-            "next_message_send_after": 1, 
+            "level_up_question": false,
             "next_message_id": 8,
-            "level_up_question": false
+            "next_message_send_after": 40
         },
         {
-            "content": "🚀 <strong>ZAČÍNÁME ZA CHVÍLI!</strong><br>📢 <strong>Poslední šance připojit se k webináři a být u toho!</strong><br>🔴 <strong>Klikni a sleduj LIVE!</strong> 🎥👇<br><br><br>",
+            "content": "Si pripravený <strong>urobiť prvý krok?</strong> 🌟 Tu je tvoj <strong>unikátny Academy Link</strong>, kde nájdeš <strong>podrobný plán</strong>, ako začať:<br><br>✅ <strong>Vytvoríš a prepojíš svoju peňaženku</strong><br>💳 <strong>Kúpiš POLs</strong><br>🎟️ <strong>Získaš vstupenku do sveta Betfinu</strong><br>🔄 <strong>Vymeníš POLs za BETs</strong><br>💎 <strong>Začneš stakeovať svoje BET tokeny a podieľať sa na zisku!</strong><br><br>👉 <strong>Tvoj Academy Link:</strong><br>{academyLink}<br><br>💬 Máš otázky? Pripoj sa do našej <strong>komunity na Discorde</strong> a opýtaj sa skúsenejších členov! 🚀<br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\">Discord Komunita</a>",
+            "event": "opportunityCall",
             "id": 8,
-            "next_message_send_after": 1, 
-            "next_message_id": 9,
-            "level_up_question": false
-        },
-        {
-            "content": "Jsi připraven <strong>udělat první krok</strong>? 🌟 Tady je tvůj <strong>unikátní Academy Link</strong>, kde najdeš <strong>podrobný plán</strong>, jak začít:<br><br>✅ <strong>Vytvoříš a připojíš svou peněženku</strong><br>💳 <strong>Nakoupíš POLs</strong><br>🎟️ <strong>Získáš vstupenku do světa Betfinu</strong><br>🔄 <strong>Vyměníš POLs za BETs</strong><br>💎 <strong>Zastakuješ své BET Tokeny a začneš se podílet na zisku!</strong><br><br>👉 <strong>Tvůj Academy Link:</strong><br>{academyLink}<br><br>💬 Máš otázky? Připoj se k naší <strong>komunitě na Discordu</strong> a zeptej se zkušenějších členů! 🚀<br>{network}<br><br><br>",
-            "id": 9,
-            "next_message_send_after": 1, 
-            "next_message_id": 4,
-            "level_up_question": false
+            "level_up_question": false,
+            "next_message_id": 5,
+            "next_message_send_after": 120
         }
     ]
 }
