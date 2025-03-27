@@ -145,9 +145,9 @@ def put_bot(bot_id: UUID, update_bot_body: UpdateBot, token: str = Depends(oauth
 
     return UpdateBot(**db_bot.__dict__)
 
-@router.get("/{bot_id}/public", response_model=PublicBot)
-def fetch_bot(bot_id: UUID, db: Session = Depends(get_db)):
-    db_bot, status = get_public_bot(db, bot_id)
+@router.get("/{name}/public", response_model=PublicBot)
+def fetch_bot(name: str, db: Session = Depends(get_db)):
+    db_bot, status = get_public_bot(db, name)
 
     if status == 404:
         raise HTTPException(status_code=404, detail="Tento bot neexistuje!")

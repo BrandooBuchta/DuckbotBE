@@ -33,8 +33,8 @@ def get_bot(db: Session, bot_id: UUID):
         return None, 404
     return db_bot, 200
 
-def get_public_bot(db: Session, bot_id: UUID):
-    db_bot = db.query(Bot).filter(Bot.id == bot_id).first()
+def get_public_bot(db: Session, name: str):
+    db_bot = db.query(Bot).filter(Bot.name == name).first()
     if not db_bot:
         return None, 404
 

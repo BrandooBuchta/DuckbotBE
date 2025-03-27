@@ -1,7 +1,7 @@
 {
     "messages": [
         {
-            "content": "<strong>Ahoj, {name}! </strong>🔥<br><br>Mám pro tebe exkluzivní záznam z webináře, kde ti odhalím <strong>příležitost desetiletí</strong>! 📈💰<br><br>Doposud <strong>1-7% měsíční výnosy</strong> a více než <strong>1000% zhodnocení aktiva</strong> – a tohle je teprve začátek! 💸<br><br>🎥 <strong>Podívej se na záznam teď, než ho stáhneme z webu!</strong><br><br><a rel=\"noopener noreferrer\" href=\"https://ducknation.vercel.app/video?lang=cs\"><strong>Záznam z Webináře</strong></a>",
+            "content": "<strong>Ahoj, {name}! </strong>🔥<br><br>Mám pro tebe exkluzivní záznam z webináře, kde ti odhalím <strong>příležitost desetiletí</strong>! 📈💰<br><br>Doposud <strong>1-7% měsíční výnosy</strong> a více než <strong>1000% zhodnocení aktiva</strong> – a tohle je teprve začátek! 💸<br><br>🎥 <strong>Podívej se na záznam teď, než ho stáhneme z webu!</strong><br><br><a rel=\"noopener noreferrer\" href=\"https://ducknation.vercel.app/webinar?lang=cs\"><strong>Záznam z Webináře</strong></a>",
             "id": 0,
             "level_up_question": false,
             "next_message_id": 1,
