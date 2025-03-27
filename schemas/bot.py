@@ -40,7 +40,7 @@ class PublicBot(BaseModel):
 
 class SignUp(BaseModel):
     event_name: Optional[str] = None
-    name: Optional[str] = Non
+    name: Optional[str] = None
     email: str
     password: str
     token: str
