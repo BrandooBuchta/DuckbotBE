@@ -34,7 +34,10 @@ def get_bot(db: Session, bot_id: UUID):
     return db_bot, 200
 
 def get_public_bot(db: Session, name: str):
-    db_bot = db.query(Bot).filter(Bot.event_name if Bot.is_event else Bot.name == name).first()
+    db_bot = db.query(Bot).filter(
+        (Bot.event_name == name) if Bot.is_event else (Bot.name == name)
+    ).first()
+
     if not db_bot:
         return None, 404
 
