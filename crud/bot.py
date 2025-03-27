@@ -34,7 +34,7 @@ def get_bot(db: Session, bot_id: UUID):
     return db_bot, 200
 
 def get_public_bot(db: Session, name: str):
-    db_bot = db.query(Bot).filter(Bot.name == name).first()
+    db_bot = db.query(Bot).filter(Bot.event_name if Bot.is_event else Bot.name == name).first()
     if not db_bot:
         return None, 404
 
@@ -71,6 +71,7 @@ def sign_up(db: Session, bot: SignUp):
         id=bot_id,
         email=bot.email,
         name=bot.name,
+        event_name=bot.event_name,
         is_event=bot.is_event,
         password=hashed_password,
         devs_currently_assigned=0,
