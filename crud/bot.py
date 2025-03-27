@@ -70,6 +70,7 @@ def sign_up(db: Session, bot: SignUp):
     db_bot = Bot(
         id=bot_id,
         email=bot.email,
+        name=bot.name,
         is_event=bot.is_event,
         password=hashed_password,
         devs_currently_assigned=0,
