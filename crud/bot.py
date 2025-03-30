@@ -35,7 +35,10 @@ def get_bot(db: Session, bot_id: UUID):
 
 def get_public_bot(db: Session, name: str):
     db_bot = db.query(Bot).filter(
-        (Bot.event_name == name) if Bot.is_event else (Bot.name == name)
+        or_(
+            Bot.name == name,
+            Bot.event_name == name
+        )
     ).first()
 
     if not db_bot:
