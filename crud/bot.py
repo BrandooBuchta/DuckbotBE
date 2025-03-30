@@ -7,6 +7,7 @@ from base64 import b64decode, b64encode
 import uuid
 from uuid import UUID
 import requests
+from sqlalchemy import or_
 
 def verify_token(db: Session, bot_id: UUID, token: str) -> bool:
     bot, status = get_bot(db, bot_id)
