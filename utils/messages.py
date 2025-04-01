@@ -2,7 +2,7 @@ import json
 import os
 
 def get_messages(level: int, lang: str, is_event: bool):
-    event_path = "event/" if is_event else ""
+    event_path = "event/" if is_event else "online/"
     SEQUENCES_FILE_PATH = f"data/traces/{lang}/{event_path}level-{level}.json"
 
     if not os.path.exists(SEQUENCES_FILE_PATH):
