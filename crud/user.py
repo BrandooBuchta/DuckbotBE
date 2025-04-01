@@ -198,7 +198,7 @@ def send_message_to_user(db: Session, user: UserBase):
     url = f"{telegram_api_url}/sendMessage"
     logger.debug(f"Telegram API URL: {url}")
 
-    messages = get_messages(user.client_level, bot.lang, bot.is_event)
+    messages = get_messages(user.client_level, bot.lang, bot.is_event, user.bot_id)
     message = next((e for e in messages if e["id"] == user.next_message_id), None)
 
     if message is None:
