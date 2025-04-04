@@ -154,6 +154,11 @@ def update_users_position(db: Session, user_id: UUID, next_message_id: str, next
 
     if db_user:
         db_user.next_message_id = next_message_id
+        if next_message_id == 1:
+            db.commit()
+            db.refresh(db_user)
+            return db_user
+
         if next_message_send_after:
             logger.info("next_message_send_after exists")
             db_user.send_message_at = now + timedelta(minutes=next_message_send_after)
@@ -228,9 +233,6 @@ def send_message_to_user(db: Session, user: UserBase):
     now = datetime.now(timezone.utc)
 
     if user.send_message_at is None:
-        logger.info(f"send_message_at is None, sending immediately.")
-        should_send = True
-    elif user.next_message_id in [1, 2] is None:
         logger.info(f"send_message_at is None, sending immediately.")
         should_send = True
     else:
