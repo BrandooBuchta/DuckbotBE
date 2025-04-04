@@ -8,7 +8,6 @@ from datetime import datetime
 class BaseBot(BaseModel):
     id: UUID
     name: Optional[str] = None
-    email: Optional[str] = None
     devs_currently_assigned: Optional[int] = 0
     video_url: Optional[str] = None
     bot_url: Optional[str] = None
@@ -41,7 +40,6 @@ class PublicBot(BaseModel):
 class SignUp(BaseModel):
     event_name: Optional[str] = None
     name: Optional[str] = None
-    email: str
     password: str
     token: str
     is_event: bool
@@ -51,7 +49,7 @@ class SignUp(BaseModel):
         form_attributes = True
 
 class SignIn(BaseModel):
-    email: str
+    name: str
     password: str
 
     class Config:

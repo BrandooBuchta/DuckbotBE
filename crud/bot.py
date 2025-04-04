@@ -21,8 +21,13 @@ def _decode_base64_with_padding(base64_str: str) -> str:
     return b64decode(base64_str).decode()
 
 
-def get_bot_by_email(db: Session, email: str):
-    db_bot = db.query(Bot).filter(Bot.email == email).first()
+def get_bot_by_name(db: Session, name: str):
+    db_bot = db.query(Bot).filter(
+        or_(
+            Bot.name == name,
+            Bot.event_name == name
+        )
+    ).first()
     if not db_bot:
         return None, 404
     return db_bot, 200
@@ -76,7 +81,6 @@ def sign_up(db: Session, bot: SignUp):
 
     db_bot = Bot(
         id=bot_id,
-        email=bot.email,
         name=bot.name,
         event_name=bot.event_name,
         is_event=bot.is_event,
@@ -93,7 +97,7 @@ def sign_up(db: Session, bot: SignUp):
     return bot_id, 200
 
 def sign_in(db: Session, sign_in: SignIn):
-    db_bot, status_code = get_bot_by_email(db, sign_in.email)
+    db_bot, status_code = get_bot_by_name(db, sign_in.name)
     if not db_bot:
         return None, 404
 
@@ -105,7 +109,6 @@ def sign_in(db: Session, sign_in: SignIn):
     bot_data = BaseBot(
         id=db_bot.id,
         name=db_bot.name,
-        email=db_bot.email,
         video_url=db_bot.video_url,
         support_contact=db_bot.support_contact,
         is_event=db_bot.is_event,

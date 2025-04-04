@@ -12,7 +12,6 @@ class Bot(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String, nullable=True)
-    email = Column(String, nullable=True)
     password = Column(String, nullable=True)
     token = Column(String, nullable=True)
     video_url = Column(String, nullable=True)
