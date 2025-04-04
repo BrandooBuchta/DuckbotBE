@@ -295,7 +295,7 @@ def fetch_statistics(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Sess
 
     return get_statistics(db, bot_id)
 
-@app.post("/send-academy-link/{user_id}")
+@router.post("/send-academy-link/{user_id}")
 async def send_academy_links(user_id: UUID, db: Session = Depends(get_db)):
     user = get_user(db, user_id)
     send_message_to_user(db, user)
