@@ -94,7 +94,7 @@ def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
         {"key": "eventDate", "value": bot.event_date.strftime("%d. %m. %Y, %H:%M") if bot and bot.event_date else "Datum nenalezeno"},
         {"key": "eventLocation", "value": bot.event_location},
         {"key": "academyLink", "value": user.academy_link},
-        {"key": "videoLink", "value": f"https://www.ducknation.io/video?lang={bot.lang}&u={user.id}"},
+        {"key": "videoLink", "value": f"https://www.ducknation.io/video?lang={bot.lang}&id={user.id}"},
     ]
 
     for var in variables:
