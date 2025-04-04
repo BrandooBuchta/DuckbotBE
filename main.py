@@ -175,13 +175,6 @@ async def run_sequences(background_tasks: BackgroundTasks):
     background_tasks.add_task(process_sequences)
     return {"status": "ok", "message": "Zpracování spuštěno"}
 
-@app.post("/api/send-academy-link/{user_id}")
-async def send_academy_links(user_id: UUID, db: Session = Depends(get_db)):
-    user = get_user(db, user_id)
-    send_message_to_user(db, user)
-
-    return {"status": "ok", "message": "Zpracování spuštěno"}
-
 @app.get("/")
 async def root():
     return {"message": "Telegram Bot is running!"}
