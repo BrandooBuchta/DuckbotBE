@@ -230,6 +230,9 @@ def send_message_to_user(db: Session, user: UserBase):
     if user.send_message_at is None:
         logger.info(f"send_message_at is None, sending immediately.")
         should_send = True
+    elif user.next_message_id in [1, 2] is None:
+        logger.info(f"send_message_at is None, sending immediately.")
+        should_send = True
     else:
         logger.info(f"send_message_at exists: {user.send_message_at}")
         time_diff = (now - user.send_message_at).total_seconds()
