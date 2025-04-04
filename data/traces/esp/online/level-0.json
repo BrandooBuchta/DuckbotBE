@@ -4,8 +4,7 @@
             "content": "<strong>¡Hola, {name}!</strong> 🔥<br><br>¡Tengo para ti una grabación exclusiva del webinar, donde revelo la <strong>oportunidad de la década</strong>! 📈💰<br><br>Hasta ahora, <strong>rendimientos mensuales del 1 al 7%</strong> y más de <strong>1000% de crecimiento de activos</strong> – ¡y esto es solo el comienzo! 💸<br><br>🎥 <strong>¡Mira la repetición ahora antes de que la retiremos!</strong><br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://ducknation.vercel.app/webinar?lang=en\"><strong>Grabación del Webinar</strong></a>",
             "id": 0,
             "level_up_question": false,
-            "next_message_id": 1,
-            "next_message_send_after": 30
+            "next_message_id": 1
         },
         {
             "content": "¿Estás listo para <strong>dar el primer paso?</strong> 🌟 Aquí tienes tu <strong>enlace único de la Academia</strong> con un <strong>plan detallado</strong> para comenzar:<br><br>✅ <strong>Crea y conecta tu billetera</strong><br>💳 <strong>Compra POLs</strong><br>🎟️ <strong>Consigue tu entrada al mundo de Betfin</strong><br>🔄 <strong>Intercambia POLs por BETs</strong><br>💎 <strong>Haz staking con tus BET Tokens y empieza a ganar beneficios</strong><br><br>👉 <strong>Tu enlace de la Academia:</strong><br>{academyLink}<br><br>💬 ¿Tienes preguntas? Únete a nuestra <strong>comunidad en Discord</strong> y consulta con miembros más experimentados. 🚀<br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\"><strong>Comunidad en Discord</strong></a>",

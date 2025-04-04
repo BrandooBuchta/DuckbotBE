@@ -73,7 +73,8 @@ def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
 
     closest_events = get_closest_events()
 
-    name = get_user_name(user.name)
+
+    name = get_user_name(user.name) if bot.lang in ("cs", "sk") else user.name
     capitalized_name = name[0].upper() + name[1:] if name else None
 
     variables = [
@@ -92,7 +93,8 @@ def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
         {"key": "eventName", "value": bot.event_name},
         {"key": "eventDate", "value": bot.event_date.strftime("%d. %m. %Y, %H:%M") if bot and bot.event_date else "Datum nenalezeno"},
         {"key": "eventLocation", "value": bot.event_location},
-        {"key": "academyLink", "value": user.academy_link}
+        {"key": "academyLink", "value": user.academy_link},
+        {"key": "videoLink", "value": f"https://www.ducknation.io/video?lang={bot.lang}&u={user.id}"},
     ]
 
     for var in variables:

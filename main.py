@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base, SessionLocal
 from schemas.user import UserCreate, UserBase
-from crud.user import get_audience, update_user_name, get_current_user, get_users_in_queue, send_message_to_user
+from crud.user import get_audience, update_user_name, get_current_user, get_users_in_queue, send_message_to_user, get_user
 import os
 import requests
 from dotenv import load_dotenv
@@ -173,6 +173,13 @@ async def process_sequences():
 @app.post("/run-sequences")
 async def run_sequences(background_tasks: BackgroundTasks):
     background_tasks.add_task(process_sequences)
+    return {"status": "ok", "message": "Zpracování spuštěno"}
+
+@app.post("/api/send-academy-link")
+async def send_academy_links(user_id: UUID, db: Session = Depends(get_db)):
+    user = get_user(db, user_id)
+    send_message_to_user(db, user)
+
     return {"status": "ok", "message": "Zpracování spuštěno"}
 
 @app.get("/")
