@@ -11,20 +11,25 @@ import requests
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from fastapi.responses import PlainTextResponse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from routers.bot import router as bot_router
 from routers.links import router as links_router
 from routers.faq import router as faq_router
 from routers.sequence import router as sequence_router
-from crud.sequence import get_sequences, update_sequence, delete_sequence, get_sequence, update_send_at
+from crud.sequence import get_sequences, update_sequence
 from crud.vars import replace_variables
 from crud.bot import get_bot
-import logging
-from pytz import timezone
+from models.bot import Bot, Sequence
 from uuid import UUID
-import uvicorn
+import logging
 from base64 import b64decode
 from contextlib import contextmanager
+from utils.messages import get_messages
+import uvicorn
+import uuid
+
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 load_dotenv()
 
@@ -37,9 +42,6 @@ app = FastAPI()
 
 origins = [
     "http://localhost:3000",
-    "http://localhost:3001",
-    "http://localhost:3002",
-    "http://localhost:3003",
     "https://duckbot-ui.vercel.app",
     "https://app.duckbot.cz",
     "https://ducknation.vercel.app",
@@ -67,7 +69,6 @@ def get_db():
 def format_events(events):
     lines = []
     for e in events:
-        # Převod timestamp na čitelný formát (UTC)
         dt = datetime.utcfromtimestamp(e["timestamp"]).strftime("%Y-%m-%d %H:%M:%S UTC")
         line = (
             f"{e['title']['cs']}\n"
@@ -99,16 +100,15 @@ def send_sequence_to_user(db: Session, bot_id: UUID, chat_id: int, message: str,
     url = f"{telegram_api_url}/sendMessage"
 
     user = get_current_user(db, chat_id, bot_id)
-
     if not user:
-        print("user not found ")
-    
+        print("user not found")
+
     data = {
         "chat_id": chat_id,
         "text": replace_variables(db, bot_id, chat_id, message),
         "parse_mode": "html"
     }
-    
+
     if check_status:
         data["reply_markup"] = {
             "inline_keyboard": [[
@@ -116,7 +116,7 @@ def send_sequence_to_user(db: Session, bot_id: UUID, chat_id: int, message: str,
                 {"text": "NE", "callback_data": f"{user.id}|f"},
             ]]
         }
-    
+
     response = requests.post(url, json=data)
     response.raise_for_status()
 
@@ -126,7 +126,6 @@ async def process_customers_trace():
     try:
         users = get_users_in_queue(db)
         logger.info(f"🔍 Nalezeno {len(users)} uživatelů ke zpracování.")
-        
         for user in users:
             send_message_to_user(db, user)
     except Exception as e:
@@ -142,13 +141,13 @@ async def run_customers_trace(background_tasks: BackgroundTasks):
 async def process_sequences():
     db = SessionLocal()
     logger.info("✅ Spouštím úlohu process_sequences")
-    
+
     try:
         sequences, status = get_sequences(db)
         if status != 200:
             logger.error(f"❌ Nepodařilo se načíst sekvence: {sequences}")
             return
-        
+
         for sequence in sequences:
             users = get_audience(db, sequence.bot_id, sequence.levels)
             if not users:
@@ -166,7 +165,6 @@ async def process_sequences():
 
     except Exception as e:
         logger.error(f"❌ Chyba při zpracování sekvencí: {e}")
-    
     finally:
         db.close()
 
@@ -179,11 +177,107 @@ async def run_sequences(background_tasks: BackgroundTasks):
 async def root():
     return {"message": "Telegram Bot is running!"}
 
+# 🔁 Funkce pro generování event sekvencí
+def create_event_sequences():
+    logger.info("📅 Spouštím plánovač pro sekvence eventů")
+    db = SessionLocal()
+    try:
+        bots = db.query(Bot).filter(
+            or_(
+                Bot.lang == "cs",
+                Bot.lang == "sk"
+            )
+        ).first()
+    
+        for bot in bots:
+            generate_sequences_for_bot(db, bot)
+    except Exception as e:
+        logger.error(f"❌ Chyba při vytváření event sekvencí: {e}")
+    finally:
+        db.close()
+
+def generate_sequences_for_bot(db: Session, bot: Bot):
+    headers = {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
+    }
+
+    SUPABASE_URL = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
+    resp = requests.get(SUPABASE_URL, headers=headers)
+    events = resp.json()
+
+    # 🧪 Přidáme testovací event, který proběhne za 1h 20min od aktuálního času
+    test_event_time = int((datetime.utcnow() + timedelta(hours=1, minutes=20)).timestamp())
+    test_event = {
+        "id": 9999,
+        "title": {
+            "cs": "Launch pro Nováčky",
+            "en": "Launch for Beginners"
+        },
+        "timestamp": test_event_time,
+        "language": "CZ",
+        "minToStake": 0,
+        "url": "https://example.com/test-launch",
+        "link": None
+    }
+    events.append(test_event)
+
+    existing_sequences, _ = get_all_sequences(db, bot.id)
+    existing_sequence_names = {s.name for s in existing_sequences}
+
+    for event in events:
+        sequence_name = f"Event {event['id']}"
+
+        if sequence_name in existing_sequence_names:
+            continue
+
+        messages = get_messages(1, bot.lang, bot.is_event, bot.id)
+        matching_message = next(
+            (msg for msg in messages if msg.get("event") == event["title"]["cs"]),
+            None
+        )
+        if not matching_message:
+            continue
+
+        dt_str = datetime.utcfromtimestamp(event["timestamp"]).strftime("%Y-%m-%d %H:%M:%S UTC")
+        message_text = matching_message["text"]
+        message_text = message_text.replace("{url}", event["url"])
+        message_text = message_text.replace("{time}", dt_str)
+
+        send_time = datetime.fromtimestamp(event["timestamp"] - 3600, tz=timezone.utc)
+
+        sequence = Sequence(
+            id=uuid.uuid4(),
+            bot_id=bot.id,
+            name=sequence_name,
+            position=len(existing_sequences) + 1,
+            message=message_text,
+            levels=[1],
+            repeat=False,
+            send_at=send_time,
+            send_immediately=False,
+            starts_at=send_time,
+            is_active=True,
+            check_status=False
+        )
+
+        db.add(sequence)
+        existing_sequences.append(sequence)
+        existing_sequence_names.add(sequence_name)
+
+    db.commit()
+    logger.info("✅ Nové event sekvence vytvořeny")
+
+# 🔧 Napojení plánovače
+scheduler = BackgroundScheduler()
+scheduler.add_job(create_event_sequences, CronTrigger(day_of_week="mon", hour=10, minute=0))
+scheduler.start()
+
 app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
 app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy Links"])
 app.include_router(faq_router, prefix="/api/bot/faq", tags=["FAQ"])
 app.include_router(sequence_router, prefix="/api/bot/sequence", tags=["Sequences"])
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT"))
+    port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)

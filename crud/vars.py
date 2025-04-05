@@ -101,3 +101,12 @@ def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
         message = message.replace(f"{{{var['key']}}}", str(var["value"]) if var["value"] is not None else "neznámá hodnota")
 
     return message.replace("<br>", "\n")
+
+def create_event_string(message: str, time: str, url: str):
+    variables = [
+        {"key": "date", "value": date},
+        {"key": "url", "value": url},
+    ]
+
+    for var in variables:
+        message = message.replace(f"{{{var['key']}}}", str(var["value"]) if var["value"] is not None else "neznámá hodnota")
