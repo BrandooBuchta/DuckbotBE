@@ -234,7 +234,7 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
 
         messages = get_messages(1, bot.lang, bot.is_event, bot.id)
         matching_message = next(
-            (msg for msg in messages if msg.get("event") == event["title"]["cs"]),
+            (msg for msg in messages if msg.get("event") == event["title"]["en"]),
             None
         )
         if not matching_message:
