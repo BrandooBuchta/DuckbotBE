@@ -25,6 +25,7 @@
       "event": "opportunityCall",
       "id": 3,
       "level_up_question": false,
+      "next_message_send_after": 1440,
       "next_message_id": 4
     },
     {
