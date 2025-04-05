@@ -35,35 +35,28 @@
             "next_message_send_after": 1440
         },
         {
-            "content": "‼️ <strong>Ešte ti nie je všetko jasné?</strong> Prichádza tvoja šanca! 🔥<br><br>📅 <strong>Dátum a čas najbližšieho callu:</strong><br>{opportunityCallDate}<br><br>🌟 <strong>Čo sa dozvieš?</strong><br>✅ <strong>Ako to celé funguje</strong><br>✅ <strong>Ako dosiahnuť vysoké výnosy s minimálnym rizikom</strong><br>✅ <strong>LIVE Q&amp;A – môžeš sa opýtať na čokoľvek!</strong><br>🎟️ <strong>Registrácia je ZADARMO, ale miesta sú obmedzené! Pripoj sa hneď, kým je ešte voľno!</strong><br><br><strong>Odkaz:</strong> {opportunityCall}",
+            "content": "<strong>Ahoj, {name}! 🙌</strong><br><br>Možno ti ešte niečo vŕta hlavou – úplne v pohode, chápem to. Nie je nič horšie, ako zostať na pol ceste a nechať si ujsť jedinečnú príležitosť len preto, že sa človek bál opýtať. ❓🚀<br><br>Ak by si potreboval čokoľvek dovysvetliť alebo si len ujasniť detaily, napíš mi. Som tu pre teba a rád ti pomôžem, aby si si bol stopercentne istý. 💡🤝<br><br>Ozvi sa mi pokojne hneď tu: <strong>{supportContact}</strong> 💬📲<br><br>Budem sa tešiť! 😊",
+            "event": "opportunityCall",
+            "id": 3,
+            "level_up_question": false,
+            "next_message_id": 4,
+            "next_message_send_after": 4320
+        },
+        {
+            "content": "<strong>Ahoj, {name}! 👋😊</strong><br><br>Len pripomínam – ak ti stále niečo nie je jasné, určite sa neboj ozvať. Mnoho ľudí sa pýta a dávajú si veci do súvislostí až vďaka jednej správe. 📩💬<br><br>Fakt nechcem, aby si prišiel o príležitosť len kvôli nevyjadrenej otázke. Som tu pre teba, stačí sa ozvať. 🙌<br><br>👉 <strong>{supportContact}</strong> – napíš kedykoľvek, rád ti pomôžem! 🤝✨",
+            "event": "opportunityCall",
+            "id": 4,
+            "level_up_question": false,
+            "next_message_id": 5,
+            "next_message_send_after": 10080
+        },
+        {
+            "content": "<strong>Ahoj, {name}! 🙏🚀</strong><br><br>Posielam poslednú pripomienku – ak ťa ešte čokoľvek zaujíma alebo si si nie úplne istý, ozvi sa mi. Niekedy rozhoduje práve ten posledný krok. ⚡<br><br>Neboj sa opýtať, naozaj neexistuje hlúpa otázka – a môže ti to otvoriť dvere k niečomu veľkému. 💥<br><br>📲 Napíš mi tu: <strong>{supportContact}</strong> – budem na príjme. 💬<br><br>Teším sa, keď sa ozveš! 😊",
             "event": "opportunityCall",
             "id": 5,
             "level_up_question": false,
-            "next_message_id": 6
-        },
-        {
-            "content": "⏳ <strong>Dnes o 18:00</strong> začína webinár, ktorý <strong>ti môže zmeniť život</strong>! 🚀<br><br>❌ <strong>Nepremeškaj svoju šancu – už dnes večer sa dozvieš, ako využiť túto príležitosť naplno!</strong> 💰💎<br>📌 <strong>Pripoj sa včas, aby ti nič neušlo!</strong><br><br><strong>Odkaz:</strong> {opportunityCall}",
-            "event": "opportunityCall",
-            "id": 6,
-            "level_up_question": false,
-            "next_message_id": 7,
-            "next_message_send_after": 540
-        },
-        {
-            "content": "🚀 <strong>ZAČÍNAME UŽ ČOSKORO!</strong><br>📢 <strong>Posledná šanca pripojiť sa k webináru a byť pri tom!</strong><br>🔴 <strong>Klikni a sleduj LIVE!</strong> 🎥👇<br><br><strong>Odkaz:</strong> {opportunityCall}",
-            "event": "opportunityCall",
-            "id": 7,
-            "level_up_question": false,
-            "next_message_id": 8,
-            "next_message_send_after": 40
-        },
-        {
-            "content": "Si pripravený <strong>urobiť prvý krok?</strong> 🌟 Tu je tvoj <strong>unikátny Academy Link</strong>, kde nájdeš <strong>podrobný plán</strong>, ako začať:<br><br>✅ <strong>Vytvoríš a prepojíš svoju peňaženku</strong><br>💳 <strong>Kúpiš POLs</strong><br>🎟️ <strong>Získaš vstupenku do sveta Betfinu</strong><br>🔄 <strong>Vymeníš POLs za BETs</strong><br>💎 <strong>Začneš stakeovať svoje BET tokeny a podieľať sa na zisku!</strong><br><br>👉 <strong>Tvoj Academy Link:</strong><br>{academyLink}<br><br>💬 Máš otázky? Pripoj sa do našej <strong>komunity na Discorde</strong> a opýtaj sa skúsenejších členov! 🚀<br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\">Discord Komunita</a>",
-            "event": "opportunityCall",
-            "id": 8,
-            "level_up_question": false,
-            "next_message_id": 5,
-            "next_message_send_after": 120
+            "next_message_id": 3,
+            "next_message_send_after": 20160
         }
     ]
 }

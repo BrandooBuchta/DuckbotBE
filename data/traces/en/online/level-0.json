@@ -1,47 +1,48 @@
 {
     "messages": [
         {
-            "content": "<strong>Hi, {name}!</strong> 🔥<br><br>I’ve got an exclusive webinar recording for you, where I reveal the <strong>opportunity of the decade</strong>! 📈💰<br><br>So far, <strong>1-7% monthly returns</strong> and over <strong>1000% asset growth</strong> – and this is just the beginning! 💸<br><br>🎥 <strong>Watch the replay now before we take it down!</strong><br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{videoLink}\"><strong>Webinar Recording</strong></a>",
+            "content": "<strong>Hi, {name}! </strong>🔥<br><br>I’ve got an exclusive recording from the webinar where I reveal the <strong>opportunity of the decade</strong>! 📈💰<br><br>So far, we've seen <strong>1–7% monthly returns</strong> and more than <strong>1000% asset growth</strong> – and this is just the beginning! 💸<br><br>🎥 <strong>Watch the recording now while the opportunity is still available!</strong><br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{videoLink}\"><strong>Get the Webinar Recording!</strong></a>",
             "id": 0,
             "level_up_question": false,
             "next_message_id": 1
         },
         {
-            "content": "Are you ready to <strong>take the first step?</strong> 🌟 Here’s your <strong>unique Academy Link</strong> with a <strong>detailed plan</strong> to get started:<br><br>✅ <strong>Create and connect your wallet</strong><br>💳 <strong>Buy POLs</strong><br>🎟️ <strong>Get your ticket to the world of Betfin</strong><br>🔄 <strong>Exchange POLs for BETs</strong><br>💎 <strong>Stake your BET Tokens and start earning profits!</strong><br><br>👉 <strong>Your Academy Link:</strong><br>{academyLink}<br><br>💬 Got questions? Join our <strong>Discord community</strong> and ask more experienced members! 🚀<br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\"><strong>Discord Community</strong></a>",
+            "content": "Ready to <strong>take the first step</strong>? 🌟 Here’s your <strong>unique Academy Link</strong>, where you’ll find a <strong>detailed plan</strong> to get started:<br><br>✅ <strong>Create and connect your wallet</strong><br>💳 <strong>Buy POLs</strong><br>🎟️ <strong>Get your ticket to the world of Betfin</strong><br>🔄 <strong>Exchange POLs for BETs</strong><br>💎 <strong>Stake your BET Tokens and start sharing in the profits!</strong><br><br><a rel=\"noopener noreferrer\" href=\"{academyLink}\"><strong>🎟️ Academy Link 🎟️</strong></a><br><br>💬 Got questions? Join our <strong>Discord community</strong> and ask more experienced members! 🚀<br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\"><strong>Join the Discord Community!</strong></a>",
             "id": 1,
             "level_up_question": false,
             "next_message_id": 2,
             "next_message_send_after": 120
         },
         {
-            "content": "So, <strong>did you manage to stake?</strong> 🏆 You're already on the right path! <strong>Keep going and don’t miss the next steps toward maximum returns.</strong> 💰🚀",
+            "content": "So, <strong>did you manage to stake</strong>? 🏆 You’re already on the right track! <strong>Keep going and don’t miss the next steps to maximize your earnings.</strong> 💰🚀",
             "id": 2,
             "level_up_question": true,
             "next_message_id": 3,
             "next_message_send_after": 1440
         },
         {
-            "content": "‼️ <strong>Still have questions?</strong> Here’s your chance! 🔥<br><br>📅 <strong>Date and time of the next call:</strong><br>{opportunityCallDate}<br><br>🌟 <strong>What you'll learn:</strong><br>✅ <strong>How the whole system works</strong><br>✅ <strong>How to reach high returns with minimal risk</strong><br>✅ <strong>LIVE Q&amp;A – ask anything you want!</strong><br>🎟️ <strong>Registration is FREE, but spots are limited! Join now before it's full!</strong><br><br><strong>Link:</strong> {opportunityCall}",
+            "content": "<strong>Hi, {name}! 🙌</strong><br><br>Maybe you still have something on your mind – that’s totally okay, I get it. There's nothing worse than stopping halfway and missing a unique opportunity just because you were afraid to ask. ❓🚀<br><br>If you need anything explained or want to clarify the details, message me. I’m here for you and happy to help you feel 100% confident. 💡🤝<br><br>Feel free to reach out right here: <strong>{supportContact}</strong> 💬📲<br><br>Looking forward to hearing from you! 😊",
             "event": "opportunityCall",
             "id": 3,
             "level_up_question": false,
-            "next_message_id": 4
+            "next_message_id": 4,
+            "next_message_send_after": 4320
         },
         {
-            "content": "⏳ <strong>Today at 6:00 PM</strong> starts the webinar that <strong>could change your life</strong>! 🚀<br>❌ <strong>Don’t miss your chance – tonight you’ll learn how to make the most of this opportunity!</strong> 💰💎<br>📌 <strong>Join on time so you don’t miss anything!</strong><br><br><strong>Link:</strong> {opportunityCall}",
+            "content": "<strong>Hi, {name}! 👋😊</strong><br><br>Just a reminder – if anything’s still unclear, don’t hesitate to reach out. Many people only start connecting the dots after reading one message. 📩💬<br><br>I really don’t want you to miss out on this opportunity just because of an unanswered question. I’m here for you – just reach out. 🙌<br><br>👉 <strong>{supportContact}</strong> – message anytime, I’ll be happy to help! 🤝✨",
             "event": "opportunityCall",
             "id": 4,
             "level_up_question": false,
             "next_message_id": 5,
-            "next_message_send_after": 540
+            "next_message_send_after": 10080
         },
         {
-            "content": "🚀 <strong>WE’RE STARTING SOON!</strong><br>📢 <strong>Last chance to join the webinar and be part of it!</strong><br>🔴 <strong>Click and watch LIVE!</strong> 🎥👇<br><br><strong>Link:</strong> {opportunityCall}",
+            "content": "<strong>Hi, {name}! 🙏🚀</strong><br><br>This is the final reminder – if you’re still curious or not 100% sure, message me. Sometimes it’s the last step that makes the difference. ⚡<br><br>Don’t be afraid to ask – there are no dumb questions, and one answer could open the door to something big. 💥<br><br>📲 Message me here: <strong>{supportContact}</strong> – I’ll be available. 💬<br><br>Can’t wait to hear from you! 😊",
             "event": "opportunityCall",
             "id": 5,
             "level_up_question": false,
-            "next_message_id": 1,
-            "next_message_send_after": 40
+            "next_message_id": 3,
+            "next_message_send_after": 20160
         }
     ]
 }

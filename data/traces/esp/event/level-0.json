@@ -35,35 +35,28 @@
             "next_message_send_after": 1440
         },
         {
-            "content": "‼️ <strong>¿Aún tienes dudas?</strong> ¡Esta es tu oportunidad! 🔥<br><br>📅 <strong>Próxima llamada informativa:</strong><br>{opportunityCallDate}<br><br>🌟 <strong>¿Qué aprenderás?</strong><br>✅ <strong>Cómo funciona todo</strong><br>✅ <strong>Cómo lograr altos rendimientos con mínimo riesgo</strong><br>✅ <strong>Q&amp;A EN VIVO – ¡pregunta lo que quieras!</strong><br>🎟️ <strong>¡El registro es GRATIS, pero los lugares son limitados! Únete ahora antes de que se llene.</strong><br><br><strong>Enlace:</strong> {opportunityCall}",
+            "content": "<strong>¡Hola, {name}! 🙌</strong><br><br>Puede que aún tengas dudas — es totalmente normal, lo entiendo. No hay nada peor que quedarse a medias y perder una oportunidad única solo por no atreverse a preguntar. ❓🚀<br><br>Si necesitas que te aclare algo o quieres revisar algún detalle, escríbeme. Estoy aquí para ayudarte y asegurarme de que estés 100% seguro. 💡🤝<br><br>Puedes escribirme directamente aquí: <strong>{supportContact}</strong> 💬📲<br><br>¡Estaré encantado de ayudarte! 😊",
+            "event": "opportunityCall",
+            "id": 3,
+            "level_up_question": false,
+            "next_message_id": 4,
+            "next_message_send_after": 4320
+        },
+        {
+            "content": "<strong>¡Hola, {name}! 👋😊</strong><br><br>Solo un recordatorio — si todavía hay algo que no entiendes, no dudes en escribirme. Muchas personas comprenden mejor todo gracias a una sola conversación. 📩💬<br><br>No quiero que pierdas esta oportunidad por una duda sin resolver. Estoy aquí para ti, solo tienes que contactarme. 🙌<br><br>👉 <strong>{supportContact}</strong> — escríbeme cuando quieras, estaré encantado de ayudarte. 🤝✨",
+            "event": "opportunityCall",
+            "id": 4,
+            "level_up_question": false,
+            "next_message_id": 5,
+            "next_message_send_after": 10080
+        },
+        {
+            "content": "<strong>¡Hola, {name}! 🙏🚀</strong><br><br>Te envío un último recordatorio — si aún tienes alguna duda o no estás del todo seguro, escríbeme. A veces lo único que necesitas es ese último paso. ⚡<br><br>No tengas miedo de preguntar, de verdad, ninguna pregunta es tonta — y puede abrirte las puertas a algo grande. 💥<br><br>📲 Escríbeme aquí: <strong>{supportContact}</strong> — estaré pendiente. 💬<br><br>¡Espero tu mensaje con ganas! 😊",
             "event": "opportunityCall",
             "id": 5,
             "level_up_question": false,
-            "next_message_id": 6
-        },
-        {
-            "content": "⏳ <strong>Hoy a las 18:00</strong> empieza el webinar – ¡y <strong>puede cambiar tu vida</strong>! 🚀<br><br>❌ <strong>No pierdas tu oportunidad – esta noche aprenderás cómo aprovecharla al máximo.</strong> 💰💎<br>📌 <strong>Únete a tiempo para que no te pierdas nada.</strong><br><br><strong>Enlace:</strong> {opportunityCall}",
-            "event": "opportunityCall",
-            "id": 6,
-            "level_up_question": false,
-            "next_message_id": 7,
-            "next_message_send_after": 540
-        },
-        {
-            "content": "🚀 <strong>¡EMPEZAMOS EN BREVE!</strong><br>📢 <strong>¡Última oportunidad para unirte al webinar!</strong><br>🔴 <strong>Haz clic y míralo EN VIVO</strong> 🎥👇<br><br><strong>Enlace:</strong> {opportunityCall}",
-            "event": "opportunityCall",
-            "id": 7,
-            "level_up_question": false,
-            "next_message_id": 8,
-            "next_message_send_after": 40
-        },
-        {
-            "content": "¿Estás listo para <strong>dar el primer paso?</strong> 🌟 Aquí tienes tu <strong>enlace único de la Academia</strong> con un <strong>plan detallado</strong> para empezar:<br><br>✅ <strong>Crea y conecta tu billetera</strong><br>💳 <strong>Compra POLs</strong><br>🎟️ <strong>Consigue tu entrada al mundo de Betfin</strong><br>🔄 <strong>Intercambia POLs por BETs</strong><br>💎 <strong>Haz stake con tus tokens BET y empieza a ganar beneficios</strong><br><br>👉 <strong>Tu enlace de Academia:</strong><br>{academyLink}<br><br>💬 ¿Tienes preguntas? Únete a nuestra <strong>comunidad de Discord</strong> y pregunta a los miembros con experiencia. 🚀<br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\">Comunidad en Discord</a>",
-            "event": "opportunityCall",
-            "id": 8,
-            "level_up_question": false,
-            "next_message_id": 5,
-            "next_message_send_after": 120
+            "next_message_id": 3,
+            "next_message_send_after": 20160
         }
     ]
 }
