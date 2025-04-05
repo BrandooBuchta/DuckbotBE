@@ -2,7 +2,7 @@ import json
 import os
 from uuid import UUID
 
-def get_messagems(level: int, lang: str, is_event: bool, bot_id: UUID):
+def get_messages(level: int, lang: str, is_event: bool, bot_id: UUID):
     event_path = "event/" if is_event else "online/"
 
     custom_path = f"data/customs/{bot_id}/level-{level}.json"
