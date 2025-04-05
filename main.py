@@ -16,7 +16,7 @@ from routers.bot import router as bot_router
 from routers.links import router as links_router
 from routers.faq import router as faq_router
 from routers.sequence import router as sequence_router
-from crud.sequence import get_sequences, update_sequence
+from crud.sequence import get_sequences, update_sequence, get_all_sequences
 from crud.vars import replace_variables
 from crud.bot import get_bot
 from models.bot import Bot, Sequence
@@ -188,10 +188,10 @@ def create_event_sequences():
                 Bot.lang == "cs",
                 Bot.lang == "sk"
             )
-        ).first()
+        ).all()
     
         for bot in bots:
-            generate_sequences_for_bot(db, bot.id)
+            generate_sequences_for_bot(db, bot)
     except Exception as e:
         logger.error(f"❌ Chyba při vytváření event sekvencí: {e}")
     finally:
