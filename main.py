@@ -241,7 +241,7 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
             continue
 
         dt_str = datetime.utcfromtimestamp(event["timestamp"]).strftime("%Y-%m-%d %H:%M:%S UTC")
-        message_text = matching_message["text"]
+        message_text = matching_message["content"]
         message_text = message_text.replace("{url}", event["url"])
         message_text = message_text.replace("{time}", dt_str)
 
