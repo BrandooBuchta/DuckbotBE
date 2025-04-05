@@ -30,6 +30,7 @@ import uuid
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+from sqlalchemy import or_
 
 load_dotenv()
 
