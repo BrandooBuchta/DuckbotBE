@@ -191,7 +191,7 @@ def create_event_sequences():
         ).first()
     
         for bot in bots:
-            generate_sequences_for_bot(db, bot)
+            generate_sequences_for_bot(db, bot.id)
     except Exception as e:
         logger.error(f"❌ Chyba při vytváření event sekvencí: {e}")
     finally:
