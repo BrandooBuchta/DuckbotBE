@@ -25,7 +25,7 @@
       "event": "opportunityCall",
       "id": 3,
       "level_up_question": false,
-      "next_message_send_after": 1440,
+      "next_message_send_after": 4320,
       "next_message_id": 4
     },
     {
@@ -34,7 +34,7 @@
       "id": 4,
       "level_up_question": false,
       "next_message_id": 5,
-      "next_message_send_after": 540
+      "next_message_send_after": 10080
     },
     {
       "content": "<strong>Ahoj, {name}! 🙏🚀</strong><br><br>Posílám poslední připomínku – pokud tě ještě cokoliv zajímá nebo si nejsi úplně jistý, ozvi se mi. Někdy rozhoduje právě ten poslední krok. ⚡<br><br>Neboj se zeptat, fakt nic není blbá otázka – a může ti to otevřít dveře k něčemu velkýmu. 💥<br><br>📲 Napiš mi tady: <strong>{supportContact}</strong> – budu na příjmu. 💬<br><br>Těším se, až se ozveš! 😊",
@@ -42,7 +42,7 @@
       "id": 5,
       "level_up_question": false,
       "next_message_id": 1,
-      "next_message_send_after": 40
+      "next_message_send_after": 20160
     }
   ]
 }
