@@ -145,7 +145,7 @@ async def process_sequences():
     try:
         sequences, status = get_sequences(db)
         if status != 200:
-            logger.error(f"❌ Nepodařilo se načíst sekvence: {sequences}")
+            logger.info(f"❌ Nepodařilo se načíst sekvence: {sequences}")
             return
 
         for sequence in sequences:
@@ -273,8 +273,8 @@ scheduler.add_job(create_event_sequences, CronTrigger(day_of_week="mon", hour=10
 
 @app.on_event("startup")
 def start_scheduler():
-    logger.info("🕓 Spouštím scheduler při startu aplikace")
     scheduler.start()
+    create_event_sequences()
 
 app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
 app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy Links"])
