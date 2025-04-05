@@ -268,10 +268,13 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
     db.commit()
     logger.info("✅ Nové event sekvence vytvořeny")
 
-# 🔧 Napojení plánovače
 scheduler = BackgroundScheduler()
 scheduler.add_job(create_event_sequences, CronTrigger(day_of_week="mon", hour=10, minute=0))
-scheduler.start()
+
+@app.on_event("startup")
+def start_scheduler():
+    logger.info("🕓 Spouštím scheduler při startu aplikace")
+    scheduler.start()
 
 app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
 app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy Links"])
