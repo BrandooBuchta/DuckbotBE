@@ -1,39 +1,34 @@
 {
-    "messages": [
-      {
-        "content": "Vitaj v našej komunite! 🚀 Si na správnom mieste, kde <strong>zistíš, ako využiť túto jedinečnú príležitosť naplno</strong>! 💰💎<br><br>📅 <strong>Čo teraz?</strong><br>✅ Pozri si našu <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://betfin.network/academy/advanced\"><strong>Akadémiu</strong></a>, kde sa dozvieš viac o projekte, kryptomenách a našom Affiliate systéme<br><br>✅ Sleduj naše <a rel=\"noopener noreferrer\" href=\"https://betfin.network/academy/events\"><strong>Webináre</strong></a>, na ktorých všetko pochopíš rýchlejšie a lepšie – navyše môžeš využiť aj Live Q&A!<br><br>✅ Staň sa súčasťou našej <a rel=\"noopener noreferrer\" href=\"{network}\"><strong>komunity na Discorde</strong></a> – kde nájdeš odpovede, podporu a tipy od skúsenejších členov!",
-        "id": 0,
-        "level_up_question": false,
-        "next_message_id": 1
-      },
-      {
-        "content": "🔔 <strong>Si nováčik?</strong> Skvelá správa! Pripravili sme pre teba <strong>špeciálny call pre začiatočníkov</strong>, kde ťa prevedieme <strong>všetkými technickými detailmi</strong> projektu!<br><br>✅ Ako začať <strong>bez chýb a zbytočných strát</strong><br>✅ Ako <strong>bezpečne vstúpiť do ekosystému</strong><br>✅ <strong>LIVE Q&amp;A</strong> – spýtaj sa na čokoľvek!<br><br>📅 <strong>Dátum:</strong> {launchForBeginnersDate}<br><br>📅 <strong>Rezervuj si miesto teraz:</strong> <a rel=\"noopener noreferrer\" href=\"{launchForBeginners}\"><strong>Launch For Beginners</strong></a>",
-        "event": "launchForBeginners",
-        "id": 1,
-        "level_up_question": false,
-        "next_message_id": 2
-      },
-      {
-        "content": "💡 <strong>Chceš sa dozvedieť viac o kryptomenách a ako s nimi bezpečne narábať?</strong> Nezmeškaj náš <strong>exkluzívny webinár o základoch a bezpečnosti krypta</strong>!<br><br>✅ Ako <strong>uchovávať a chrániť</strong> svoje kryptomeny 🛡️<br>✅ Najčastejšie chyby, ktoré ťa <strong>môžu stáť peniaze</strong> ❌<br>✅ Ako <strong>bezpečne investovať</strong> a vyhnúť sa podvodom<br><br>📅 <strong>Dátum:</strong> {cryptoDate}<br><br><strong>Registruj sa teraz:</strong> <a rel=\"noopener noreferrer\" href=\"{crypto}\"><strong>Základy a bezpečnosť kryptomien</strong></a>",
-        "event": "crypto",
-        "id": 2,
-        "level_up_question": false,
-        "next_message_id": 3
-      },
-      {
-        "content": "🔥 <strong>Priprav sa na niečo veľké!</strong> Využi náš Affiliate systém a vybuduj si vlastný biznis priamo v projekte!<br><br>✅ Ako <strong>si vybudovať pasívny príjem</strong> 💰<br>✅ Stratégie pre <strong>dlhodobý rast</strong> 📈<br>✅ Praktické kroky, ktoré <strong>môžeš rovno aplikovať</strong><br><br>📅 <strong>Dátum:</strong> {buildYourBusinessDate}<br><br><strong>Buď pri tom – rezervuj si miesto teraz:</strong> <a rel=\"noopener noreferrer\" href=\"{buildYourBusiness}\"><strong>Build Your Business</strong></a>",
-        "event": "buildYourBusiness",
-        "id": 3,
-        "level_up_question": false,
-        "next_message_id": 4,
-        "next_message_send_after": 90
+  "messages": [
+    {
+      "content": "Vitaj v našej komunite! 🚀 Si na správnom mieste, kde <strong>zistíš, ako túto jedinečnú príležitosť využiť naplno</strong>! 💰💎<br><br>📅 <strong>Čo ďalej?</strong><br>✅ Pozri si našu <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://betfin.network/academy/advanced\"><strong>Akadémiu</strong></a>, kde sa dozvieš viac o projekte, kryptomenách a našom Affiliate systéme<br><br>✅ Sleduj naše <a rel=\"noopener noreferrer\" href=\"https://betfin.network/academy/events\"><strong>Webináre</strong></a>, ktoré ti všetko objasnia rýchlejšie a efektívnejšie, navyše môžeš využiť Live QnA!<br><br>✅ Pripoj sa k našej <a rel=\"noopener noreferrer\" href=\"{network}\"><strong>komunite na Discorde</strong></a> – nájdeš tam odpovede, podporu a tipy od skúsenejších členov!",
+      "id": 0,
+      "level_up_question": false,
+      "next_message_id": 1
     },
-      {
-        "content": "💡 <strong>Už si pochopil/a, ako to celé funguje? Čo tak to posunúť na vyšší level?</strong> 💰<br><br>📢 <strong>Chceš si vybudovať vlastný biznis a ťažiť z toho, čo už vieš?</strong> Toto je tvoja šanca!<br><br>✅ Staň sa súčasťou <strong>affiliate programu</strong><br>✅ <strong>Začni zarábať</strong> už teraz!<br>✅ Pridaj sa k úspešným ľuďom, ktorí <strong>už na tom zarábajú</strong><br><br>👉 <strong>Chceš vedieť viac?</strong> Stačí povedať! 💬 {supportContact}",
-        "id": 4,
-        "level_up_question": true,
-        "next_message_id": 2
-      }
-    ]
-  }
-  
+    {
+      "content": "💡 <strong>Už chápeš, ako to funguje? Čo tak to posunúť na vyšší level?</strong> 💰<br><br>📢 <strong>Chceš si vybudovať vlastný biznis a ťažiť z toho, čo už vieš?</strong> Toto je tvoja šanca!<br><br>✅ Zapoj sa do <strong>affiliate programu</strong><br>✅ <strong>Začni zarábať</strong> už teraz!<br>✅ Spoj sa s úspešnými ľuďmi, ktorí <strong>už zarábajú</strong><br><br>👉 <strong>Chceš vedieť viac?</strong> Stačí sa ozvať! 💬 {supportContact}",
+      "id": 4,
+      "level_up_question": true,
+      "next_message_id": 2
+    },
+    {
+      "content": "🔔 <strong>Si začiatočník?</strong> Skvelá správa! Pripravili sme pre teba <strong>špeciálny call pre začiatočníkov</strong>, kde ťa prevedieme <strong>všetkými technickými detailmi</strong> projektu!<br><br>✅ Ako začať <strong>bez chýb a zbytočných strát</strong><br>✅ Ako <strong>bezpečne vstúpiť do ekosystému</strong><br>✅ <strong>LIVE Q&A</strong> – spýtaj sa na čokoľvek!<br><br>📅 <strong>Dátum: </strong>{time}<br><br>📅 <strong>Rezervuj si miesto teraz: </strong><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{url}\"><strong>Launch For Beginners</strong></a>",
+      "event": "Launch for Beginners",
+      "id": 1,
+      "level_up_question": false
+    },
+    {
+      "content": "💡 <strong>Chceš sa dozvedieť viac o kryptomenách a ako s nimi bezpečne narábať?</strong> Nezmeškaj náš <strong>exkluzívny webinár o základoch a bezpečnosti krypta</strong>!<br><br>✅ Ako <strong>uchovávať a chrániť</strong> svoje kryptomeny 🛡️<br>✅ Najčastejšie chyby, ktoré <strong>ťa môžu stáť peniaze</strong> ❌<br>✅ Ako <strong>bezpečne investovať</strong> a vyhnúť sa podvodom<br><br>📅 <strong>Dátum: </strong>{time}<br><br><strong>Registruj sa teraz: </strong><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{url}\"><strong>Základy a bezpečnosť kryptomien</strong></a>",
+      "event": "Základy a bezpečnost kryptoměn",
+      "id": 2,
+      "level_up_question": false
+    },
+    {
+      "content": "🔥 <strong>Priprav sa na niečo veľké!</strong> Využi náš Affiliate systém a vybuduj si s projektom vlastný biznis!<br><br>✅ Ako <strong>vybudovať pasívny príjem</strong> 💰<br>✅ Stratégie pre <strong>dlhodobý rast</strong> 📈<br>✅ Praktické kroky, ktoré <strong>môžeš rovno aplikovať</strong><br><br>📅 <strong>Dátum: </strong>{time}<br><br><strong>Buď pri tom, rezervuj si miesto teraz: </strong><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{url}\"><strong>Build Your Business</strong></a>",
+      "event": "Build Your Business",
+      "id": 3,
+      "level_up_question": false
+    }
+  ]
+}
