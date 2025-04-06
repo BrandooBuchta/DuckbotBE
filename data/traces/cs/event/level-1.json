@@ -7,32 +7,28 @@
             "next_message_id": 1
         },
         {
-            "content": "🔔 <strong>Jsi nováček?</strong> Skvělá zpráva! Připravili jsme pro tebe <strong>speciální call pro začátečníky</strong>, kde tě provedeme <strong>všemi technickými detaily</strong> projektu!<br><br>✅ Jak začít <strong>bez chyb a zbytečných ztrát</strong><br>✅ Jak <strong>bezpečně vstoupit do ekosystému</strong><br>✅ <strong>LIVE Q&amp;A</strong> – zeptej se na cokoliv!<br><br>📅 <strong>Datum: </strong>{launchForBeginnersDate}<br><br>📅 <strong>Rezervuj si místo teď: </strong><a rel=\"noopener noreferrer\" href=\"{launchForBeginners}\"><strong>Launch For Beginners</strong></a>",
-            "event": "launchForBeginners",
-            "id": 1,
-            "level_up_question": false,
-            "next_message_id": 2
-        },
-        {
-            "content": "💡 <strong>Chceš se dozvědět víc o kryptoměnách a jak s nimi bezpečně zacházet?</strong> Nezmeškej náš <strong>exkluzivní webinář o základech a bezpečnosti krypta</strong>!<br><br>✅ Jak <strong>uchovávat a chránit</strong> své kryptoměny 🛡️<br>✅ Nejčastější chyby, které <strong>tě mohou stát peníze</strong> ❌<br>✅ Jak <strong>bezpečně investovat</strong> a vyhnout se podvodům<br><br>📅 <strong>Datum: </strong>{cryptoDate}<br><br><strong>Registruj se teď: </strong><a rel=\"noopener noreferrer\" href=\"{crypto}\"><strong>Základy a bezpečnost kryptoměn</strong></a>",
-            "event": "crypto",
-            "id": 2,
-            "level_up_question": false,
-            "next_message_id": 3
-        },
-        {
-            "content": "🔥 <strong>Připrav se na něco velkého!</strong> Využí našeho Affiliate systému a postav si na projektu svůj vlastní byznys! <br><br>✅ Jak si <strong>vybudovat pasivní příjem</strong> 💰<br>✅ Strategie pro <strong>dlouhodobý růst</strong> 📈<br>✅ Praktické kroky, které <strong>můžeš hned aplikovat</strong><br><br>📅 <strong>Datum: </strong>{buildYourBusinessDate}<br><br><strong>Buď u toho, rezervuj si místo teď: </strong><a rel=\"noopener noreferrer\" href=\"{buildYourBusiness}\"><strong>Build Your Business</strong></a>",
-            "event": "buildYourBusiness",
-            "id": 3,
-            "level_up_question": false,
-            "next_message_id": 4,
-            "next_message_send_after": 90
-        },
-        {
             "content": "💡 <strong>Už jsi pochopil/a, jak to celé funguje? Co to posunout na jiný level?</strong> 💰<br><br>📢 <strong>Chceš si vybudovat svůj vlastní byznys a těžit z toho, co už víš?</strong> To je tvoje šance!<br><br>✅ Staň se součástí <strong>affiliate programu</strong><br>✅ <strong>Začni generovat příjem</strong> už teď!<br>✅ Připoj se k úspěšným lidem, kteří <strong>už na tom vydělávají</strong><br><br>👉 <strong>Chceš vědět víc?</strong> Stačí říct! 💬 {supportContact}",
             "id": 4,
             "level_up_question": true,
             "next_message_id": 2
+        },
+        {
+            "content": "🔔 <strong>Jsi nováček?</strong> Skvělá zpráva! Připravili jsme pro tebe <strong>speciální call pro začátečníky</strong>, kde tě provedeme <strong>všemi technickými detaily</strong> projektu!<br><br>✅ Jak začít <strong>bez chyb a zbytečných ztrát</strong><br>✅ Jak <strong>bezpečně vstoupit do ekosystému</strong><br>✅ <strong>LIVE Q&amp;A</strong> – zeptej se na cokoliv!<br><br>📅 <strong>Datum: </strong>{time}<br><br>📅 <strong>Rezervuj si místo teď: </strong><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{url}\"><strong>Launch For Beginners</strong></a>",
+            "event": "Launch for Beginners",
+            "id": 1,
+            "level_up_question": false
+        },
+        {
+            "content": "💡 <strong>Chceš se dozvědět víc o kryptoměnách a jak s nimi bezpečně zacházet?</strong> Nezmeškej náš <strong>exkluzivní webinář o základech a bezpečnosti krypta</strong>!<br><br>✅ Jak <strong>uchovávat a chránit</strong> své kryptoměny 🛡️<br>✅ Nejčastější chyby, které <strong>tě mohou stát peníze</strong> ❌<br>✅ Jak <strong>bezpečně investovat</strong> a vyhnout se podvodům<br><br>📅 <strong>Datum: </strong>{time}<br><br><strong>Registruj se teď: </strong><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{url}\"><strong>Základy a bezpečnost kryptoměn</strong></a>",
+            "event": "Základy a bezpečnost kryptoměn",
+            "id": 2,
+            "level_up_question": false
+        },
+        {
+            "content": "🔥 <strong>Připrav se na něco velkého!</strong> Využí našeho Affiliate systému a postav si na projektu svůj vlastní byznys! <br><br>✅ Jak si <strong>vybudovat pasivní příjem</strong> 💰<br>✅ Strategie pro <strong>dlouhodobý růst</strong> 📈<br>✅ Praktické kroky, které <strong>můžeš hned aplikovat</strong><br><br>📅 <strong>Datum: </strong>{time}<br><br><strong>Buď u toho, rezervuj si místo teď: </strong><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{url}\"><strong>Build Your Business</strong></a>",
+            "event": "Build Your Business",
+            "id": 3,
+            "level_up_question": false
         }
     ]
 }

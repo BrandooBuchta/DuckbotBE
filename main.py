@@ -246,10 +246,9 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
         if not matching_message:
             continue
 
-        dt_str = datetime.utcfromtimestamp(event["timestamp"]).strftime("%Y-%m-%d %H:%M:%S UTC")
         message_text = matching_message["content"]
         message_text = message_text.replace("{url}", event["url"])
-        message_text = message_text.replace("{time}", dt_str)
+        message_text = message_text.replace("{time}", event_time.strftime("%d. %m. %Y - %H:%M"))
 
         send_time = datetime.fromtimestamp(event["timestamp"] - 3600, tz=dt_timezone.utc)
 
