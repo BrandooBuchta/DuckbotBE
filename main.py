@@ -11,7 +11,7 @@ import requests
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from fastapi.responses import PlainTextResponse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as dt_timezone
 from routers.bot import router as bot_router
 from routers.links import router as links_router
 from routers.faq import router as faq_router
@@ -27,7 +27,7 @@ from contextlib import contextmanager
 from utils.messages import get_messages
 import uvicorn
 import uuid
-from pytz import timezone
+from pytz import timezone as pytz_timezone
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from sqlalchemy import or_
@@ -227,10 +227,10 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
     existing_sequence_names = {s.name for s in existing_sequences}
 
     for event in events:
-        europe_prague = timezone("Europe/Prague")
+        europe_prague = pytz_timezone("Europe/Prague")
         event_time = datetime.fromtimestamp(event["timestamp"], tz=europe_prague)
 
-        if event_time < datetime.now(timezone.utc):
+        if event_time < datetime.now(dt_timezone.utc):
             continue
 
         sequence_name = f"Event {event['id']}"
@@ -251,7 +251,7 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
         message_text = message_text.replace("{url}", event["url"])
         message_text = message_text.replace("{time}", dt_str)
 
-        send_time = datetime.fromtimestamp(event["timestamp"] - 3600, tz=timezone.utc)
+        send_time = datetime.fromtimestamp(event["timestamp"] - 3600, tz=dt_timezone.utc)
 
         sequence = Sequence(
             id=uuid.uuid4(),
