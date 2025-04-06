@@ -10,7 +10,6 @@ from crud.bot import get_bot
 from base64 import b64decode
 from utils.messages import get_messages
 from crud.vars import replace_variables
-from crud.events import get_event_date
 import requests
 import logging
 
@@ -119,34 +118,6 @@ def get_users_in_queue(db: Session):
     finally:
         db.close()
 
-def get_next_msessage_sent_at_by_id(db: Session, message_id: str, level: str, bot_id: UUID):
-    if level == 0:
-        match message_id:
-            case 4:
-                event_date = get_event_date("Opportunity Call")
-                return (event_date if event_date else get_next_weekday_at(6, 18)) - timedelta(hours=9)
-                return datetime.now() + timedelta(minutes=1)
-            case _:
-                bot, status = get_bot(db, bot_id)
-                new_date = bot.event_date - timedelta(days=1)
-                new_date = new_date.replace(hour=12, minute=0, second=0, microsecond=0)
-                return new_date
-                return datetime.now() + timedelta(minutes=1)
-    else:
-        match message_id:
-            case 1:
-                event_date = get_event_date("Launch for Beginners")
-                return (event_date if event_date else get_next_friday_or_monday_at(20)) - timedelta(hours=9)
-                return datetime.now() + timedelta(minutes=1)
-            case 2:
-                event_date = get_event_date("Základy a bezpečnost kryptoměn")
-                return (event_date if event_date else get_next_weekday_at(2, 20)) - timedelta(hours=9)
-                return datetime.now() + timedelta(minutes=1)
-            case 3:
-                event_date = get_event_date("Build Your Business")
-                return (event_date if event_date else get_next_weekday_at(3, 20)) - timedelta(hours=9)
-                return datetime.now() + timedelta(minutes=1)
-
 def update_users_position(db: Session, user_id: UUID, next_message_id: str, next_message_send_after: Optional[int] = None):
     now = datetime.now()
 
@@ -162,10 +133,6 @@ def update_users_position(db: Session, user_id: UUID, next_message_id: str, next
         if next_message_send_after:
             logger.info("next_message_send_after exists")
             db_user.send_message_at = now + timedelta(minutes=next_message_send_after)
-        else:
-            logger.info("no next_message_send_after doesn't exists")
-            db_user.send_message_at = get_next_msessage_sent_at_by_id(db, next_message_id, db_user.client_level, db_user.bot_id)
-
         db.commit()
         db.refresh(db_user)
     return db_user
@@ -209,23 +176,6 @@ def send_message_to_user(db: Session, user: UserBase):
     if message is None:
         logger.warning(f"⚠️ No message found for user {user.chat_id}. Skipping.")
         return
-
-    event = message.get("event")
-
-    if event:
-        match event:
-            case "opportunityCall":
-                date = get_event_date("Opportunity Call")
-                should_send = True if date else False
-            case "launchForBeginners":
-                date = get_event_date("Launch for Beginners")
-                should_send = True if date else False
-            case "crypto":
-                date = get_event_date("Základy a bezpečnost kryptoměn")
-                should_send = True if date else False
-            case "buildYourBusiness":
-                date = get_event_date("Build Your Business")
-                should_send = True if date else False
 
     logger.debug(f"Message content: {message}")
         

@@ -264,7 +264,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
             elif text == "/faq":
                 faqs, status = get_all_formated_faqs(db, bot_id)
                 requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, faqs), "parse_mode": "html"})
-            elif text == "/events":
+            elif text == "/events" and user.level >= 1:
                 url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
                 headers = {
                     "apikey": SUPABASE_ANON_KEY,
