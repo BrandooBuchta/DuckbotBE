@@ -11,7 +11,7 @@ import requests
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from fastapi.responses import PlainTextResponse
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from routers.bot import router as bot_router
 from routers.links import router as links_router
 from routers.faq import router as faq_router
@@ -227,7 +227,9 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
     existing_sequence_names = {s.name for s in existing_sequences}
 
     for event in events:
-        event_time = datetime.fromtimestamp(event["timestamp"], tz="Europe/Prague")
+        europe_prague = timezone("Europe/Prague")
+        event_time = datetime.fromtimestamp(event["timestamp"], tz=europe_prague)
+
         if event_time < datetime.now(timezone.utc):
             continue
 
