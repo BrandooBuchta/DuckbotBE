@@ -27,7 +27,7 @@ from contextlib import contextmanager
 from utils.messages import get_messages
 import uvicorn
 import uuid
-
+from pytz import timezone
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from sqlalchemy import or_
@@ -227,6 +227,10 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
     existing_sequence_names = {s.name for s in existing_sequences}
 
     for event in events:
+        event_time = datetime.fromtimestamp(event["timestamp"], tz="Europe/Prague")
+        if event_time < datetime.now(timezone.utc):
+            continue
+
         sequence_name = f"Event {event['id']}"
 
         if sequence_name in existing_sequence_names:
