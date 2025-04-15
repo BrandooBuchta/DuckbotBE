@@ -208,20 +208,20 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
     events = resp.json()
 
     # 🧪 Přidáme testovací event, který proběhne za 1h 20min od aktuálního času
-    test_event_time = int((datetime.utcnow() + timedelta(hours=1, minutes=20)).timestamp())
-    test_event = {
-        "id": 9999,
-        "title": {
-            "cs": "Launch pro Nováčky",
-            "en": "Launch for Beginners"
-        },
-        "timestamp": test_event_time,
-        "language": "CZ",
-        "minToStake": 0,
-        "url": "https://example.com/test-launch",
-        "link": None
-    }
-    events.append(test_event)
+    # test_event_time = int((datetime.utcnow() + timedelta(hours=1, minutes=20)).timestamp())
+    # test_event = {
+    #     "id": 9999,
+    #     "title": {
+    #         "cs": "Launch pro Nováčky",
+    #         "en": "Launch for Beginners"
+    #     },
+    #     "timestamp": test_event_time,
+    #     "language": "CZ",
+    #     "minToStake": 0,
+    #     "url": "https://example.com/test-launch",
+    #     "link": None
+    # }
+    # events.append(test_event)
 
     existing_sequences, _ = get_all_sequences(db, bot.id)
     existing_sequence_names = {s.name for s in existing_sequences}
@@ -257,7 +257,7 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
             bot_id=bot.id,
             name=sequence_name,
             position=len(existing_sequences) + 1,
-            message=message_text,
+            message=f"{message_text} {sequence_name}",
             levels=[1],
             repeat=False,
             send_at=send_time,
