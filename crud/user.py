@@ -231,4 +231,6 @@ def send_message_to_user(db: Session, user: UserBase):
     else:
         logger.info("Message was not sent due to conditions not being met.")
 
+    logger.info("this is next_message_send_after and next_message_id: ", message.get("next_message_send_after"), message["next_message_id"])
+
     update_users_position(db, user.id, message["next_message_id"], message.get("next_message_send_after"))
