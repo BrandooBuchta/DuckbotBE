@@ -4,30 +4,32 @@
       "content": "Welcome to our community! 🚀 You’re in the right place to <strong>learn how to make the most of this unique opportunity</strong>! 💰💎<br><br>📅 <strong>What now?</strong><br>✅ Check out our <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://betfin.network/academy/advanced\"><strong>Academy</strong></a> to learn more about the project, cryptocurrencies, and our Affiliate System<br><br>✅ Explore our <a rel=\"noopener noreferrer\" href=\"https://betfin.network/academy/events\"><strong>Webinars</strong></a> to understand everything better and faster – plus, you can join our Live Q&A!<br><br>✅ Join our <a rel=\"noopener noreferrer\" href=\"{network}\"><strong>Discord community</strong></a> – where you’ll find answers, support, and tips from more experienced members!",
       "id": 0,
       "level_up_question": false,
+      "next_message_send_after": 10800,
       "next_message_id": 1
     },
     {
       "content": "💡 <strong>Got the basics? Ready to take it to the next level?</strong> 💰<br><br>📢 <strong>Want to build your own business and profit from what you already know?</strong> This is your chance!<br><br>✅ Join our <strong>affiliate program</strong><br>✅ <strong>Start generating income</strong> today!<br>✅ Connect with successful people who <strong>are already earning</strong><br><br>👉 <strong>Want to learn more?</strong> Just ask! 💬 {supportContact}",
-      "id": 4,
+      "id": 1,
       "level_up_question": true,
-      "next_message_id": 2
+      "next_message_send_after": 10800,
+      "next_message_id": 1
     },
     {
       "content": "🔔 <strong>New here?</strong> Great news! We’ve prepared a <strong>special beginner call</strong> where we’ll guide you through <strong>all the technical details</strong> of the project!<br><br>✅ How to get started <strong>without mistakes or losses</strong><br>✅ How to <strong>enter the ecosystem safely</strong><br>✅ <strong>LIVE Q&A</strong> – ask anything!<br><br>📅 <strong>Date: </strong>{time}<br><br>📅 <strong>Reserve your spot now: </strong><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{url}\"><strong>Launch For Beginners</strong></a>",
       "event": "Launch for Beginners",
-      "id": 1,
+      "id": 2,
       "level_up_question": false
     },
     {
       "content": "💡 <strong>Want to learn more about cryptocurrencies and how to handle them safely?</strong> Don’t miss our <strong>exclusive webinar on crypto basics and security</strong>!<br><br>✅ How to <strong>store and protect</strong> your crypto 🛡️<br>✅ Common mistakes that <strong>could cost you money</strong> ❌<br>✅ How to <strong>invest safely</strong> and avoid scams<br><br>📅 <strong>Date: </strong>{time}<br><br><strong>Register now: </strong><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{url}\"><strong>Crypto Basics & Security</strong></a>",
       "event": "Základy a bezpečnost kryptoměn",
-      "id": 2,
+      "id": 3,
       "level_up_question": false
     },
     {
       "content": "🔥 <strong>Get ready for something big!</strong> Use our Affiliate system and build your own business with this project!<br><br>✅ How to <strong>build passive income</strong> 💰<br>✅ Strategies for <strong>long-term growth</strong> 📈<br>✅ Practical steps you can <strong>apply immediately</strong><br><br>📅 <strong>Date: </strong>{time}<br><br><strong>Be there – reserve your spot now: </strong><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{url}\"><strong>Build Your Business</strong></a>",
       "event": "Build Your Business",
-      "id": 3,
+      "id": 4,
       "level_up_question": false
     }
   ]
