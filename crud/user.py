@@ -15,6 +15,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+YES_NO_LOCALIZED = {
+    "cs": ("ANO", "NE"),
+    "sk": ("ÁNO", "NIE"),
+    "en": ("YES", "NO"),
+    "esp": ("SÍ", "NO"),
+}
+
 def get_next_weekday_at(weekday: int, hour: int):
     now = datetime.utcnow()
     days_until_target = (weekday - now.weekday()) % 7
@@ -209,16 +216,15 @@ def send_message_to_user(db: Session, user: UserBase):
     }
     logger.debug(f"Message payload: {data}")
 
-    if message.get("level_up_question"):  
+    if message.get("level_up_question"):
+        yes_text, no_text = YES_NO_LOCALIZED.get(bot.lang, ("YES", "NO"))
         data["reply_markup"] = {
             "inline_keyboard": [[
-                {"text": "ANO", "callback_data": f"{user.id}|t"},
-                {"text": "NE", "callback_data": f"{user.id}|f"},
+                {"text": yes_text, "callback_data": f"{user.id}|t"},
+                {"text": no_text, "callback_data": f"{user.id}|f"},
             ]]
         }
-        logger.debug("Added level-up question buttons.")
-
-    print ("should_send before sending", should_send)
+        
     if should_send:
         logger.info("Sending message...")
         try:
