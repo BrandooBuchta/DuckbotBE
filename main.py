@@ -207,26 +207,15 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
     resp = requests.get(SUPABASE_URL, headers=headers)
     events = resp.json()
 
-    # 🧪 Přidáme testovací event, který proběhne za 1h 20min od aktuálního času
-    # test_event_time = int((datetime.utcnow() + timedelta(hours=1, minutes=20)).timestamp())
-    # test_event = {
-    #     "id": 9999,
-    #     "title": {
-    #         "cs": "Launch pro Nováčky",
-    #         "en": "Launch for Beginners"
-    #     },
-    #     "timestamp": test_event_time,
-    #     "language": "CZ",
-    #     "minToStake": 0,
-    #     "url": "https://example.com/test-launch",
-    #     "link": None
-    # }
-    # events.append(test_event)
-
+    # ❌ Odstranit všechny existující "Event" sekvence pro daného bota
     existing_sequences, _ = get_all_sequences(db, bot.id)
-    existing_sequence_names = {s.name for s in existing_sequences}
+    for seq in existing_sequences:
+        if "Event" in seq.name:
+            db.delete(seq)
+    db.commit()  # Commit až po mazání
 
-    for event in events:
+    # ✅ Vytvořit nové event sekvence
+    for index, event in enumerate(events):
         europe_prague = pytz_timezone("Europe/Prague")
         event_time = datetime.fromtimestamp(event["timestamp"], tz=europe_prague)
 
@@ -234,10 +223,6 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
             continue
 
         sequence_name = f"Event {event['id']}"
-
-        if sequence_name in existing_sequence_names:
-            continue
-
         messages = get_messages(1, bot.lang, bot.is_event, bot.id)
         matching_message = next(
             (msg for msg in messages if msg.get("event") == event["title"]["en"]),
@@ -256,7 +241,7 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
             id=uuid.uuid4(),
             bot_id=bot.id,
             name=sequence_name,
-            position=len(existing_sequences) + 1,
+            position=index + 1,
             message=f"{message_text} {sequence_name}",
             levels=[1],
             repeat=False,
@@ -268,11 +253,9 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
         )
 
         db.add(sequence)
-        existing_sequences.append(sequence)
-        existing_sequence_names.add(sequence_name)
 
     db.commit()
-    logger.info("✅ Nové event sekvence vytvořeny")
+    logger.info(f"✅ Pro bota {bot.id} vytvořeny nové sekvence eventů.")
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(create_event_sequences, CronTrigger(day_of_week="mon", hour=10, minute=0))
