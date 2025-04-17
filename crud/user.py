@@ -134,6 +134,7 @@ def update_users_position(db: Session, user_id: UUID, next_message_id: str, next
             logger.info("next_message_send_after exists")
             db_user.send_message_at = now + timedelta(minutes=next_message_send_after)
         else:
+            logger.info("next_message_send_after ain't exists")
             db_user.send_message_at = None
         db.commit()
         db.refresh(db_user)
