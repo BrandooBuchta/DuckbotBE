@@ -125,7 +125,7 @@ def update_users_position(db: Session, user_id: UUID, next_message_id: str, next
 
     if db_user:
         db_user.next_message_id = next_message_id
-        if next_message_id == 1:
+        if next_message_id == 1 and db_user.client_level == 0:
             db.commit()
             db.refresh(db_user)
             return db_user
