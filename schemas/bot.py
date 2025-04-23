@@ -8,10 +8,8 @@ from datetime import datetime
 class BaseBot(BaseModel):
     id: UUID
     name: Optional[str] = None
-    devs_currently_assigned: Optional[int] = 0
     video_url: Optional[str] = None
     bot_url: Optional[str] = None
-    devs_share: Optional[int] = 10
     support_contact: Optional[str] = None
     is_event: Optional[bool] = False
     event_capacity: Optional[int] = 0
@@ -61,8 +59,6 @@ class SignInResponse(BaseModel):
 
 class UpdateBot(BaseModel):
     name: Optional[str] = None
-    devs_currently_assigned: Optional[int] = None
-    devs_share: Optional[int] = None
     video_url: Optional[str] = None
     support_contact: Optional[str] = None
     is_event: Optional[bool] = False

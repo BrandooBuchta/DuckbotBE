@@ -16,8 +16,6 @@ class Bot(Base):
     token = Column(String, nullable=True)
     video_url = Column(String, nullable=True)
     bot_url = Column(String, nullable=True)
-    devs_share = Column(Float, nullable=True)
-    devs_currently_assigned = Column(Integer, nullable=True)
     support_contact = Column(String, nullable=True)
     is_event = Column(Boolean, nullable=True)
     event_capacity = Column(Integer, nullable=True)

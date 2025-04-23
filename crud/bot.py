@@ -85,8 +85,6 @@ def sign_up(db: Session, bot: SignUp):
         event_name=bot.event_name,
         is_event=bot.is_event,
         password=hashed_password,
-        devs_currently_assigned=0,
-        devs_share=10,
         bot_url=bot_url,
 
         token=b64encode(bot.token.encode()).decode(),

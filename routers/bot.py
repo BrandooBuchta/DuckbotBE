@@ -56,28 +56,22 @@ def reset_all_links(db: Session, bot_id: UUID):
         update_link(db, link_schema.id, UpdateLink(currently_assigned=0))
         
 def assing_academy_link(db: Session, bot_id: UUID, user_id: UUID):
-    bot, status = get_bot(db, bot_id)
     links, status = get_all_links(db, bot_id)
     links_length = len(links)
 
-    if all(link.currently_assigned == link.share for link in links) and bot.devs_currently_assigned == bot.devs_share:
+    if not links or status != 200:
+        return
+
+    if all(link.currently_assigned == link.share for link in links):
         reset_all_links(db, bot_id)
-        update_bot(db, bot_id, UpdateBot(devs_currently_assigned=0))
 
-    random_number = random.randint(0, links_length)
-
-    if random_number == links_length:
-        if bot.devs_currently_assigned < bot.devs_share:
-            update_users_academy_link(
-                db,
-                user_id,
-                os.getenv(f"FOUNDERS_ACADEMY_LINK{get_founder_academy_link(bot.devs_currently_assigned )}")
-            )            
-            update_bot(db, bot_id, UpdateBot(devs_currently_assigned=bot.devs_currently_assigned + 1))
-            return
-        else:
-            assing_academy_link(db, bot_id, user_id)
-            return
+    while True:
+        random_number = random.randint(0, links_length - 1)
+        link = links[random_number]
+        if link.currently_assigned < link.share:
+            update_users_academy_link(db, user_id, link.child)
+            update_link(db, link.id, UpdateLink(currently_assigned=link.currently_assigned + 1))
+            break
 
     link = links[random_number]
     if link.currently_assigned < link.share:
