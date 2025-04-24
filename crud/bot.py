@@ -138,6 +138,7 @@ def get_statistics(db: Session, bot_id: UUID):
             level_counts[user.client_level] += 1
 
     return [
+        Statistic(title="Landing Page", value=100),
         Statistic(title="Nezastakováno", value=level_counts[0]),
         Statistic(title="Zastakováno", value=level_counts[1]),
         Statistic(title="Affiliate", value=level_counts[2]),
