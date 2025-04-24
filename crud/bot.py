@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models.bot import Bot, Sequence
+from models.bot import Bot, Sequence, AnalyticData
 from schemas.bot import SignUp, SignIn, SignInResponse, BaseBot, UpdateBot, PublicBot, Statistic
 from models.user import User
 from security import get_password_hash, verify_password
@@ -128,6 +128,17 @@ def update_bot(db: Session, bot_id: UUID, bot: UpdateBot):
     db.commit()
     db.refresh(db_bot)
     return db_bot, 200
+
+def increase_analytic_data(db: Session, bot_id: UUID):
+    db_data = AnalyticData(
+        bot_id=bot_id,
+        id=uuid.uuid4()
+    )
+    db.add(db_data)
+    db.commit()
+    db.refresh(db_data)
+
+    return db_data, 200
 
 def get_statistics(db: Session, bot_id: UUID):
     users = db.query(User).filter(User.bot_id == bot_id).all()

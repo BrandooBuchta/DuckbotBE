@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, Statistic, PublicBot
-from crud.bot import sign_in, sign_up, get_bot_by_name, get_bot, verify_token, update_bot, get_statistics, get_public_bot
+from crud.bot import sign_in, sign_up, get_bot_by_name, get_bot, verify_token, update_bot, get_statistics, get_public_bot, increase_analytic_data
 from crud.faq import get_all_formated_faqs
 from crud.user import get_current_user, create_or_update_user, update_user_name, update_users_academy_link, get_user, create_user, update_users_level, send_message_to_user
 from crud.vars import replace_variables
@@ -288,6 +288,15 @@ def fetch_statistics(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Sess
         raise HTTPException(status_code=404, detail="Tento bot neexistuje!")
 
     return get_statistics(db, bot_id)
+
+@router.post("/analytics/increase/{bot_id}")
+def fetch_statistics(bot_id: UUID, db: Session = Depends(get_db)):
+    db_data, status = increase_analytic_data(db, bot_id)
+
+    if status == 404:
+        raise HTTPException(status_code=404, detail="Tento bot neexistuje!")
+
+    return {"status": "ok", "message": "Úspěch"}
 
 @router.post("/send-academy-link/{user_id}")
 async def send_academy_links(user_id: UUID, db: Session = Depends(get_db)):
