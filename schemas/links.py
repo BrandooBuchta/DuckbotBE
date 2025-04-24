@@ -7,7 +7,6 @@ from uuid import UUID
 class BaseLink(BaseModel):
     id: UUID
     bot_id: UUID
-    is_faq: bool
     position: int
     currently_assigned: int
     share: int
@@ -19,7 +18,6 @@ class BaseLink(BaseModel):
 
 class CreateLink(BaseModel):
     bot_id: UUID
-    is_faq: Optional[bool] = False
     currently_assigned: Optional[int] = 0
     share: Optional[int] = 0
     position: int

@@ -31,7 +31,6 @@ class BotList(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     bot_id = Column(UUID(as_uuid=True), nullable=False)
-    is_faq = Column(Boolean, nullable=False)
     position = Column(Integer, nullable=True)
     share = Column(Float, nullable=True)
     currently_assigned = Column(Integer, nullable=True)

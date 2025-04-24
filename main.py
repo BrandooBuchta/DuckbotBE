@@ -14,7 +14,6 @@ from fastapi.responses import PlainTextResponse
 from datetime import datetime, timedelta, timezone as dt_timezone
 from routers.bot import router as bot_router
 from routers.links import router as links_router
-from routers.faq import router as faq_router
 from routers.sequence import router as sequence_router
 from crud.sequence import get_sequences, update_sequence, get_all_sequences
 from crud.vars import replace_variables
@@ -267,7 +266,6 @@ def start_scheduler():
 
 app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
 app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy Links"])
-app.include_router(faq_router, prefix="/api/bot/faq", tags=["FAQ"])
 app.include_router(sequence_router, prefix="/api/bot/sequence", tags=["Sequences"])
 
 if __name__ == "__main__":

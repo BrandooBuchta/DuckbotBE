@@ -5,7 +5,7 @@ import uuid
 from uuid import UUID
 
 def get_link(db: Session, link_id: UUID):
-    db_link = db.query(BotList).filter(BotList.is_faq == False, BotList.id == link_id).first()
+    db_link = db.query(BotList).filter(BotList.id == link_id).first()
     if not db_link:
         return None, 404
 
@@ -22,7 +22,7 @@ def get_link(db: Session, link_id: UUID):
 
 
 def get_base_link(db: Session, link_id: UUID):
-    db_link = db.query(BotList).filter(BotList.is_faq == False, BotList.id == link_id).first()
+    db_link = db.query(BotList).filter(BotList.id == link_id).first()
     if not db_link:
         return None, 404
 
@@ -30,7 +30,7 @@ def get_base_link(db: Session, link_id: UUID):
 
 
 def get_all_links(db: Session, bot_id: UUID):
-    db_links = db.query(BotList).filter(BotList.is_faq == False, BotList.bot_id == bot_id).all()
+    db_links = db.query(BotList).filter(BotList.bot_id == bot_id).all()
 
     if not db_links:
         return [], 404
@@ -68,7 +68,6 @@ def create_link(db: Session, bot_id: UUID):
     db_link = BotList(
         id=uuid.uuid4(),
         bot_id=bot_id,
-        is_faq=False,
         currently_assigned=0,
         share=0,
         parent=f"Link Alias {len(db_links) + 1}",

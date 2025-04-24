@@ -7,7 +7,6 @@ from uuid import UUID
 class BaseFAQ(BaseModel):
     id: UUID
     bot_id: UUID
-    is_faq: bool
     position: int
     parent: str
     child: str
@@ -17,7 +16,6 @@ class BaseFAQ(BaseModel):
 
 class CreateFAQ(BaseModel):
     bot_id: UUID
-    is_faq: Optional[bool] = True
     position: int
     parent: str
     child: str
