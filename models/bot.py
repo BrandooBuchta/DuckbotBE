@@ -60,6 +60,7 @@ class Sequence(Base):
 
 class BotList(Base):
     __tablename__ = "list"
+    __table_args__ = {'extend_existing': True}  # This extends the existing table definition
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     bot_id = Column(UUID(as_uuid=True), nullable=False)
