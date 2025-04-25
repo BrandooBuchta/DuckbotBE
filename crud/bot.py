@@ -129,9 +129,11 @@ def update_bot(db: Session, bot_id: UUID, bot: UpdateBot):
     db.refresh(db_bot)
     return db_bot, 200
 
-def increase_analytic_data(db: Session, bot_id: UUID):
+def increase_analytic_data(db: Session, bot_name: UUID):
+    db_bot, status = get_bot_by_name(db, bot_name)
+
     db_data = AnalyticData(
-        bot_id=bot_id,
+        bot_id=db_bot.id,
         id=uuid.uuid4()
     )
     db.add(db_data)
@@ -141,6 +143,7 @@ def increase_analytic_data(db: Session, bot_id: UUID):
     return db_data, 200
 
 def get_statistics(db: Session, bot_id: UUID):
+    analytic_data, status = db.query(AnalyticData).filter(AnalyticData.bot_id == bot_id).all()
     users = db.query(User).filter(User.bot_id == bot_id).all()
 
     level_counts = {0: 0, 1: 0, 2: 0}
@@ -149,9 +152,9 @@ def get_statistics(db: Session, bot_id: UUID):
             level_counts[user.client_level] += 1
 
     return [
-        Statistic(title="Landing Page", value=100),
+        Statistic(title="Landing Page", value=len(analytic_data)),
         Statistic(title="Nezastakováno", value=level_counts[0]),
         Statistic(title="Zastakováno", value=level_counts[1]),
         Statistic(title="Affiliate", value=level_counts[2]),
-        Statistic(title="Celkem", value=len(users))
+        Statistic(title="Celkem v Botovi", value=len(users))
     ]

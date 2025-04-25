@@ -289,9 +289,9 @@ def fetch_statistics(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Sess
 
     return get_statistics(db, bot_id)
 
-@router.post("/analytics/increase/{bot_id}")
-def fetch_statistics(bot_id: UUID, db: Session = Depends(get_db)):
-    db_data, status = increase_analytic_data(db, bot_id)
+@router.post("/analytics/increase/{bot_name}")
+def fetch_statistics(bot_name: str, db: Session = Depends(get_db)):
+    db_data, status = increase_analytic_data(db, bot_name)
 
     if status == 404:
         raise HTTPException(status_code=404, detail="Tento bot neexistuje!")
