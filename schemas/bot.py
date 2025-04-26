@@ -103,3 +103,4 @@ class ReadSequence(BaseModel):
 class Statistic(BaseModel):
     title: str
     value: int
+    is_percentage: Optional[bool] = False

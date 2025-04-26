@@ -156,5 +156,7 @@ def get_statistics(db: Session, bot_id: UUID):
         Statistic(title="Nezastakováno", value=level_counts[0]),
         Statistic(title="Zastakováno", value=level_counts[1]),
         Statistic(title="Affiliate", value=level_counts[2]),
-        Statistic(title="Celkem v Botovi", value=len(users))
+        Statistic(title="Celkem v Botovi", value=len(users)),
+        Statistic(title="Konverzní poměr (Stránka/Bot)", value=len(db_analytics_data)/len(users)*100),
+        Statistic(title="Konverzní poměr (Bot/Staked)", value=len(users)/level_counts[1]*100),
     ]
