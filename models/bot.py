@@ -26,19 +26,6 @@ class Bot(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-class BotList(Base):
-    __tablename__ = "list"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    bot_id = Column(UUID(as_uuid=True), nullable=False)
-    position = Column(Integer, nullable=True)
-    share = Column(Float, nullable=True)
-    currently_assigned = Column(Integer, nullable=True)
-    parent = Column(String, nullable=True)
-    child = Column(String, nullable=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-
 class Sequence(Base):
     __tablename__ = "sequence"
 
