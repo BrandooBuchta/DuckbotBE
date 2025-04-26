@@ -151,7 +151,7 @@ def get_statistics(db: Session, bot_id: UUID):
         if user.client_level in level_counts:
             level_counts[user.client_level] += 1
 
-    conversion_page_bot = (len(db_analytics_data) / len(users) * 100) if len(users) > 0 else 0
+    conversion_page_bot = (len(users) / len(db_analytics_data) * 100) if len(db_analytics_data) > 0 else 0
     conversion_bot_staked = (len(users) / level_counts[1] * 100) if level_counts[1] > 0 else 0
 
     return [
