@@ -143,7 +143,7 @@ def increase_analytic_data(db: Session, bot_name: UUID):
     return db_data, 200
 
 def get_statistics(db: Session, bot_id: UUID):
-    analytic_data, status = db.query(AnalyticData).filter(AnalyticData.bot_id == bot_id).all()
+    db_analytics_data = db.query(AnalyticData).filter(AnalyticData.bot_id == bot_id).all()
     users = db.query(User).filter(User.bot_id == bot_id).all()
 
     level_counts = {0: 0, 1: 0, 2: 0}
@@ -152,7 +152,7 @@ def get_statistics(db: Session, bot_id: UUID):
             level_counts[user.client_level] += 1
 
     return [
-        Statistic(title="Landing Page", value=len(analytic_data)),
+        Statistic(title="Návštěvníci webu", value=len(db_analytics_data)),
         Statistic(title="Nezastakováno", value=level_counts[0]),
         Statistic(title="Zastakováno", value=level_counts[1]),
         Statistic(title="Affiliate", value=level_counts[2]),
