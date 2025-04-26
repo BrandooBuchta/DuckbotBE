@@ -151,12 +151,15 @@ def get_statistics(db: Session, bot_id: UUID):
         if user.client_level in level_counts:
             level_counts[user.client_level] += 1
 
+    conversion_page_bot = (len(db_analytics_data) / len(users) * 100) if len(users) > 0 else 0
+    conversion_bot_staked = (len(users) / level_counts[1] * 100) if level_counts[1] > 0 else 0
+
     return [
         Statistic(title="Návštěvníci webu", value=len(db_analytics_data)),
         Statistic(title="Nezastakováno", value=level_counts[0]),
         Statistic(title="Zastakováno", value=level_counts[1]),
         Statistic(title="Affiliate", value=level_counts[2]),
         Statistic(title="Celkem v Botovi", value=len(users)),
-        Statistic(title="Konverzní poměr (Stránka/Bot)", value=len(db_analytics_data)/len(users)*100),
-        Statistic(title="Konverzní poměr (Bot/Staked)", value=len(users)/level_counts[1]*100),
+        Statistic(title="Konverzní poměr (Stránka/Bot)", value=conversion_page_bot),
+        Statistic(title="Konverzní poměr (Bot/Staked)", value=conversion_bot_staked),
     ]
