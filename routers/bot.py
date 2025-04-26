@@ -248,29 +248,6 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 assing_academy_link(db, bot_id, user.id)
                 send_message_to_user(db, user)
 
-        else:
-            if text == "/help":
-                print(f"chat_id of {bot_id}: ", chat_id)
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, bot.help_message), "parse_mode": "html"})
-            elif text == "/network":
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": replace_variables(db, bot_id, chat_id, bot.help_message), "parse_mode": "html"})
-            elif text == "/events" and user.level >= 1:
-                url = "https://lewolqdkbulwiicqkqnk.supabase.co/rest/v1/events?select=*&order=timestamp.asc"
-                headers = {
-                    "apikey": SUPABASE_ANON_KEY,
-                    "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
-                }
-
-                event_resp = requests.get(url, headers=headers)
-                if event_resp.status_code == 200:
-                    events_data = event_resp.json()
-                    formatted = format_events(events_data)
-                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": formatted, "parse_mode": "html"})
-                else:
-                    requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Nepodařilo se načíst události.", "parse_mode": "html"})
-            else:
-                requests.post(f"{telegram_api_url}/sendMessage", json={"chat_id": chat_id, "text": "Neznámý příkaz. Použijte /help pro nápovědu.", "parse_mode": "html"})
-
     return {"ok": True}
 
 @router.get("/statistics/{bot_id}", response_model=List[Statistic])
