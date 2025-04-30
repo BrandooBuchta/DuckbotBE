@@ -103,4 +103,5 @@ class ReadSequence(BaseModel):
 class Statistic(BaseModel):
     title: str
     value: float
-    is_percentage: Optional[bool] = False
+    is_ratio: Optional[bool] = False
+    diff: Optional[float] = 0

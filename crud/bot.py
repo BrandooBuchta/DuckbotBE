@@ -8,6 +8,8 @@ import uuid
 from uuid import UUID
 import requests
 from sqlalchemy import or_
+from datetime import datetime, timedelta
+from typing import Optional, Tuple
 
 def verify_token(db: Session, bot_id: UUID, token: str) -> bool:
     bot, status = get_bot(db, bot_id)
@@ -142,8 +144,33 @@ def increase_analytic_data(db: Session, bot_name: UUID):
 
     return db_data, 200
 
-def get_statistics(db: Session, bot_id: UUID):
-    db_analytics_data = db.query(AnalyticData).filter(AnalyticData.bot_id == bot_id).all()
+from datetime import datetime, timedelta
+from typing import Optional, Tuple
+
+def get_statistics(
+    db: Session,
+    bot_id: UUID,
+    interval: str = "total",
+    custom_range: Optional[Tuple[datetime, datetime]] = None
+):
+    query = db.query(AnalyticData).filter(AnalyticData.bot_id == bot_id)
+
+    now = datetime.utcnow()
+    if interval == "lastHour":
+        query = query.filter(AnalyticData.created_at >= now - timedelta(hours=1))
+    elif interval == "lastDay":
+        query = query.filter(AnalyticData.created_at >= now - timedelta(days=1))
+    elif interval == "lastWeek":
+        query = query.filter(AnalyticData.created_at >= now - timedelta(weeks=1))
+    elif interval == "lastMonth":
+        query = query.filter(AnalyticData.created_at >= now - timedelta(days=30))
+    elif interval == "lastYear":
+        query = query.filter(AnalyticData.created_at >= now - timedelta(days=365))
+    elif interval == "custom" and custom_range:
+        start, end = custom_range
+        query = query.filter(AnalyticData.created_at >= start, AnalyticData.created_at <= end)
+
+    db_analytics_data = query.all()
     users = db.query(User).filter(User.bot_id == bot_id).all()
 
     level_counts = {0: 0, 1: 0, 2: 0}
@@ -160,6 +187,6 @@ def get_statistics(db: Session, bot_id: UUID):
         Statistic(title="Zastakováno", value=level_counts[1]),
         Statistic(title="Affiliate", value=level_counts[2]),
         Statistic(title="Celkem v Botovi", value=len(users)),
-        Statistic(title="Konverzní poměr (Stránka/Bot)", value=conversion_page_bot),
-        Statistic(title="Konverzní poměr (Bot/Staked)", value=conversion_bot_staked),
+        Statistic(title="Konverzní poměr (Stránka/Bot)", value=conversion_page_bot, is_ratio=True),
+        Statistic(title="Konverzní poměr (Bot/Staked)", value=conversion_bot_staked, is_ratio=True),
     ]

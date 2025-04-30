@@ -1,6 +1,6 @@
 # routers/bot.py
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Optional
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import SessionLocal
@@ -22,6 +22,7 @@ import requests
 from uuid import UUID
 import random
 import logging
+from typing import Optional
 
 load_dotenv()
 
@@ -251,16 +252,23 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
     return {"ok": True}
 
 @router.get("/statistics/{bot_id}", response_model=List[Statistic])
-def fetch_statistics(bot_id: UUID, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def fetch_statistics(
+    bot_id: UUID,
+    interval: str = Query("total", enum=["lastHour", "lastDay", "lastWeek", "lastMonth", "lastYear", "total", "custom"]),
+    start: Optional[datetime] = Query(None),
+    end: Optional[datetime] = Query(None),
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+):
     if not verify_token(db, bot_id, token):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     db_bot, status = get_bot(db, bot_id)
-
     if status == 404:
         raise HTTPException(status_code=404, detail="Tento bot neexistuje!")
 
-    return get_statistics(db, bot_id)
+    custom_range = (start, end) if interval == "custom" and start and end else None
+    return get_statistics(db, bot_id, interval=interval, custom_range=custom_range)
 
 @router.post("/analytics/increase/{bot_name}")
 def fetch_statistics(bot_name: str, db: Session = Depends(get_db)):
