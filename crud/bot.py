@@ -153,32 +153,43 @@ def get_statistics(
     interval: str = "total",
     custom_range: Optional[Tuple[datetime, datetime]] = None
 ):
-    query = db.query(AnalyticData).filter(AnalyticData.bot_id == bot_id)
-
     now = datetime.utcnow()
-    if interval == "lastHour":
-        query = query.filter(AnalyticData.created_at >= now - timedelta(hours=1))
-    elif interval == "lastDay":
-        query = query.filter(AnalyticData.created_at >= now - timedelta(days=1))
-    elif interval == "lastWeek":
-        query = query.filter(AnalyticData.created_at >= now - timedelta(weeks=1))
-    elif interval == "lastMonth":
-        query = query.filter(AnalyticData.created_at >= now - timedelta(days=30))
-    elif interval == "lastYear":
-        query = query.filter(AnalyticData.created_at >= now - timedelta(days=365))
-    elif interval == "custom" and custom_range:
-        start, end = custom_range
-        query = query.filter(AnalyticData.created_at >= start, AnalyticData.created_at <= end)
+    start_time = None
+    end_time = None
 
-    db_analytics_data = query.all()
-    users = db.query(User).filter(User.bot_id == bot_id).all()
+    if interval == "lastHour":
+        start_time = now - timedelta(hours=1)
+    elif interval == "lastDay":
+        start_time = now - timedelta(days=1)
+    elif interval == "lastWeek":
+        start_time = now - timedelta(weeks=1)
+    elif interval == "lastMonth":
+        start_time = now - timedelta(days=30)
+    elif interval == "lastYear":
+        start_time = now - timedelta(days=365)
+    elif interval == "custom" and custom_range:
+        start_time, end_time = custom_range
+
+    analytics_query = db.query(AnalyticData).filter(AnalyticData.bot_id == bot_id)
+    if start_time:
+        analytics_query = analytics_query.filter(AnalyticData.created_at >= start_time)
+    if end_time:
+        analytics_query = analytics_query.filter(AnalyticData.created_at <= end_time)
+    db_analytics_data = analytics_query.all()
+
+    users_query = db.query(User).filter(User.bot_id == bot_id)
+    if start_time:
+        users_query = users_query.filter(User.created_at >= start_time)
+    if end_time:
+        users_query = users_query.filter(User.created_at <= end_time)
+    users = users_query.all()
 
     level_counts = {0: 0, 1: 0, 2: 0}
     for user in users:
         if user.client_level in level_counts:
             level_counts[user.client_level] += 1
 
-    conversion_page_bot = (len(users) / len(db_analytics_data) * 100) if len(db_analytics_data) > 0 else 0
+    conversion_page_bot = (len(users) / len(db_analytics_data) * 100) if db_analytics_data else 0
     conversion_bot_staked = (len(users) / level_counts[1] * 100) if level_counts[1] > 0 else 0
 
     return [
