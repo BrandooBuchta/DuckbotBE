@@ -42,6 +42,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:3000",
+    "http://localhost:3001",
     "https://duckbot-ui.vercel.app",
     "https://app.duckbot.cz",
     "https://ducknation.vercel.app",
