@@ -211,9 +211,9 @@ def get_statistics(
             User.created_at <= prev_end
         ).all()
 
-    def calc_change(now_val: int, prev_val: int) -> Optional[float]:
+    def calc_change(now_val: int, prev_val: int) -> float:
         if prev_val == 0:
-            return None
+            return 100.0 if now_val > 0 else 0.0
         return round(((now_val - prev_val) / prev_val) * 100, 2)
 
     level_counts_now = {0: 0, 1: 0, 2: 0}
