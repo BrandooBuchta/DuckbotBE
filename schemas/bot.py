@@ -104,4 +104,4 @@ class Statistic(BaseModel):
     title: str
     value: float
     is_ratio: Optional[bool] = False
-    diff: Optional[float] = 0
+    change: Optional[float] = None

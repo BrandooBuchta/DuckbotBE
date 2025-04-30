@@ -144,9 +144,6 @@ def increase_analytic_data(db: Session, bot_name: UUID):
 
     return db_data, 200
 
-from datetime import datetime, timedelta
-from typing import Optional, Tuple
-
 def get_statistics(
     db: Session,
     bot_id: UUID,
@@ -154,50 +151,93 @@ def get_statistics(
     custom_range: Optional[Tuple[datetime, datetime]] = None
 ):
     now = datetime.utcnow()
-    start_time = None
-    end_time = None
 
-    if interval == "lastHour":
-        start_time = now - timedelta(hours=1)
-    elif interval == "lastDay":
-        start_time = now - timedelta(days=1)
-    elif interval == "lastWeek":
-        start_time = now - timedelta(weeks=1)
-    elif interval == "lastMonth":
-        start_time = now - timedelta(days=30)
-    elif interval == "lastYear":
-        start_time = now - timedelta(days=365)
-    elif interval == "custom" and custom_range:
-        start_time, end_time = custom_range
+    def get_range(interval: str, custom: Optional[Tuple[datetime, datetime]]):
+        if interval == "lastHour":
+            end = now
+            start = now - timedelta(hours=1)
+        elif interval == "lastDay":
+            end = now
+            start = now - timedelta(days=1)
+        elif interval == "lastWeek":
+            end = now
+            start = now - timedelta(weeks=1)
+        elif interval == "lastMonth":
+            end = now
+            start = now - timedelta(days=30)
+        elif interval == "lastYear":
+            end = now
+            start = now - timedelta(days=365)
+        elif interval == "custom" and custom:
+            start, end = custom
+        else:
+            return None, None
+        return start, end
+
+    def get_previous_range(start: datetime, end: datetime) -> Tuple[datetime, datetime]:
+        delta = end - start
+        return start - delta, start
+
+    start, end = get_range(interval, custom_range)
+    prev_start, prev_end = get_previous_range(start, end) if start and end else (None, None)
 
     analytics_query = db.query(AnalyticData).filter(AnalyticData.bot_id == bot_id)
-    if start_time:
-        analytics_query = analytics_query.filter(AnalyticData.created_at >= start_time)
-    if end_time:
-        analytics_query = analytics_query.filter(AnalyticData.created_at <= end_time)
-    db_analytics_data = analytics_query.all()
-
     users_query = db.query(User).filter(User.bot_id == bot_id)
-    if start_time:
-        users_query = users_query.filter(User.created_at >= start_time)
-    if end_time:
-        users_query = users_query.filter(User.created_at <= end_time)
-    users = users_query.all()
 
-    level_counts = {0: 0, 1: 0, 2: 0}
-    for user in users:
-        if user.client_level in level_counts:
-            level_counts[user.client_level] += 1
+    if start:
+        analytics_query = analytics_query.filter(AnalyticData.created_at >= start)
+        users_query = users_query.filter(User.created_at >= start)
+    if end:
+        analytics_query = analytics_query.filter(AnalyticData.created_at <= end)
+        users_query = users_query.filter(User.created_at <= end)
 
-    conversion_page_bot = (len(users) / len(db_analytics_data) * 100) if db_analytics_data else 0
-    conversion_bot_staked = (len(users) / level_counts[1] * 100) if level_counts[1] > 0 else 0
+    analytics_now = analytics_query.count()
+    users_now = users_query.all()
+
+    # Previous analytics
+    analytics_prev = 0
+    users_prev = []
+
+    if prev_start and prev_end:
+        analytics_prev = db.query(AnalyticData).filter(
+            AnalyticData.bot_id == bot_id,
+            AnalyticData.created_at >= prev_start,
+            AnalyticData.created_at <= prev_end
+        ).count()
+
+        users_prev = db.query(User).filter(
+            User.bot_id == bot_id,
+            User.created_at >= prev_start,
+            User.created_at <= prev_end
+        ).all()
+
+    def calc_change(now_val: int, prev_val: int) -> Optional[float]:
+        if prev_val == 0:
+            return None
+        return round(((now_val - prev_val) / prev_val) * 100, 2)
+
+    level_counts_now = {0: 0, 1: 0, 2: 0}
+    for u in users_now:
+        if u.client_level in level_counts_now:
+            level_counts_now[u.client_level] += 1
+
+    level_counts_prev = {0: 0, 1: 0, 2: 0}
+    for u in users_prev:
+        if u.client_level in level_counts_prev:
+            level_counts_prev[u.client_level] += 1
+
+    conversion_page_bot = (len(users_now) / analytics_now * 100) if analytics_now else 0
+    conversion_bot_staked = (len(users_now) / level_counts_now[1] * 100) if level_counts_now[1] else 0
+
+    conversion_page_bot_prev = (len(users_prev) / analytics_prev * 100) if analytics_prev else 0
+    conversion_bot_staked_prev = (len(users_prev) / level_counts_prev[1] * 100) if level_counts_prev[1] else 0
 
     return [
-        Statistic(title="Návštěvníci webu", value=len(db_analytics_data)),
-        Statistic(title="Nezastakováno", value=level_counts[0]),
-        Statistic(title="Zastakováno", value=level_counts[1]),
-        Statistic(title="Affiliate", value=level_counts[2]),
-        Statistic(title="Celkem v Botovi", value=len(users)),
-        Statistic(title="Konverzní poměr (Stránka/Bot)", value=conversion_page_bot, is_ratio=True),
-        Statistic(title="Konverzní poměr (Bot/Staked)", value=conversion_bot_staked, is_ratio=True),
+        Statistic(title="Návštěvníci webu", value=analytics_now, change=calc_change(analytics_now, analytics_prev)),
+        Statistic(title="Nezastakováno", value=level_counts_now[0], change=calc_change(level_counts_now[0], level_counts_prev[0])),
+        Statistic(title="Zastakováno", value=level_counts_now[1], change=calc_change(level_counts_now[1], level_counts_prev[1])),
+        Statistic(title="Affiliate", value=level_counts_now[2], change=calc_change(level_counts_now[2], level_counts_prev[2])),
+        Statistic(title="Celkem v Botovi", value=len(users_now), change=calc_change(len(users_now), len(users_prev))),
+        Statistic(title="Konverzní poměr (Stránka/Bot)", value=conversion_page_bot, is_ratio=True, change=calc_change(conversion_page_bot, conversion_page_bot_prev)),
+        Statistic(title="Konverzní poměr (Bot/Staked)", value=conversion_bot_staked, is_ratio=True, change=calc_change(conversion_bot_staked, conversion_bot_staked_prev)),
     ]
