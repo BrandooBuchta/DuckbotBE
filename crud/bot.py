@@ -9,7 +9,7 @@ from uuid import UUID
 import requests
 from sqlalchemy import or_
 from datetime import datetime, timedelta
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 
 def verify_token(db: Session, bot_id: UUID, token: str) -> bool:
     bot, status = get_bot(db, bot_id)
