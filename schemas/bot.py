@@ -29,6 +29,8 @@ class PublicBot(BaseModel):
     event_date: Optional[datetime] = None
     event_location: Optional[str] = None
     event_name: Optional[str] = None
+    domain: Optional[str] = None
+    videos: Optional[List[str]] = None
     lang: Optional[str] = None
 
     class Config:
@@ -66,6 +68,8 @@ class UpdateBot(BaseModel):
     event_date: Optional[datetime] = None
     event_location: Optional[str] = None
     event_name: Optional[str] = None
+    domain: Optional[str] = None
+    videos: Optional[List[str]] = None
     lang: Optional[str] = None
 
     class Config:
