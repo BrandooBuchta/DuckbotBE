@@ -242,7 +242,7 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
             bot_id=bot.id,
             name=sequence_name,
             position=index + 1,
-            message=f"{message_text} {sequence_name}",
+            message=f"{message_text}",
             levels=[1],
             repeat=False,
             send_at=send_time,
