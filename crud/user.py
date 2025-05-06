@@ -41,33 +41,11 @@ def get_next_friday_or_monday_at(hour: int):
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def create_or_update_user(db: Session, user: UserCreate):
-    db_user = db.query(User).filter(User.chat_id == user.chat_id, User.bot_id == user.bot_id).first()
-    if db_user:
-        db_user.chat_id = user.chat_id
-        if user.name is not None:
-            db_user.name = user.name
-    else:
-        db_user = User(
-
-            id=uuid4(), 
-            from_id=user.from_id, 
-            chat_id=user.chat_id, 
-            bot_id=user.bot_id,
-            client_level=user.client_level,
-            academy_link=None,
-            name=None
-        )
-        db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
-
 def create_user(db: Session, user: UserCreate):
     db_user = User(
         id=uuid4(), 
         from_id=user.from_id, 
-        chat_id=user.chat_id, 
+        chat_id=user.chat_id,
         bot_id=user.bot_id,
         client_level=0,    
         send_message_at=None,
@@ -163,6 +141,24 @@ def update_users_level(db: Session, user_id: UUID):
         db.refresh(db_user)
 
     send_message_to_user(db, db_user)
+    return db_user
+
+def update_rating(db: Session, user_id: UUID, rating: int):
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if db_user:
+        db_user.rating = rating
+        db.commit()
+        db.refresh(db_user)
+
+    return db_user
+
+def update_reference(db: Session, user_id: UUID, reference: int):
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if db_user:
+        db_user.reference = reference
+        db.commit()
+        db.refresh(db_user)
+
     return db_user
 
 from datetime import datetime, timedelta, timezone

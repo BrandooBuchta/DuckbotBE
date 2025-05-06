@@ -22,7 +22,7 @@ class Bot(Base):
     event_date = Column(DateTime(timezone=True), server_default=func.now())
     event_location = Column(String, nullable=True)
     event_name = Column(String, nullable=True)
-    custom_domain = Column(String, nullable=True)
+    domain = Column(String, nullable=True)
     videos = Column(ARRAY(String), default=[])
     lang = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
