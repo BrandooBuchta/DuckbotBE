@@ -36,17 +36,6 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-def get_founder_academy_link(currently_assigned: int):
-    match currently_assigned:
-        case 0:
-            return "2"
-        case 1:
-            return "3"
-        case 2 | 3:
-            return "4"
-        case 4 | 5 | 6 | 7 | 8 | 9:
-            return "1"
-
 def reset_all_links(db: Session, bot_id: UUID):
     links, status = get_all_links(db, bot_id)
     if status != 200 or not links:

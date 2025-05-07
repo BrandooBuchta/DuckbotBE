@@ -43,6 +43,13 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+YES_NO_LOCALIZED = {
+    "cs": ("ANO", "NE"),
+    "sk": ("ÁNO", "NIE"),
+    "en": ("YES", "NO"),
+    "esp": ("SÍ", "NO"),
+}
+
 with open("data/origins.json", "r", encoding="utf-8") as file:
     data = json.load(file)
 
@@ -108,12 +115,14 @@ def send_sequence_to_user(db: Session, bot_id: UUID, chat_id: int, message: str,
     }
 
     if check_status:
+        yes_text, no_text = YES_NO_LOCALIZED.get(bot.lang, ("YES", "NO"))
         data["reply_markup"] = {
             "inline_keyboard": [[
-                {"text": "ANO", "callback_data": f"{user.id}|t"},
-                {"text": "NE", "callback_data": f"{user.id}|f"},
+                {"text": yes_text, "callback_data": f"{user.id}|t"},
+                {"text": no_text, "callback_data": f"{user.id}|f"},
             ]]
         }
+
 
     response = requests.post(url, json=data)
     response.raise_for_status()
