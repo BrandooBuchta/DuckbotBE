@@ -1,11 +1,12 @@
 {
-    "origins": [
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "https://duckbot-ui.vercel.app",
-        "https://app.duckbot.cz",
-        "https://ducknation.vercel.app",
-        "https://www.ducknation.io",
-        "https://test.cakee.cz"
-    ]
+  "origins": [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://duckbot-ui.vercel.app",
+    "https://app.duckbot.cz",
+    "https://ducknation.vercel.app",
+    "https://www.ducknation.io",
+    "https://test.cakee.cz",
+    "test.brandoo.cz"
+  ]
 }
