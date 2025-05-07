@@ -225,10 +225,10 @@ def send_message_to_user(db: Session, user: UserBase):
         data["reply_markup"] = {
             "inline_keyboard": [[
                 {"text": "⭐️", "callback_data": f"{user.id}|1"},
-                {"text": "⭐️", "callback_data": f"{user.id}|2"},
-                {"text": "⭐️", "callback_data": f"{user.id}|3"},
-                {"text": "⭐️", "callback_data": f"{user.id}|4"},
-                {"text": "⭐️", "callback_data": f"{user.id}|5"},
+                {"text": "⭐️⭐️", "callback_data": f"{user.id}|2"},
+                {"text": "⭐️⭐️⭐️", "callback_data": f"{user.id}|3"},
+                {"text": "⭐️⭐️⭐️⭐️", "callback_data": f"{user.id}|4"},
+                {"text": "⭐️⭐️⭐️⭐️⭐️", "callback_data": f"{user.id}|5"},
             ]]
         }
         
