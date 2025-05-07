@@ -213,9 +213,10 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
     telegram_api_url = f"https://api.telegram.org/bot{b64decode(bot.token).decode()}"
 
+    print("update", update)
+
     if "callback_query" in update:
         callback_data = update['callback_query']['data']
-        print("callback_data", update)
         user_id_str, user_res = callback_data.split('|')
         user_id = UUID(user_id_str)
         user = get_user(db, user_id)
