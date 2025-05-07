@@ -46,7 +46,7 @@ public_endpoints_regex = [
     re.compile(r"^/api/bot/(analytics/increase/[a-zA-Z0-9_-]+|send-academy-link/[a-zA-Z0-9-]+|[a-zA-Z0-9-]+/public)$")
 ]
 
-origins = [
+allowed_origins = [
     "http://localhost:3000",
     "http://localhost:3001",
     "https://duckbot-ui.vercel.app",
