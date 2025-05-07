@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, Statistic, PublicBot
-from crud.bot import sign_in, sign_up, get_bot_by_name, get_bot, verify_token, update_bot, get_statistics, get_public_bot, increase_analytic_data, verify_domain
+from crud.bot import sign_in, sign_up, get_bot_by_name, get_bot, verify_token, update_bot, get_statistics, get_public_bot, increase_analytic_data
 from crud.user import get_current_user, update_user_name, update_users_academy_link, get_user, create_user, update_users_level, send_message_to_user
 from crud.vars import replace_variables
 from crud.links import get_all_links, update_link
@@ -140,16 +140,11 @@ def put_bot(bot_id: UUID, update_bot_body: UpdateBot, token: str = Depends(oauth
     return UpdateBot(**db_bot.__dict__)
 
 @router.get("/{name}/public", response_model=PublicBot)
-def fetch_bot(name: str, request: Request, db: Session = Depends(get_db)):
+def fetch_bot(name: str, db: Session = Depends(get_db)):
     db_bot, status = get_public_bot(db, name)
 
     if status == 404:
         raise HTTPException(status_code=404, detail="Tento bot neexistuje!")
-
-    domain_verification_status = verify_domain(db, db_bot.id, request)
-
-    if domain_verification_status == 403:
-        raise HTTPException(status_code=403, detail="Forbidden: Origin not allowed")
 
     return db_bot
 
@@ -278,40 +273,24 @@ def fetch_statistics(
 @router.post("/analytics/increase/{bot_name}")
 def fetch_increase_analytics(bot_name: str, db: Session = Depends(get_db)):
     db_data, status = increase_analytic_data(db, bot_name)
-    db_bot, bot_status = get_bot_by_name(db, bot_name)
-
-    domain_verification_status = verify_domain(db, db_bot.bot_id, request)
 
     if status == 404:
         raise HTTPException(status_code=404, detail="Tento bot neexistuje!")
 
-    if domain_verification_status == 403:
-        raise HTTPException(status_code=403, detail="Forbidden: Origin not allowed")
-
     return {"status": "ok", "message": "Úspěch"}
 
 @router.post("/send-academy-link/{user_id}")
-async def send_academy_links(user_id: UUID, request: Request, db: Session = Depends(get_db)):
+async def send_academy_links(user_id: UUID, db: Session = Depends(get_db)):
     user = get_user(db, user_id)
-
-    domain_verification_status = verify_domain(db, user.bot_id, request)
-
-    if domain_verification_status == 403:
-        raise HTTPException(status_code=403, detail="Forbidden: Origin not allowed")
 
     send_message_to_user(db, user)
 
     return {"status": "ok", "message": "Zpracování spuštěno"}
 
 @router.get("/videos/{user_id}")
-async def get_videos(user_id: UUID, request: Request, db: Session = Depends(get_db)):
+async def get_videos(user_id: UUID, db: Session = Depends(get_db)):
     user = get_user(db, user_id)
     bot, status = get_bot(db, user.bot_id)
-
-    domain_verification_status = verify_domain(db, user.bot_id, request)
-
-    if domain_verification_status == 403:
-        raise HTTPException(status_code=403, detail="Forbidden: Origin not allowed")
 
     return {"videos": bot.videos}
 
