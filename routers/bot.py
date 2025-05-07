@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from database import SessionLocal
 from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, Statistic, PublicBot
 from crud.bot import sign_in, sign_up, get_bot_by_name, get_bot, verify_token, update_bot, get_statistics, get_public_bot, increase_analytic_data
-from crud.user import get_current_user, update_user_name, update_users_academy_link, get_user, create_user, update_users_level, send_message_to_user
+from crud.user import get_current_user, update_user_name, update_users_academy_link, get_user, create_user, update_users_level, send_message_to_user, update_rating
 from crud.vars import replace_variables
 from crud.links import get_all_links, update_link
 from schemas.user import UserCreate
@@ -215,12 +215,15 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
     if "callback_query" in update:
         callback_data = update['callback_query']['data']
+        print("callback_data", callback_data)
         user_id_str, user_res = callback_data.split('|')
         user_id = UUID(user_id_str)
         user = get_user(db, user_id)
 
         if user_res == "t" and user.next_message_id > 1:
             update_users_level(db, user_id)
+        elif user_res in "12345":
+            update_rating(db, user_id, int(rating))
 
     if "message" in update:
         message = update["message"]

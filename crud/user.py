@@ -143,6 +143,35 @@ def update_users_level(db: Session, user_id: UUID):
     send_message_to_user(db, db_user)
     return db_user
 
+def save_users_level(db: Session, user_id: UUID):
+    now = datetime.now()
+
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if db_user.client_level == 2:
+        return 
+
+    if db_user:
+        db_user.client_level = db_user.client_level + 1
+        db_user.next_message_id = 0
+        db_user.send_message_at = now
+
+        db.commit()
+        db.refresh(db_user)
+
+    send_message_to_user(db, db_user)
+    return db_user
+
+def update_rating(db: Session, user_id: UUID, value: int):
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if db_user:
+        db_user.rating = value
+        
+        db.commit()
+        db.refresh(db_user)
+
+    send_message_to_user(db, db_user)
+    return db_user
+
 def update_rating(db: Session, user_id: UUID, rating: int):
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user:
@@ -224,11 +253,11 @@ def send_message_to_user(db: Session, user: UserBase):
     if message.get("rating_question"):
         data["reply_markup"] = {
             "inline_keyboard": [[
-                {"text": "⭐️", "callback_data": f"{user.id}|1"},
-                {"text": "⭐️⭐️", "callback_data": f"{user.id}|2"},
-                {"text": "⭐️⭐️⭐️", "callback_data": f"{user.id}|3"},
-                {"text": "⭐️⭐️⭐️⭐️", "callback_data": f"{user.id}|4"},
-                {"text": "⭐️⭐️⭐️⭐️⭐️", "callback_data": f"{user.id}|5"},
+                {"text": "🙁", "callback_data": f"{user.id}|1"},
+                {"text": "😕", "callback_data": f"{user.id}|2"},
+                {"text": "🙂", "callback_data": f"{user.id}|3"},
+                {"text": "😄", "callback_data": f"{user.id}|4"},
+                {"text": "🤩", "callback_data": f"{user.id}|5"},
             ]]
         }
         
