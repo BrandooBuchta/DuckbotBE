@@ -24,6 +24,7 @@ class BaseBot(BaseModel):
 class PublicBot(BaseModel):
     id: UUID
     video_url: Optional[str] = None
+    videos: Optional[List[str]] = []
     bot_url: Optional[str] = None
     is_event: Optional[bool] = False
     event_capacity: Optional[int] = 0

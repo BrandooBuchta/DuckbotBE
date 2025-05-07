@@ -65,6 +65,7 @@ def get_public_bot(db: Session, name: str):
     return PublicBot(
         id=db_bot.id,
         video_url=db_bot.video_url,
+        videos=db_bot.videos,
         bot_url=db_bot.bot_url,
         is_event=db_bot.is_event,
         event_capacity=db_bot.event_capacity,
