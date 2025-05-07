@@ -306,7 +306,7 @@ async def send_academy_links(user_id: UUID, request: Request, db: Session = Depe
 @router.get("/videos/{user_id}")
 async def get_videos(user_id: UUID, request: Request, db: Session = Depends(get_db)):
     user = get_user(db, user_id)
-    bot = get_bot(db, user.bot_id)
+    bot, status = get_bot(db, user.bot_id)
 
     domain_verification_status = verify_domain(db, user.bot_id, request)
 
