@@ -42,42 +42,16 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-public_endpoints_regex = [
-    re.compile(r"^/api/bot/(analytics/increase/[a-zA-Z0-9_-]+|send-academy-link/[a-zA-Z0-9-]+|[a-zA-Z0-9-]+/public)$")
-]
-
-allowed_origins = [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "https://duckbot-ui.vercel.app",
-    "https://app.duckbot.cz",
-    "https://ducknation.vercel.app",
-    "https://www.ducknation.io",
-]
+with open("data/origins.json", "r", encoding="utf-8") as file:
+    data = json.load(file)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=data.get("origins", []),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.middleware("http")
-async def check_origin_middleware(request: Request, call_next):
-    request_origin = request.headers.get("origin")
-    request_path = str(request.url.path)
-
-    if request_origin in allowed_origins or request_origin is None:
-        return await call_next(request)
-
-    if any(regex.match(request_path) for regex in public_endpoints_regex):
-        return await call_next(request)
-
-    return JSONResponse(
-        status_code=status.HTTP_403_FORBIDDEN,
-        content={"detail": "Forbidden: Origin not allowed"},
-    )
 
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
@@ -229,14 +203,12 @@ def generate_sequences_for_bot(db: Session, bot: Bot):
     resp = requests.get(SUPABASE_URL, headers=headers)
     events = resp.json()
 
-    # ❌ Odstranit všechny existující "Event" sekvence pro daného bota
     existing_sequences, _ = get_all_sequences(db, bot.id)
     for seq in existing_sequences:
         if "Event" in seq.name:
             db.delete(seq)
-    db.commit()  # Commit až po mazání
+    db.commit()
 
-    # ✅ Vytvořit nové event sekvence
     for index, event in enumerate(events):
         europe_prague = pytz_timezone("Europe/Prague")
         event_time = datetime.fromtimestamp(event["timestamp"], tz=europe_prague)
