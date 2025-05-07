@@ -10,6 +10,7 @@ import requests
 from sqlalchemy import or_
 from datetime import datetime, timedelta
 from typing import Optional, Tuple, List
+from fastapi import Request
 
 def verify_token(db: Session, bot_id: UUID, token: str) -> bool:
     bot, status = get_bot(db, bot_id)
@@ -227,3 +228,24 @@ def get_statistics(
         Statistic(title="Konverzní poměr (Stránka/Bot)", value=conversion_page_bot_now, is_ratio=True, change=calc_change(conversion_page_bot_now, conversion_page_bot_prev)),
         Statistic(title="Konverzní poměr (Bot/Staked)", value=conversion_bot_staked_now, is_ratio=True, change=calc_change(conversion_bot_staked_now, conversion_bot_staked_prev)),
     ]
+
+def verify_domain(db: Session, bot_id: UUID, request: Request):
+    db_bot, status = get_bot(db, bot_id)
+    if not db_bot:
+        return 404
+
+    request_origin = request.headers.get("origin")
+
+    if request_origin and "localhost" in request_origin:
+        return 200
+
+    elif "https://ducknation.vercel.app" == request_origin:
+        return 200
+
+    elif "https://www.ducknation.io" == request_origin:
+        return 200
+
+    elif request_origin not in origins and request_origin != f"https://{db_bot.domain}":
+        return 403
+
+    return 200

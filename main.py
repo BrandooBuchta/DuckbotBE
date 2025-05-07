@@ -1,6 +1,6 @@
 # main.py
 
-from fastapi import FastAPI, Depends, Request, BackgroundTasks
+from fastapi import FastAPI, Depends, Request, BackgroundTasks, Request
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base, SessionLocal
@@ -10,7 +10,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import PlainTextResponse, JSONResponse
 from datetime import datetime, timedelta, timezone as dt_timezone
 from routers.bot import router as bot_router
 from routers.links import router as links_router
@@ -30,6 +30,8 @@ from pytz import timezone as pytz_timezone
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from sqlalchemy import or_
+import re
+from starlette import status
 
 load_dotenv()
 
@@ -39,6 +41,10 @@ logger = logging.getLogger(__name__)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+public_endpoints_regex = [
+    re.compile(r"^/api/bot/(analytics/increase/[a-zA-Z0-9_-]+|send-academy-link/[a-zA-Z0-9-]+|[a-zA-Z0-9-]+/public)$")
+]
 
 origins = [
     "http://localhost:3000",
@@ -51,11 +57,27 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def check_origin_middleware(request: Request, call_next):
+    request_origin = request.headers.get("origin")
+    request_path = str(request.url.path)
+
+    if request_origin in allowed_origins or request_origin is None:
+        return await call_next(request)
+
+    if any(regex.match(request_path) for regex in public_endpoints_regex):
+        return await call_next(request)
+
+    return JSONResponse(
+        status_code=status.HTTP_403_FORBIDDEN,
+        content={"detail": "Forbidden: Origin not allowed"},
+    )
 
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
