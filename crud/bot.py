@@ -54,6 +54,7 @@ def get_public_bot(db: Session, name: str):
         return None, 404
 
     return PublicBot(
+        id=db_bot.id,
         video_url=db_bot.video_url,
         bot_url=db_bot.bot_url,
         is_event=db_bot.is_event,

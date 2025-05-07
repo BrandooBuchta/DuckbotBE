@@ -22,6 +22,7 @@ class BaseBot(BaseModel):
         form_attributes = True
 
 class PublicBot(BaseModel):
+    id: UUID
     video_url: Optional[str] = None
     bot_url: Optional[str] = None
     is_event: Optional[bool] = False
