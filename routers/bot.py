@@ -215,7 +215,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
     if "callback_query" in update:
         callback_data = update['callback_query']['data']
-        print("callback_data", callback_data)
+        print("callback_data", update)
         user_id_str, user_res = callback_data.split('|')
         user_id = UUID(user_id_str)
         user = get_user(db, user_id)
