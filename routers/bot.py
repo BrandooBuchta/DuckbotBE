@@ -303,3 +303,15 @@ async def send_academy_links(user_id: UUID, request: Request, db: Session = Depe
 
     return {"status": "ok", "message": "Zpracování spuštěno"}
 
+@router.post("/bot/videos/{user_id}")
+async def get_videos(user_id: UUID, request: Request, db: Session = Depends(get_db)):
+    user = get_user(db, user_id)
+    bot = get_bot(db, user.bot_id)
+
+    domain_verification_status = verify_domain(db, user.bot_id, request)
+
+    if domain_verification_status == 403:
+        raise HTTPException(status_code=403, detail="Forbidden: Origin not allowed")
+
+    return {"videos": bot.videos}
+
