@@ -303,7 +303,7 @@ async def send_academy_links(user_id: UUID, request: Request, db: Session = Depe
 
     return {"status": "ok", "message": "Zpracování spuštěno"}
 
-@router.post("/bot/videos/{user_id}")
+@router.post("/videos/{user_id}")
 async def get_videos(user_id: UUID, request: Request, db: Session = Depends(get_db)):
     user = get_user(db, user_id)
     bot = get_bot(db, user.bot_id)
