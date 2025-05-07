@@ -12,15 +12,6 @@ from datetime import datetime, timedelta
 from typing import Optional, Tuple, List
 from fastapi import Request
 
-allowed_origins = [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "https://duckbot-ui.vercel.app",
-    "https://app.duckbot.cz",
-    "https://ducknation.vercel.app",
-    "https://www.ducknation.io",
-]
-
 def verify_token(db: Session, bot_id: UUID, token: str) -> bool:
     bot, status = get_bot(db, bot_id)
     if bot and bot.token == token:
