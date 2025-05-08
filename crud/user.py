@@ -1,10 +1,11 @@
 # crud/user.py
 
 from sqlalchemy.orm import Session
+from sqlalchemy import asc, desc
 from models.user import User
-from schemas.user import UserCreate, UserBase, UsersReference
+from schemas.user import UserCreate, UserBase, UsersReference, PublicUser
 from uuid import UUID, uuid4
-from typing import List, Optional
+from typing import List, Optional, Literal, Tuple, Dict, Any
 from datetime import datetime, timedelta
 from crud.bot import get_bot
 from base64 import b64decode
@@ -12,6 +13,7 @@ from utils.messages import get_messages
 from crud.vars import replace_variables
 import requests
 import logging
+from math import ceil
 
 logger = logging.getLogger(__name__)
 
@@ -84,6 +86,46 @@ def update_users_academy_link(db: Session, user_id: UUID, academy_link: str):
 
 def get_all_users(db: Session, bot_id: UUID):
     return db.query(User).filter(User.bot_id == bot_id).all()
+
+def get_all_public_users(
+    db: Session,
+    page: int = 1,
+    per_page: int = 20,
+    sort_by: Literal["name", "created_at"] = "created_at",
+    sort_order: Literal["asc", "desc"] = "desc"
+) -> Dict[str, Any]:
+    sort_column = User.created_at if sort_by == "created_at" else User.name
+    order_func = asc if sort_order == "asc" else desc
+
+    query = db.query(User).order_by(order_func(sort_column))
+
+    total = query.count()
+    total_pages = ceil(total / per_page) if per_page else 1
+
+    users = query.offset((page - 1) * per_page).limit(per_page).all()
+
+    items = [
+        PublicUser(
+            id=user.id,
+            client_level=user.client_level,
+            reference=user.reference,
+            rating=user.rating,
+            academy_link=user.academy_link,
+            name=user.name,
+            username=user.username,
+            created_at=user.created_at,
+        )
+        for user in users
+    ]
+
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "per_page": per_page,
+        "total_pages": total_pages
+    }
+
 
 def get_audience(db: Session, bot_id: UUID, audience: List[int]):
     return db.query(User).filter(User.bot_id == bot_id, User.client_level.in_(audience)).all()

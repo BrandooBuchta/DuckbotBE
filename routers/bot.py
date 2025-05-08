@@ -6,10 +6,10 @@ from sqlalchemy.orm import Session
 from database import SessionLocal
 from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, Statistic, PublicBot
 from crud.bot import sign_in, sign_up, get_bot_by_name, get_bot, verify_token, update_bot, get_statistics, get_public_bot, increase_analytic_data
-from crud.user import get_current_user, update_user_name, update_users_academy_link, get_user, create_user, update_users_level, send_message_to_user, update_rating, update_reference, get_references
+from crud.user import get_current_user, update_user_name, update_users_academy_link, get_user, create_user, update_users_level, send_message_to_user, update_rating, update_reference, get_references, get_all_public_users
 from crud.vars import replace_variables
 from crud.links import get_all_links, update_link
-from schemas.user import UserCreate
+from schemas.user import UserCreate, PublicUser
 from schemas.links import UpdateLink
 from models.user import User
 from models.bot import Sequence
@@ -17,7 +17,7 @@ from base64 import b64encode, b64decode
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-from typing import List, Dict
+from typing import List, Dict, Literal
 import requests
 from uuid import UUID
 import random
@@ -299,3 +299,20 @@ async def fetch_references(
     db: Session = Depends(get_db)
 ):
     return {"references": get_references(db, all_references)}
+
+@router.get("/users/public", response_model=Dict[str, Any])
+def fetch_public_users(
+    page: int = Query(1, ge=1),
+    per_page: int = Query(20, ge=1, le=100),
+    sort_by: Literal["name", "created_at"] = Query("created_at"),
+    sort_order: Literal["asc", "desc"] = Query("desc"),
+    db: Session = Depends(get_db)
+):
+    result = get_all_public_users(
+        db=db,
+        page=page,
+        per_page=per_page,
+        sort_by=sort_by,
+        sort_order=sort_order
+    )
+    return result

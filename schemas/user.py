@@ -32,4 +32,12 @@ class UsersReference(BaseModel):
     rating: int
     created_at: datetime
     
-    
+class PublicUser(BaseModel):
+    id: UUID
+    client_level: int
+    reference: str
+    rating: int
+    academy_link: str
+    name: str
+    username: str
+    created_at: datetime
