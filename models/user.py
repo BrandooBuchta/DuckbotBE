@@ -21,6 +21,7 @@ class User(Base):
     rating = Column(Integer, default=0)
     academy_link = Column(String, nullable=True)
     name = Column(String, nullable=True)
+    username = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     

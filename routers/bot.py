@@ -230,6 +230,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
     if "message" in update:
         message = update["message"]
         name = message["chat"]["first_name"]
+        username = message["chat"]["username"]
         print("name: ", name)
         from_id = message["from"]["id"]
         chat_id = message["chat"]["id"]
@@ -239,7 +240,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
 
         if text == "/start":
             if not user:
-                user = create_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id, name=name))
+                user = create_user(db, UserCreate(from_id=from_id, chat_id=chat_id, bot_id=bot_id, name=name, username=username))
                 assing_academy_link(db, bot_id, user.id)
                 send_message_to_user(db, user)
         

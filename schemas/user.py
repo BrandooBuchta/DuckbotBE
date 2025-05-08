@@ -10,6 +10,7 @@ class UserCreate(BaseModel):
     chat_id: int
     from_id: int
     name: Optional[str] = None
+    username: Optional[str] = None
 
 class UserBase(BaseModel):
     id: UUID
