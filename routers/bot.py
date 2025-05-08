@@ -225,7 +225,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
             update_users_level(db, user_id)
         elif user_res in "12345":
             update_rating(db, user_id, int(user_res))
-            send_message_to_user(db, user_id)
+            send_message_to_user(db, user)
 
     if "message" in update:
         message = update["message"]
