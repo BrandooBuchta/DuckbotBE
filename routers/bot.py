@@ -244,7 +244,7 @@ async def webhook(bot_id: UUID, update: dict, db: Session = Depends(get_db)):
                 send_message_to_user(db, user)
         
         else:
-            update_reference(db, user_id, text)
+            update_reference(db, user.id, text)
             send_message_to_user(db, user)
 
     return {"ok": True}
