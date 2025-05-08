@@ -54,7 +54,7 @@ def create_user(db: Session, user: UserCreate):
         next_message_id=0,
         academy_link=None,
         name=user.name[0].upper() + user.name[1:] if user.name else None,
-        usernamr=user.username,
+        username=user.username,
     )
     db.add(db_user)
     db.commit()
