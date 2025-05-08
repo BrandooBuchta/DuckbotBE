@@ -35,9 +35,9 @@ class UsersReference(BaseModel):
 class PublicUser(BaseModel):
     id: UUID
     client_level: int
-    reference: str
+    reference: Optional[str]
     rating: int
-    academy_link: str
+    academy_link: Optional[str]
     name: str
-    username: str
+    username: Optional[str]
     created_at: datetime
