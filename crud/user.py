@@ -2,7 +2,7 @@
 
 from sqlalchemy.orm import Session
 from models.user import User
-from schemas.user import UserCreate, UserBase
+from schemas.user import UserCreate, UserBase, UsersReference
 from uuid import UUID, uuid4
 from typing import List, Optional
 from datetime import datetime, timedelta
@@ -193,11 +193,16 @@ def update_reference(db: Session, user_id: UUID, reference: str):
 def get_references(db: Session, all_references: bool = False):
     query = db.query(User).filter(User.rating > 4).order_by(User.rating.desc())
 
-    if not all:
+    if not all_references:
         query = query.limit(10)
 
     users = query.all()
-    references = [user.reference for user in users if user.reference]
+    references = [UsersReference(
+        name=user.name,
+        content=user.reference,
+        created_at=user.created_at,
+        rating=user.rating,
+    ) for user in users if user.reference]
 
     return references
 

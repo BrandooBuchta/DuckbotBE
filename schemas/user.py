@@ -24,5 +24,11 @@ class UserBase(BaseModel):
 
     class Config:
         form_attributes = True
+
+class UsersReference(BaseModel):
+    name: str
+    content: str
+    rating: int
+    created_at: datetime
     
     
