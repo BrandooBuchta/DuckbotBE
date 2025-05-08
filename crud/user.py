@@ -181,7 +181,7 @@ def update_rating(db: Session, user_id: UUID, rating: int):
 
     return db_user
 
-def update_reference(db: Session, user_id: UUID, reference: int):
+def update_reference(db: Session, user_id: UUID, reference: str):
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user:
         db_user.reference = reference
