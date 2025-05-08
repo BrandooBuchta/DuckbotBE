@@ -190,6 +190,17 @@ def update_reference(db: Session, user_id: UUID, reference: str):
 
     return db_user
 
+def get_references(db: Session, all_references: bool = False):
+    query = db.query(User).filter(User.rating > 4).order_by(User.rating.desc())
+
+    if not all:
+        query = query.limit(10)
+
+    users = query.all()
+    references = [user.reference for user in users if user.reference]
+
+    return references
+
 from datetime import datetime, timedelta, timezone
 import requests
 from base64 import b64decode
