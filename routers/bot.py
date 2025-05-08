@@ -300,19 +300,14 @@ async def fetch_references(
 ):
     return {"references": get_references(db, all_references)}
 
-@router.get("/users/public", response_model=Dict[str, Any])
+@router.get("/users/{bot_id}", response_model=Dict[str, Any])
 def fetch_public_users(
+    bot_id: UUID,
     page: int = Query(1, ge=1),
     per_page: int = Query(20, ge=1, le=100),
     sort_by: Literal["name", "created_at"] = Query("created_at"),
     sort_order: Literal["asc", "desc"] = Query("desc"),
     db: Session = Depends(get_db)
 ):
-    result = get_all_public_users(
-        db=db,
-        page=page,
-        per_page=per_page,
-        sort_by=sort_by,
-        sort_order=sort_order
-    )
+    result = get_all_public_users(db, bot_id, page, per_page, sort_by, sort_order)
     return result

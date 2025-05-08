@@ -89,6 +89,7 @@ def get_all_users(db: Session, bot_id: UUID):
 
 def get_all_public_users(
     db: Session,
+    bot_id: UUID,
     page: int = 1,
     per_page: int = 20,
     sort_by: Literal["name", "created_at"] = "created_at",
@@ -97,7 +98,7 @@ def get_all_public_users(
     sort_column = User.created_at if sort_by == "created_at" else User.name
     order_func = asc if sort_order == "asc" else desc
 
-    query = db.query(User).order_by(order_func(sort_column))
+    query = db.query(User).order_by(order_func(sort_column)).filter(User.bot_id == bot_id)
 
     total = query.count()
     total_pages = ceil(total / per_page) if per_page else 1
