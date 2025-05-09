@@ -141,6 +141,11 @@ def get_current_user(db: Session, chat_id: int, bot_id: UUID):
 def get_user(db: Session, user_id: UUID):
     return db.query(User).filter(User.id == user_id).first()
 
+def delete_users(db: Session, user_ids: List[UUID]) -> int:
+    deleted_count = db.query(User).filter(User.id.in_(user_ids)).delete(synchronize_session=False)
+    db.commit()
+    return deleted_count
+
 def get_users_in_queue(db: Session):
     try:
         now = datetime.utcnow()
