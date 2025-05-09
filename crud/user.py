@@ -3,7 +3,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import asc, desc
 from models.user import User
-from schemas.user import UserCreate, UserBase, UsersReference, PublicUser
+from schemas.user import UserCreate, UserBase, UsersReference, PublicUser, TargetCreate, TargetUpdate
 from uuid import UUID, uuid4
 from typing import List, Optional, Literal, Tuple, Dict, Any
 from datetime import datetime, timedelta, timezone
