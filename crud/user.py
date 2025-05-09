@@ -2,7 +2,7 @@
 
 from sqlalchemy.orm import Session
 from sqlalchemy import asc, desc
-from models.user import User
+from models.user import User, Target
 from schemas.user import UserCreate, UserBase, UsersReference, PublicUser, TargetCreate, TargetUpdate
 from uuid import UUID, uuid4
 from typing import List, Optional, Literal, Tuple, Dict, Any
