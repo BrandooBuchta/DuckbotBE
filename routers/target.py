@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
-from schemas.target import TargetCreate, TargetUpdate
-from crud.target import create_target, update_target, get_target
+from schemas.user import TargetCreate, TargetUpdate
+from crud.user import create_target, update_target, get_target
 
 router = APIRouter(prefix="/targets", tags=["Target"])
 
