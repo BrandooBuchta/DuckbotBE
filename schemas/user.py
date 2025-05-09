@@ -1,7 +1,7 @@
 # schemas/user.py
 
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from uuid import UUID
 from datetime import datetime
 
@@ -41,6 +41,6 @@ class PublicUser(BaseModel):
     name: str
     username: Optional[str]
     created_at: datetime
-    
+
 class DeleteUsersRequest(BaseModel):
     user_ids: List[UUID]
