@@ -29,8 +29,8 @@ class Target(Base):
     __tablename__ = "target"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(BigInteger, nullable=False)
-    bot_id = Column(BigInteger, nullable=False)
+    user_id = Column(UUID(as_uuid=True), nullable=False)
+    bot_id = Column(UUID(as_uuid=True), nullable=False)
     initial_investment = Column(Integer, default=0)
     monthly_addition = Column(Integer, default=0)
     duration = Column(Integer, default=0)
