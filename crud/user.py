@@ -6,7 +6,7 @@ from models.user import User
 from schemas.user import UserCreate, UserBase, UsersReference, PublicUser
 from uuid import UUID, uuid4
 from typing import List, Optional, Literal, Tuple, Dict, Any
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from crud.bot import get_bot
 from base64 import b64decode
 from utils.messages import get_messages
@@ -258,9 +258,6 @@ def get_references(db: Session, all_references: bool = False):
 
     return references
 
-from datetime import datetime, timedelta, timezone
-import requests
-from base64 import b64decode
 
 def send_message_to_user(db: Session, user: UserBase):
     logger.debug(f"Preparing to send message to user: {user.chat_id}")
@@ -344,3 +341,43 @@ def send_message_to_user(db: Session, user: UserBase):
     logger.info(f"this is next_message_send_after and next_message_id: {message.get('next_message_send_after')}, {message['next_message_id']}")
 
     update_users_position(db, user.id, message["next_message_id"], message.get("next_message_send_after"))
+
+    
+def create_target(db: Session, data: TargetCreate):
+    user = db.query(User).filter(User.id == data.user_id).first()
+    if not user:
+        return None, 404
+
+    target = Target(
+        user_id=user.id,
+        bot_id=user.bot_id,
+        lang=user.username or "unknown",  # nebo jiný fallback
+        initial_investment=data.initial_investment,
+        monthly_addition=data.monthly_addition,
+        duration=data.duration,
+        currency=data.currency,
+        is_dynamic=data.is_dynamic,
+        quantity_affiliate_target=data.quantity_affiliate_target,
+        quality_affiliate_target=data.quality_affiliate_target,
+    )
+    db.add(target)
+    db.commit()
+    db.refresh(target)
+    return target, 201
+
+def update_target(db: Session, user_id: int, data: TargetUpdate):
+    target = db.query(Target).filter(Target.user_id == user_id).first()
+    if not target:
+        return None, 404
+
+    for field, value in data.dict().items():
+        setattr(target, field, value)
+    db.commit()
+    db.refresh(target)
+    return target, 200
+
+def get_target(db: Session, user_id: int):
+    target = db.query(Target).filter(Target.user_id == user_id).first()
+    if not target:
+        return None, 404
+    return target, 200

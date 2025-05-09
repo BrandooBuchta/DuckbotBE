@@ -44,3 +44,16 @@ class PublicUser(BaseModel):
 
 class DeleteUsersRequest(BaseModel):
     user_ids: List[UUID]
+
+class TargetCreate(BaseModel):
+    user_id: int
+    initial_investment: Optional[int] = 0
+    monthly_addition: Optional[int] = 0
+    duration: Optional[int] = 0
+    currency: str
+    is_dynamic: Optional[bool] = False
+    quantity_affiliate_target: Optional[str] = None
+    quality_affiliate_target: Optional[str] = None
+
+class TargetUpdate(TargetCreate):
+    pass

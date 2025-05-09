@@ -25,4 +25,19 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
-    
+class Target(Base):
+    __tablename__ = "target"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(BigInteger, nullable=False)
+    bot_id = Column(BigInteger, nullable=False)
+    initial_investment = Column(Integer, default=0)
+    monthly_addition = Column(Integer, default=0)
+    duration = Column(Integer, default=0)
+    currency = Column(String, nullable=False)
+    is_dynamic = Column(Boolean, default=False)
+    quantity_affiliate_target = Column(String, nullable=True)
+    quality_affiliate_target = Column(String, nullable=True)
+    lang = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
