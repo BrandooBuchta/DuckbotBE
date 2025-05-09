@@ -46,6 +46,7 @@ class DeleteUsersRequest(BaseModel):
     user_ids: List[UUID]
 
 class TargetCreate(BaseModel):
+    user_id: UUID
     initial_investment: Optional[int] = 0
     monthly_addition: Optional[int] = 0
     duration: Optional[int] = 0
