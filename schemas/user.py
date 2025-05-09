@@ -41,3 +41,6 @@ class PublicUser(BaseModel):
     name: str
     username: Optional[str]
     created_at: datetime
+    
+class DeleteUsersRequest(BaseModel):
+    user_ids: List[UUID]

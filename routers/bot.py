@@ -9,7 +9,7 @@ from crud.bot import sign_in, sign_up, get_bot_by_name, get_bot, verify_token, u
 from crud.user import get_current_user, update_user_name, update_users_academy_link, get_user, create_user, update_users_level, send_message_to_user, update_rating, update_reference, get_references, get_all_public_users, delete_users
 from crud.vars import replace_variables
 from crud.links import get_all_links, update_link
-from schemas.user import UserCreate, PublicUser
+from schemas.user import UserCreate, PublicUser, DeleteUsersRequest
 from schemas.links import UpdateLink
 from models.user import User
 from models.bot import Sequence
@@ -321,11 +321,7 @@ def fetch_public_users(
     )
     return result
 
-@router.get("/users/delete")
-async def remove_users(
-    user_ids: List[UUID],
-    db: Session = Depends(get_db)
-):
-    delete_users(db, user_ids)
-
-    return {"status": "ok"}
+@router.post("/users/delete")
+def delete_users_endpoint(data: DeleteUsersRequest, db: Session = Depends(get_db)):
+    count = delete_users(db, data.user_ids)
+    return {"deleted": count}
