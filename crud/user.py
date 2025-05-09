@@ -94,17 +94,21 @@ def get_all_public_users(
     page: int = 1,
     per_page: int = 20,
     sort_by: Literal["name", "created_at"] = "created_at",
-    sort_order: Literal["asc", "desc"] = "desc"
+    sort_order: Literal["asc", "desc"] = "desc",
+    levels: Optional[List[int]] = None
 ) -> Dict[str, Any]:
     sort_column = User.created_at if sort_by == "created_at" else User.name
     order_func = asc if sort_order == "asc" else desc
 
-    query = db.query(User).order_by(order_func(sort_column)).filter(User.bot_id == bot_id)
+    query = db.query(User).filter(User.bot_id == bot_id)
+
+    if levels:
+        query = query.filter(User.client_level.in_(levels))
 
     total = query.count()
     total_pages = ceil(total / per_page) if per_page else 1
 
-    users = query.offset((page - 1) * per_page).limit(per_page).all()
+    users = query.order_by(order_func(sort_column)).offset((page - 1) * per_page).limit(per_page).all()
 
     items = [
         PublicUser(
@@ -127,7 +131,6 @@ def get_all_public_users(
         "per_page": per_page,
         "total_pages": total_pages
     }
-
 
 def get_audience(db: Session, bot_id: UUID, audience: List[int]):
     return db.query(User).filter(User.bot_id == bot_id, User.client_level.in_(audience)).all()
