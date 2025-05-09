@@ -307,7 +307,7 @@ def fetch_public_users(
     per_page: int = Query(20, ge=1, le=100),
     sort_by: Literal["name", "created_at"] = Query("created_at"),
     sort_order: Literal["asc", "desc"] = Query("desc"),
-    levels: Optional[List[int]] = Query(None),
+    levels: Optional[List[int]] = Query(default=None, alias="levels[]"),
     db: Session = Depends(get_db)
 ):
     result = get_all_public_users(
