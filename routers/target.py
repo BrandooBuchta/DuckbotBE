@@ -16,7 +16,7 @@ def create_target_endpoint(user_id: UUID, data: TargetCreate, db: Session = Depe
 
 @router.put("/{user_id}")
 def update_target_endpoint(user_id: UUID, data: TargetUpdate, db: Session = Depends(get_db)):
-    target, status = update_target(db, user_id, data)
+    target, status = update_target(db, user_id, data.dict(exclude_unset=True))
     if status == 404:
         raise HTTPException(status_code=404, detail="Target not found")
     return target
