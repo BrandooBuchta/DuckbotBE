@@ -8,13 +8,13 @@
             "next_message_send_after": 1
         },
         {
-            "content": "Ohodnot zmrde",
+            "content": "Ohodnoť jak se ti náš projekt líbil! (Před tím ještě announcments a 2-3 výplaty konzervativního staking)",
             "id": 1,
             "rating_question": true,
             "next_message_id": 2
         },
         {
-            "content": "Napiš referenci plsss",
+            "content": "Napiš nám prosím textovou referenci!",
             "id": 2,
             "next_message_id": 3
         },
@@ -23,10 +23,10 @@
             "id": 3,
             "level_up_question": true,
             "next_message_id": 4,
-            "next_message_send_after": 1
+            "next_message_send_after": 5
         },
         {
-            "content": "Děkujeme za referenci a máme pro tebe nabídku 2 a konec (affiliate invite)!",
+            "content": "Poslední výzva k affiliateu (affiliate invite)!",
             "id": 4,
             "level_up_question": true
         },

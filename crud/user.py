@@ -366,13 +366,15 @@ def create_target(db: Session, data: TargetCreate):
     db.refresh(target)
     return target, 201
 
-def update_target(db: Session, user_id: int, data: TargetUpdate):
+def update_target(db: Session, user_id: UUID, data: dict):
     target = db.query(Target).filter(Target.user_id == user_id).first()
     if not target:
-        return None, 404
+        raise HTTPException(status_code=404, detail="Target not found")
 
-    for field, value in data.dict().items():
-        setattr(target, field, value)
+    for key, value in data.items():
+        if hasattr(target, key):
+            setattr(target, key, value)
+
     db.commit()
     db.refresh(target)
     return target, 200
