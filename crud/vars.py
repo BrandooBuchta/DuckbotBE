@@ -33,6 +33,7 @@ def replace_variables(db: Session, bot_id: UUID, chat_id: UUID, message: str):
         {"key": "eventLocation", "value": bot.event_location},
         {"key": "academyLink", "value": user.academy_link},
         {"key": "videoLink", "value": f"https://ducknation.vercel.app/video?lang={bot.lang}&id={user.id}"},
+        {"key": "userId", "value": userId},
     ]
 
     for var in variables:

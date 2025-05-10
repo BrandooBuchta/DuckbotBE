@@ -137,6 +137,16 @@ def fetch_bot(name: str, db: Session = Depends(get_db)):
 
     return db_bot
 
+
+@router.get("/{bot_id}/support-contact")
+def fetch_bot(bot_id: UUID, db: Session = Depends(get_db)):
+    db_bot, status = get_bot(db, bot_id)
+
+    if status == 404:
+        raise HTTPException(status_code=404, detail="Tento bot neexistuje!")
+
+    return { "support_contact": db_bot.support_contact }
+
 @router.post("/{bot_id}/set-webhook")
 async def set_webhook(bot_id: UUID, db: Session = Depends(get_db)):
     bot, status = get_bot(db, bot_id)
