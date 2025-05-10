@@ -345,7 +345,7 @@ def send_message_to_user(db: Session, user: UserBase):
     
 def create_target(db: Session, data: TargetCreate):
     user = get_user(db, data.user_id)
-    bot, status = get_bot(db, data.user_id)
+    bot, status = get_bot(db, user.bot_id)
     if not user:
         return None, 404
 
