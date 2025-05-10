@@ -8,6 +8,12 @@
             "next_message_send_after": 1
         },
         {
+            "content": "Nastav si investiční strategii zde:</strong> <a href=\"https://ducknation.vercel.app/target-calculator/{userId}\" target=\"_blank\">Investiční strategie</a>",
+            "id": 1,
+            "rating_question": true,
+            "next_message_id": 2
+        },
+        {
             "content": "Ohodnoť jak se ti náš projekt líbil! (Před tím ještě announcments a 2-3 výplaty konzervativního staking)",
             "id": 1,
             "rating_question": true,
