@@ -55,5 +55,12 @@ class TargetCreate(BaseModel):
     quantity_affiliate_target: Optional[str] = None
     quality_affiliate_target: Optional[str] = None
 
-class TargetUpdate(TargetCreate):
-    pass
+class TargetUpdate(BaseModel):
+    user_id: UUID
+    initial_investment: Optional[int] = None
+    monthly_addition: Optional[int] = None
+    duration: Optional[int] = None
+    currency: Optional[str] = None
+    is_dynamic: Optional[bool] = None
+    quantity_affiliate_target: Optional[str] = None
+    quality_affiliate_target: Optional[str] = None

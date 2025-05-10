@@ -344,14 +344,15 @@ def send_message_to_user(db: Session, user: UserBase):
 
     
 def create_target(db: Session, data: TargetCreate):
-    user = db.query(User).filter(User.id == data.user_id).first()
+    user = get_user(db, user_id)
+    bot, status = get_bot(db, user_id)
     if not user:
         return None, 404
 
     target = Target(
         user_id=user.id,
         bot_id=user.bot_id,
-        lang=user.username or "unknown",  # nebo jiný fallback
+        lang=bot.lang,  # nebo jiný fallback
         initial_investment=data.initial_investment,
         monthly_addition=data.monthly_addition,
         duration=data.duration,
