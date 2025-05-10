@@ -360,6 +360,7 @@ def create_target(db: Session, data: TargetCreate):
         is_dynamic=data.is_dynamic,
         quantity_affiliate_target=data.quantity_affiliate_target,
         quality_affiliate_target=data.quality_affiliate_target,
+        time=data.time,
     )
     db.add(target)
     db.commit()

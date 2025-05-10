@@ -38,6 +38,7 @@ class Target(Base):
     is_dynamic = Column(Boolean, default=False)
     quantity_affiliate_target = Column(String, nullable=True)
     quality_affiliate_target = Column(String, nullable=True)
+    time = Column(String, nullable=True)
     lang = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

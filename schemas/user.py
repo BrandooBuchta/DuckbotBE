@@ -53,6 +53,7 @@ class TargetCreate(BaseModel):
     currency: str
     is_dynamic: Optional[bool] = False
     quantity_affiliate_target: Optional[str] = None
+    time: Optional[str] = None
     quality_affiliate_target: Optional[str] = None
 
 class TargetUpdate(BaseModel):
@@ -63,4 +64,5 @@ class TargetUpdate(BaseModel):
     currency: Optional[str] = None
     is_dynamic: Optional[bool] = None
     quantity_affiliate_target: Optional[str] = None
+    time: Optional[str] = None
     quality_affiliate_target: Optional[str] = None
