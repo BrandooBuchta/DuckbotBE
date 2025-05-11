@@ -5,13 +5,13 @@
       "id": 0,
       "level_up_question": false,
       "next_message_id": 1,
-      "next_message_send_after": 1
+      "next_message_send_after": 1440
     },
     {
       "content": "🎯 <strong>Nastav si svou investiční strategii</strong> – podle tvých cílů a preferencí!<br><br>✅ Zadej, kolik chceš investovat a čeho chceš dosáhnout<br>✅ Zjisti, jak na to bezpečně a efektivně<br><br><a href=\"https://ducknation.vercel.app/target-calculator/{userId}\">Klikni sem pro svůj investiční plán</a>",
       "id": 1,
       "next_message_id": 2,
-      "next_message_send_after": 1
+      "next_message_send_after": 28800
     },
     {
       "content": "💬 <strong>Zajímá nás tvůj názor!</strong><br><br>Ohodnoť, jak se ti zatím náš projekt líbil – pomůžeš nám zlepšit zážitek pro tebe i ostatní.<br><br>(Ještě před tím – mrkni na naše poslední oznámení a 2–3 výplaty z konzervativního stakingu, ať máš úplný přehled!)",

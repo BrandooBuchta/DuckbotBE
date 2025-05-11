@@ -1,25 +1,41 @@
 {
-    "messages": [
-        {
-            "content": "¡Bienvenido a nuestra comunidad! 🚀 Estás en el lugar correcto para <strong>aprender cómo aprovechar al máximo esta oportunidad única</strong>. 💰💎<br><br>📅 <strong>¿Qué sigue?</strong><br>✅ Revisa nuestra <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://betfin.network/academy/advanced\"><strong>Academia</strong></a> para conocer más sobre el proyecto, las criptomonedas y nuestro sistema de afiliados.<br><br>✅ Únete a nuestra <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\"><strong>comunidad de Discord</strong></a>, donde encontrarás respuestas, apoyo y consejos de miembros con experiencia.",
-            "id": 0,
-            "level_up_question": false,
-            "next_message_id": 1,
-            "next_message_send_after": 10800
-        },
-        {
-            "content": "💡 <strong>¿Ya entendiste cómo funciona todo? ¿Listo para subir de nivel?</strong> 💰<br><br>📢 <strong>¿Quieres construir tu propio negocio y beneficiarte de lo que ya sabes?</strong> ¡Esta es tu oportunidad!<br><br>✅ Únete a nuestro <strong>programa de afiliados</strong><br>✅ <strong>Comienza a generar ingresos</strong> desde ahora<br>✅ Únete a personas exitosas que <strong>ya están ganando con esto</strong><br><br>👉 <strong>¿Quieres saber más?</strong> ¡Solo pregunta! 💬 {supportContact}",
-            "id": 1,
-            "level_up_question": true,
-            "next_message_id": 2,
-            "next_message_send_after": 1440
-        },
-        {
-            "content": "🚀 <strong>¡Lleva tus conocimientos al siguiente nivel!</strong> 🚀 Estás en el lugar correcto para <strong>aprender cómo aprovechar al máximo esta oportunidad única</strong>. 💰💎<br><br>📅 <strong>¿Qué sigue?</strong><br>✅ Revisa nuestra <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://betfin.network/academy/advanced\"><strong>Academia</strong></a> para conocer más sobre el proyecto, las criptomonedas y nuestro sistema de afiliados.<br><br>✅ Únete a nuestra <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\"><strong>comunidad de Discord</strong></a>, donde encontrarás respuestas, apoyo y consejos de miembros con experiencia.",
-            "id": 2,
-            "level_up_question": false,
-            "next_message_id": 1,
-            "next_message_send_after": 10800
-        }
-    ]
+  "messages": [
+    {
+      "content": "¡Bienvenido a nuestra comunidad! 🚀 Estás en el lugar adecuado para <strong>aprovechar al máximo esta oportunidad única</strong>. 💰💎<br><br>📅 <strong>¿Y ahora?</strong><br>✅ Visita nuestra <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://betfin.network/academy/advanced\"><strong>Academia</strong></a> – allí encontrarás todo sobre el proyecto, criptomonedas y nuestro sistema de Afiliados.<br><br>✅ Asiste a nuestros <a rel=\"noopener noreferrer\" href=\"https://betfin.network/academy/events\"><strong>Webinarios</strong></a> – te ayudarán a orientarte más rápido y podrás hacer preguntas en directo.<br><br>✅ Únete a nuestra <a rel=\"noopener noreferrer\" href=\"{network}\"><strong>comunidad en Discord</strong></a> – encontrarás respuestas, ayuda y consejos de miembros con experiencia.",
+      "id": 0,
+      "level_up_question": false,
+      "next_message_id": 1,
+      "next_message_send_after": 1440
+    },
+    {
+      "content": "🎯 <strong>Define tu estrategia de inversión</strong> – según tus objetivos y preferencias.<br><br>✅ Indica cuánto quieres invertir y qué deseas lograr<br>✅ Aprende cómo hacerlo de forma segura y eficiente<br><br><a href=\"https://ducknation.vercel.app/target-calculator/{userId}\">Haz clic aquí para crear tu plan de inversión</a>",
+      "id": 1,
+      "next_message_id": 2,
+      "next_message_send_after": 28800
+    },
+    {
+      "content": "💬 <strong>¡Tu opinión nos importa!</strong><br><br>Califica tu experiencia con el proyecto hasta ahora – tu feedback nos ayuda a mejorar para ti y para todos.<br><br>(Antes de eso – revisa nuestras últimas novedades y 2–3 pagos del staking conservador para tener el contexto completo).",
+      "id": 2,
+      "rating_question": true,
+      "next_message_id": 3
+    },
+    {
+      "content": "📝 <strong>¡Ayúdanos a crecer!</strong><br><br>Escribe un pequeño testimonio sobre cómo ha sido tu experiencia hasta ahora. Puede ser solo un par de frases – lo que más valoramos es la honestidad.",
+      "id": 3,
+      "next_message_id": 4
+    },
+    {
+      "content": "🙏 <strong>¡Gracias por tu testimonio!</strong><br><br>Tenemos una recompensa para ti – obtén una <strong>invitación especial a nuestro sistema de Afiliados</strong> 🤑<br><br>Gana por cada persona que se una a través de ti. ¡Pronto te enviaremos los detalles!",
+      "id": 4,
+      "level_up_question": true,
+      "next_message_id": 5,
+      "next_message_send_after": 5
+    },
+    {
+      "content": "📢 <strong>¡Última oportunidad!</strong><br><br>Todavía no has usado tu invitación al sistema de Afiliados – es una forma fácil de ganar y compartir el proyecto.<br><br>Únete ahora y empieza a construir tus propios ingresos. 💸",
+      "id": 5,
+      "level_up_question": true
+    }
+  ]
 }
+  

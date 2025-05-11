@@ -1,10 +1,11 @@
 {
-    "messages": [
-        {
-            "content": "💡 <strong>¿Quieres no solo usar este sistema, sino también ganar dinero con él?</strong> ¡Ahora es el momento perfecto! 🌟<br><br>📢 <strong>¿Cómo funciona?</strong><br>✅ <strong>Comparte esta oportunidad</strong> con otros y <strong>gana comisiones</strong> por cada persona que se una.<br>✅ Construye un <strong>ingreso pasivo</strong> – ¡cuantas más personas refieras, más ganarás! 💰<br>✅ Tienes apoyo – <strong>te ayudaremos con los primeros pasos, estrategia y técnicas para tener el máximo éxito</strong>. 🚀<br><br>🔗 <strong>¿No sabes por dónde empezar? Contacta a nuestro líder, quien te lo explicará todo y te guiará:</strong><br>📞 <strong>Contacto:</strong> {supportContact}<br>🔥 <strong>Esta oportunidad no durará para siempre – ¡aprovéchala ahora y empieza a construir tu negocio hoy mismo!</strong> 💎",
-            "id": 0,
-            "level_up_question": false,
-            "next_message_id": 1
-        }
-    ]
+  "messages": [
+    {
+      "content": "🚀 <strong>¡Bienvenido al sistema de afiliados!</strong> 🔗<br><br>Este es un ingreso extra que puedes convertir fácilmente en tu fuente principal. Cuanta más energía le pongas, más obtendrás – ¡y a veces mucho más! 💼<br><br>🔐 Aprovechamos las ventajas del cripto – sin bancos, sin demoras, solo tú y tus recompensas.<br><br>🔥 Únete ahora y empieza a construir algo que realmente pueda sostenerte.<br><br><strong>🟢 Empieza ahora:</strong> <a href=\"https://ducknation.vercel.app/affiliate-target-setting/{userId}\">Define tus objetivos de afiliado</a>",
+      "id": 0,
+      "level_up_question": false,
+      "next_message_id": 1
+    }
+  ]
 }
+  

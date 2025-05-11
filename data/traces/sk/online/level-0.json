@@ -1,44 +1,41 @@
 {
   "messages": [
     {
-      "content": "<strong>Ahoj, {name}! </strong>🔥<br><br>Mám pre teba exkluzívny záznam z webinára, kde ti odhalím <strong>príležitosť desaťročia</strong>! 📈💰<br><br>Doteraz <strong>1-7% mesačné výnosy</strong> a viac než <strong>1000% zhodnotenie aktíva</strong> – a toto je len začiatok! 💸<br><br>🎥 <strong>Pozri si záznam teraz, kým je táto možnosť k dispozícii!</strong><br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{videoLink}\"><strong>Získať záznam z Webinára!</strong></a>",
+      "content": "<strong>Ahoj, {name}! </strong>🔥<br><br>Mám pre teba exkluzívny záznam z webinára, kde ti odhalím <strong>príležitosť desaťročia</strong>! 📈💰<br><br>Doteraz <strong>1–7% mesačné výnosy</strong> a viac než <strong>1000% zhodnotenie aktíva</strong> – a to je len začiatok! 💸<br><br>🎥 <strong>Pozri si záznam hneď, kým je dostupný!</strong><br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{videoLink}\"><strong>Získať záznam z Webinára!</strong></a>",
       "id": 0,
       "level_up_question": false,
       "next_message_id": 1
     },
     {
-      "content": "Si pripravený <strong>urobiť prvý krok</strong>? 🌟 Tu je tvoj <strong>unikátny Academy Link</strong>, kde nájdeš <strong>podrobný plán</strong>, ako začať:<br><br>✅ <strong>Vytvoríš a pripojíš svoju peňaženku</strong><br>💳 <strong>Zakúpiš POLs</strong><br>🎟️ <strong>Získaš vstupenku do sveta Betfinu</strong><br>🔄 <strong>Vymeníš POLs za BETs</strong><br>💎 <strong>Stakuješ svoje BET Tokeny a začneš sa podieľať na zisku!</strong><br><br><a rel=\"noopener noreferrer\" href=\"{academyLink}\"><strong>🎟️ Academy Link 🎟️</strong></a><br><br>💬 Máš otázky? Pridaj sa do našej <strong>komunity na Discorde</strong> a opýtaj sa skúsenejších členov! 🚀<br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\"><strong>Pripojiť sa do Discord Komunity!</strong></a>",
+      "content": "Pripravený <strong>urobiť prvý krok</strong>? 🌟 Tu je tvoj <strong>unikátny Academy Link</strong>, kde nájdeš <strong>podrobný plán</strong>, ako začať:<br><br>✅ <strong>Vytvoríš a prepojíš si peňaženku</strong><br>💳 <strong>Nakúpiš POLs</strong><br>🎟️ <strong>Získaš vstupenku do sveta Betfinu</strong><br>🔄 <strong>Vymeníš POLs za BETs</strong><br>💎 <strong>Zastakuješ svoje BET Tokény a začneš zarábať!</strong><br><br><a rel=\"noopener noreferrer\" href=\"{academyLink}\"><strong>🎟️ Academy Link 🎟️</strong></a><br><br>💬 Máš otázky? Pripoj sa k našej <strong>komunite na Discorde</strong> a spýtaj sa skúsenejších členov! 🚀<br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\"><strong>Pripojiť sa na Discord Komunitu!</strong></a>",
       "id": 1,
       "level_up_question": false,
       "next_message_id": 2,
-      "next_message_send_after": 120
+      "next_message_send_after": 1440
     },
     {
-      "content": "Tak čo, <strong>zvládol/a si staking</strong>? 🏆 Už teraz si na správnej ceste! <strong>Pokračuj ďalej a nenechaj si ujsť ďalšie kroky k maximálnym výnosom.</strong> 💰🚀",
+      "content": "Tak čo, <strong>už si stakoval/a</strong>? 🏆 Už teraz si na správnej ceste! <strong>Pokračuj a nepremeškaj ďalšie kroky k maximálnym výnosom.</strong> 💰🚀",
       "id": 2,
       "level_up_question": true,
       "next_message_id": 3,
       "next_message_send_after": 1440
     },
     {
-      "content": "<strong>Ahoj, {name}! 🙌</strong><br><br>Možno ti ešte niečo vŕta hlavou – úplne v pohode, chápem to. Nie je nič horšie, ako zostať na pol ceste a nechať si ujsť jedinečnú príležitosť len preto, že sa človek bál opýtať. ❓🚀<br><br>Ak by si potreboval čokoľvek dovysvetliť alebo si len ujasniť detaily, napíš mi. Som tu pre teba a rád ti pomôžem, aby si si bol stopercentne istý. 💡🤝<br><br>Ozvi sa mi pokojne hneď tu: <strong>{supportContact}</strong> 💬📲<br><br>Budem sa tešiť! 😊",
-      "event": "opportunityCall",
+      "content": "<strong>Ahoj, {name}! 🙌</strong><br><br>Možno ti ešte niečo nie je úplne jasné – to je úplne v poriadku. Najhoršie je prestať v polovici a prísť o príležitosť len preto, že si sa bál opýtať. ❓🚀<br><br>Keby si čokoľvek potreboval vysvetliť, pokojne sa ozvi. Som tu pre teba a rád ti pomôžem, aby si mal istotu. 💡🤝<br><br>Napiš mi sem: <strong>{supportContact}</strong> 💬📲<br><br>Teším sa na tvoju správu! 😊",
       "id": 3,
       "level_up_question": false,
       "next_message_id": 4,
       "next_message_send_after": 4320
     },
     {
-      "content": "<strong>Ahoj, {name}! 👋😊</strong><br><br>Len pripomínam – ak ti stále niečo nie je jasné, určite sa neboj ozvať. Mnoho ľudí sa pýta a dávajú si veci do súvislostí až vďaka jednej správe. 📩💬<br><br>Fakt nechcem, aby si prišiel o príležitosť len kvôli nevyjadrenej otázke. Som tu pre teba, stačí sa ozvať. 🙌<br><br>👉 <strong>{supportContact}</strong> – napíš kedykoľvek, rád ti pomôžem! 🤝✨",
-      "event": "opportunityCall",
+      "content": "<strong>Ahoj, {name}! 👋😊</strong><br><br>Len pripomínam – ak ti čokoľvek nie je jasné, určite sa neboj ozvať. Mnohí pochopia súvislosti až po jednej správe. 📩💬<br><br>Nechcem, aby si premeškal túto šancu kvôli nezodpovedanej otázke. Som tu pre teba. 🙌<br><br>👉 <strong>{supportContact}</strong> – napíš kedykoľvek, rád ti pomôžem! 🤝✨",
       "id": 4,
       "level_up_question": false,
       "next_message_id": 5,
       "next_message_send_after": 10080
     },
     {
-      "content": "<strong>Ahoj, {name}! 🙏🚀</strong><br><br>Posielam poslednú pripomienku – ak ťa ešte čokoľvek zaujíma alebo si si nie úplne istý, ozvi sa mi. Niekedy rozhoduje práve ten posledný krok. ⚡<br><br>Neboj sa opýtať, naozaj neexistuje hlúpa otázka – a môže ti to otvoriť dvere k niečomu veľkému. 💥<br><br>📲 Napíš mi tu: <strong>{supportContact}</strong> – budem na príjme. 💬<br><br>Teším sa, keď sa ozveš! 😊",
-      "event": "opportunityCall",
+      "content": "<strong>Ahoj, {name}! 🙏🚀</strong><br><br>Posielam poslednú pripomienku – ak ťa ešte niečo zaujíma alebo si nie si istý, ozvi sa mi. Niekedy práve posledný krok rozhoduje. ⚡<br><br>Nemaj strach sa opýtať – žiadna otázka nie je zlá a môže ti otvoriť dvere k veľkým veciam. 💥<br><br>📲 Napíš mi tu: <strong>{supportContact}</strong> – som na príjme. 💬<br><br>Teším sa na tvoju správu! 😊",
       "id": 5,
       "level_up_question": false,
       "next_message_id": 3,

@@ -1,48 +1,46 @@
 {
-    "messages": [
-        {
-            "content": "<strong>¡Hola, {name}! </strong>🔥<br><br>Tengo para ti una grabación exclusiva del seminario web donde te revelo <strong>¡la oportunidad de la década</strong>! 📈💰<br><br>Hasta ahora <strong>rendimientos mensuales del 1-7%</strong> y más de <strong>1000% de revalorización del activo</strong> – ¡y esto es solo el comienzo! 💸<br><br>🎥 <strong>¡Mira la grabación ahora mientras la oportunidad siga disponible!</strong><br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{videoLink}\"><strong>¡Ver la Grabación del Seminario!</strong></a>",
-            "id": 0,
-            "level_up_question": false,
-            "next_message_id": 1
-        },
-        {
-            "content": "¿Estás listo para <strong>dar el primer paso</strong>? 🌟 Aquí tienes tu <strong>enlace único de la Academia</strong>, donde encontrarás un <strong>plan detallado</strong> para comenzar:<br><br>✅ <strong>Crearás y conectarás tu billetera</strong><br>💳 <strong>Comprarás POLs</strong><br>🎟️ <strong>Obtendrás tu entrada al mundo de Betfin</strong><br>🔄 <strong>Intercambiarás POLs por BETs</strong><br>💎 <strong>Staquearás tus tokens BET y comenzarás a compartir las ganancias</strong><br><br><a rel=\"noopener noreferrer\" href=\"{academyLink}\"><strong>🎟️ Enlace de la Academia 🎟️</strong></a><br><br>💬 ¿Tienes preguntas? Únete a nuestra <strong>comunidad en Discord</strong> y consulta con miembros con más experiencia. 🚀<br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\"><strong>¡Únete a la Comunidad en Discord!</strong></a>",
-            "id": 1,
-            "level_up_question": false,
-            "next_message_id": 2,
-            "next_message_send_after": 120
-        },
-        {
-            "content": "Entonces, ¿<strong>lograste hacer staking</strong>? 🏆 ¡Ya estás en el camino correcto! <strong>Sigue adelante y no te pierdas los siguientes pasos para maximizar tus rendimientos.</strong> 💰🚀",
-            "id": 2,
-            "level_up_question": true,
-            "next_message_id": 3,
-            "next_message_send_after": 1440
-        },
-        {
-            "content": "<strong>¡Hola, {name}! 🙌</strong><br><br>Puede que aún tengas dudas — es totalmente normal, lo entiendo. No hay nada peor que quedarse a medias y perder una oportunidad única solo por no atreverse a preguntar. ❓🚀<br><br>Si necesitas que te aclare algo o quieres revisar algún detalle, escríbeme. Estoy aquí para ayudarte y asegurarme de que estés 100% seguro. 💡🤝<br><br>Puedes escribirme directamente aquí: <strong>{supportContact}</strong> 💬📲<br><br>¡Estaré encantado de ayudarte! 😊",
-            "event": "opportunityCall",
-            "id": 3,
-            "level_up_question": false,
-            "next_message_id": 4,
-            "next_message_send_after": 4320
-        },
-        {
-            "content": "<strong>¡Hola, {name}! 👋😊</strong><br><br>Solo un recordatorio — si todavía hay algo que no entiendes, no dudes en escribirme. Muchas personas comprenden mejor todo gracias a una sola conversación. 📩💬<br><br>No quiero que pierdas esta oportunidad por una duda sin resolver. Estoy aquí para ti, solo tienes que contactarme. 🙌<br><br>👉 <strong>{supportContact}</strong> — escríbeme cuando quieras, estaré encantado de ayudarte. 🤝✨",
-            "event": "opportunityCall",
-            "id": 4,
-            "level_up_question": false,
-            "next_message_id": 5,
-            "next_message_send_after": 10080
-        },
-        {
-            "content": "<strong>¡Hola, {name}! 🙏🚀</strong><br><br>Te envío un último recordatorio — si aún tienes alguna duda o no estás del todo seguro, escríbeme. A veces lo único que necesitas es ese último paso. ⚡<br><br>No tengas miedo de preguntar, de verdad, ninguna pregunta es tonta — y puede abrirte las puertas a algo grande. 💥<br><br>📲 Escríbeme aquí: <strong>{supportContact}</strong> — estaré pendiente. 💬<br><br>¡Espero tu mensaje con ganas! 😊",
-            "event": "opportunityCall",
-            "id": 5,
-            "level_up_question": false,
-            "next_message_id": 3,
-            "next_message_send_after": 20160
-        }
-    ]
+  "messages": [
+    {
+      "content": "<strong>¡Hola, {name}! </strong>🔥<br><br>Tengo para ti una grabación exclusiva de un webinar donde te revelo la <strong>oportunidad de la década</strong>! 📈💰<br><br>Hasta ahora hemos visto <strong>rendimientos mensuales del 1–7%</strong> y más de <strong>1000% de crecimiento del activo</strong> – ¡y esto es solo el comienzo! 💸<br><br>🎥 <strong>¡Mira la grabación ahora mientras esté disponible!</strong><br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{videoLink}\"><strong>Ver grabación del Webinar</strong></a>",
+      "id": 0,
+      "level_up_question": false,
+      "next_message_id": 1
+    },
+    {
+      "content": "¿Listo para <strong>dar el primer paso</strong>? 🌟 Aquí tienes tu <strong>enlace único a la Academia</strong>, donde encontrarás un <strong>plan detallado</strong> para empezar:<br><br>✅ <strong>Crea y conecta tu billetera</strong><br>💳 <strong>Compra POLs</strong><br>🎟️ <strong>Obtén tu pase de entrada a Betfin</strong><br>🔄 <strong>Cambia POLs por BETs</strong><br>💎 <strong>Haz staking de tus tokens BET y empieza a generar ganancias</strong><br><br><a rel=\"noopener noreferrer\" href=\"{academyLink}\"><strong>🎟️ Enlace a la Academia 🎟️</strong></a><br><br>💬 ¿Tienes preguntas? Únete a nuestra <strong>comunidad en Discord</strong> y consulta con los miembros más experimentados 🚀<br><br><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"{network}\"><strong>Unirse a la comunidad de Discord</strong></a>",
+      "id": 1,
+      "level_up_question": false,
+      "next_message_id": 2,
+      "next_message_send_after": 1440
+    },
+    {
+      "content": "Y bien, <strong>¿ya hiciste staking?</strong> 🏆 ¡Ya estás en el camino correcto! <strong>Sigue adelante y no te pierdas los próximos pasos hacia el máximo rendimiento.</strong> 💰🚀",
+      "id": 2,
+      "level_up_question": true,
+      "next_message_id": 3,
+      "next_message_send_after": 1440
+    },
+    {
+      "content": "<strong>¡Hola, {name}! 🙌</strong><br><br>Puede que todavía tengas alguna duda – y eso está bien. Lo peor es quedarse a mitad de camino y perder una gran oportunidad por no preguntar. ❓🚀<br><br>Si necesitas que te aclare algo o te explique los detalles, escríbeme. Estoy aquí para ayudarte a sentirte 100% seguro. 💡🤝<br><br>Contáctame por aquí: <strong>{supportContact}</strong> 💬📲<br><br>¡Estaré esperando tu mensaje! 😊",
+      "id": 3,
+      "level_up_question": false,
+      "next_message_id": 4,
+      "next_message_send_after": 4320
+    },
+    {
+      "content": "<strong>¡Hola, {name}! 👋😊</strong><br><br>Solo un recordatorio – si algo no te queda claro, no dudes en escribirme. Mucha gente entiende todo con solo un mensaje. 📩💬<br><br>No quiero que pierdas esta oportunidad por una duda no resuelta. Estoy aquí para ayudarte. 🙌<br><br>👉 <strong>{supportContact}</strong> – escríbeme cuando quieras, estaré encantado de ayudarte. 🤝✨",
+      "id": 4,
+      "level_up_question": false,
+      "next_message_id": 5,
+      "next_message_send_after": 10080
+    },
+    {
+      "content": "<strong>¡Hola, {name}! 🙏🚀</strong><br><br>Este es el último recordatorio – si aún tienes dudas o algo no te queda claro, escríbeme. A veces el último paso es el que marca la diferencia. ⚡<br><br>No tengas miedo de preguntar – no hay preguntas tontas y podría abrirte la puerta a algo muy grande. 💥<br><br>📲 Escríbeme aquí: <strong>{supportContact}</strong> – estaré disponible. 💬<br><br>¡Espero tu mensaje! 😊",
+      "id": 5,
+      "level_up_question": false,
+      "next_message_id": 3,
+      "next_message_send_after": 20160
+    }
+  ]
 }
+  

@@ -1,10 +1,10 @@
 {
-    "messages": [
-        {
-            "content": "💡 <strong>Chceš nielen využívať tento systém, ale aj na ňom zarábať?</strong> Teraz je ten správny čas! 🌟<br>📢 <strong>Ako to funguje?</strong><br>✅ <strong>Zdieľaj túto príležitosť</strong> s ostatnými a <strong>získaj provízie</strong> za každého, kto sa pripojí!<br>✅ Vybuduj si <strong>pasívny príjem</strong> – čím viac ľudí zapojíš, tým viac zarobíš! 💰<br>✅ Máš podporu – <strong>pomôžeme ti s prvými krokmi, stratégiou a technikami pre maximálny úspech</strong>! 🚀<br>🔗 <strong>Neviem, ako začať? Spoj sa s naším lídrom, ktorý ti všetko vysvetlí a pomôže:</strong><br>📞 <strong>Kontakt:</strong> {supportContact}<br>🔥 <strong>Táto šanca tu nebude navždy – chyť ju za pačesy a začni budovať svoj biznis hneď teraz!</strong> 💎",
-            "id": 0,
-            "level_up_question": false,
-            "next_message_id": 1
-        }
-    ]
+  "messages": [
+    {
+      "content": "🚀 <strong>Vitaj v affiliate systéme!</strong> 🔗<br><br>Toto je vedľajší príjem, ktorý môžeš jednoducho premeniť na svoj hlavný. Koľko energie do toho dáš, toľko (alebo viac) sa ti vráti. 💼<br><br>🔐 Využívame výhody krypta – žiadne banky, žiadne zdržania, len ty a tvoje odmeny.<br><br>🔥 Pridaj sa a začni budovať niečo, čo ťa môže skutočne živiť.<br><br><strong>🟢 Začni hneď:</strong> <a href=\"https://ducknation.vercel.app/affiliate-target-setting/{userId}\">Nastav si svoje affiliate ciele</a>",
+      "id": 0,
+      "level_up_question": false,
+      "next_message_id": 1
+    }
+  ]
 }

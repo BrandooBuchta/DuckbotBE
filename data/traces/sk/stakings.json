@@ -1,0 +1,6 @@
+{
+  "messages": {
+    "dynamic": "💸 <strong>Tak ako každých 28 dní – práve ti pristála výplata z dynamického stakingu!</strong><br><br>Tvoja stratégia už začína prinášať ovocie. 🎯<br><br>⏳ Nechceš o nič prísť? <a href=\"https://ducknation.vercel.app/target-calculator/{userId}\"><strong>Nastav si vlastný plán</strong></a> a vyťaž z ďalšieho cyklu maximum!",
+    "conservative": "💰 <strong>Tak ako každý týždeň – výplata z konzervatívneho stakingu je tu!</strong><br><br>Na tvoju peňaženku práve pribudlo niečo navyše. 🔁<br><br>📈 Ešte nemáš nastavenú stratégiu? <a href=\"https://ducknation.vercel.app/target-calculator/{userId}\"><strong>Začni hneď teraz</strong></a> – každý týždeň sa počíta!"
+  }
+}

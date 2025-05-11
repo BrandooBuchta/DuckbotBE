@@ -11,35 +11,35 @@
             "id": 1,
             "level_up_question": false,
             "next_message_id": 2,
-            "next_message_send_after": 1
+            "next_message_send_after": 1440
         },
         {
             "content": "Tak co, <strong>zvládl/a jsi zastakovat</strong>? 🏆 Už teď jsi na správné cestě! <strong>Pokračuj dál a nenech si ujít další kroky k maximálním výnosům.</strong> 💰🚀",
             "id": 2,
             "level_up_question": true,
             "next_message_id": 3,
-            "next_message_send_after": 1
+            "next_message_send_after": 1440
         },
         {
             "content": "<strong>Ahoj, {name}! 🙌</strong><br><br>Možná ti ještě něco vrtá hlavou – úplně v pohodě, chápu to. Není nic horšího, než zůstat na půl cesty a nechat si ujít jedinečnou příležitost jen proto, že se člověk bál zeptat. ❓🚀<br><br>Kdybys potřeboval cokoliv dovysvětlit, nebo si jen ujasnit detaily, napiš mi. Jsem tady pro tebe a rád ti pomůžu, aby sis byl stoprocentně jistý. 💡🤝<br><br>Ozvi se mi klidně hned tady: <strong>{supportContact}</strong> 💬📲<br><br>Budu se těšit! 😊",
             "id": 3,
             "level_up_question": false,
             "next_message_id": 4,
-            "next_message_send_after": 1
+            "next_message_send_after": 4320
         },
         {
             "content": "<strong>Ahoj, {name}! 👋😊</strong><br><br>Jen připomínám – kdyby ti pořád něco nebylo jasné, určitě se neboj ozvat. Spousta lidí se ptá a dává si věci do souvislostí až díky jedné zprávě. 📩💬<br><br>Fakt nechci, abys přišel o příležitost jen kvůli nevyřčené otázce. Jsem tady pro tebe, stačí se ozvat. 🙌<br><br>👉 <strong>{supportContact}</strong> – napiš kdykoliv, rád ti pomůžu! 🤝✨",
             "id": 4,
             "level_up_question": false,
             "next_message_id": 5,
-            "next_message_send_after": 1
+            "next_message_send_after": 10080
         },
         {
             "content": "<strong>Ahoj, {name}! 🙏🚀</strong><br><br>Posílám poslední připomínku – pokud tě ještě cokoliv zajímá nebo si nejsi úplně jistý, ozvi se mi. Někdy rozhoduje právě ten poslední krok. ⚡<br><br>Neboj se zeptat, fakt nic není blbá otázka – a může ti to otevřít dveře k něčemu velkýmu. 💥<br><br>📲 Napiš mi tady: <strong>{supportContact}</strong> – budu na příjmu. 💬<br><br>Těším se, až se ozveš! 😊",
             "id": 5,
             "level_up_question": false,
             "next_message_id": 3,
-            "next_message_send_after": 1
+            "next_message_send_after": 20160
         }
     ]
 }

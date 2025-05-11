@@ -1,10 +1,11 @@
 {
-    "messages": [
-        {
-            "content": "💡 <strong>Want to not only use this system but also earn from it?</strong> Now is the perfect time! 🌟<br><br>📢 <strong>How does it work?</strong><br>✅ <strong>Share this opportunity</strong> with others and <strong>earn commissions</strong> for everyone who joins!<br>✅ Build a <strong>passive income</strong> – the more people you refer, the more you earn! 💰<br>✅ You’ve got support – <strong>we’ll help you with your first steps, strategy, and techniques for maximum success</strong>! 🚀<br><br>🔗 <strong>Not sure how to start? Get in touch with our leader who’ll explain everything and guide you:</strong><br>📞 <strong>Contact:</strong> {supportContact}<br>🔥 <strong>This opportunity won’t last forever – grab it now and start building your business today!</strong> 💎",
-            "id": 0,
-            "level_up_question": false,
-            "next_message_id": 1
-        }
-    ]
+  "messages": [
+    {
+      "content": "🚀 <strong>Welcome to the affiliate system!</strong> 🔗<br><br>This is a side hustle you can easily turn into your main income stream. The more energy you put in, the more you’ll get back – sometimes even more. 💼<br><br>🔐 We leverage the power of crypto – no banks, no delays, just you and your rewards.<br><br>🔥 Join now and start building something that can truly support you.<br><br><strong>🟢 Get started now:</strong> <a href=\"https://ducknation.vercel.app/affiliate-target-setting/{userId}\">Set your affiliate goals</a>",
+      "id": 0,
+      "level_up_question": false,
+      "next_message_id": 1
+    }
+  ]
 }
+  

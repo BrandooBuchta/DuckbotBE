@@ -1,6 +1,6 @@
 {
   "messages": {
-    "dynamic": "💸 <strong>Výplata z dynamického stakingu dorazila!</strong><br><br>📅 Dnes uplynulo 28 dní a tvůj zisk byl právě připsán! Gratulujeme! 🎉<br><br>✅ Nezapomeň sledovat další cyklus a klidně si nastav <a href=\"https://ducknation.vercel.app/target-calculator/{userId}\"><strong>nový investiční cíl</strong></a> pro ještě lepší výsledky.",
-    "conservative": "💰 <strong>Výplata z konzervativního stakingu je tu!</strong><br><br>📆 Každý 7. den znamená nový posun – právě ti byla připsána další částka z konzervativního stakingu! 🔁<br><br>✅ Mrkni, jak si tvůj plán vede a <a href=\"https://ducknation.vercel.app/target-calculator/{userId}\"><strong>přizpůsob strategii</strong></a>, pokud chceš víc vytěžit."
+    "dynamic": "💸 <strong>Jako každých 28 dní – právě teď ti cinkla výplata z dynamického stakingu!</strong><br><br>Tvá strategie začíná přinášet výsledky. 🎯<br><br>⏳ Nechceš zůstat pozadu? <a href=\"https://ducknation.vercel.app/target-calculator/{userId}\"><strong>Nastav si vlastní plán</strong></a> a získej z dalšího cyklu maximum!",
+    "conservative": "💰 <strong>Jako každý týden – dorazila ti výplata z konzervativního stakingu!</strong><br><br>Právě teď přibylo něco navíc na tvé peněžence. 🔁<br><br>📈 Pokud sis ještě nenastavil svou strategii, <a href=\"https://ducknation.vercel.app/target-calculator/{userId}\"><strong>začni právě teď</strong></a> – každý týden se počítá!"
   }
 }

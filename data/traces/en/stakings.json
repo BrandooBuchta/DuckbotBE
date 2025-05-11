@@ -1,0 +1,6 @@
+{
+  "messages": {
+    "dynamic": "💸 <strong>Just like every 28 days – your dynamic staking payout just landed!</strong><br><br>Your strategy is starting to pay off. 🎯<br><br>⏳ Don’t want to miss out? <a href=\"https://ducknation.vercel.app/target-calculator/{userId}\"><strong>Set up your own plan</strong></a> and make the most of the next cycle!",
+    "conservative": "💰 <strong>Just like every week – your conservative staking payout has arrived!</strong><br><br>You’ve just earned a little extra to your wallet. 🔁<br><br>📈 Haven’t set your strategy yet? <a href=\"https://ducknation.vercel.app/target-calculator/{userId}\"><strong>Do it now</strong></a> – every week counts!"
+  }
+}
