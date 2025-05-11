@@ -143,7 +143,7 @@ def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
         starts_at=next_conservative,
         is_active=False,
         check_status=False,
-        interval=None
+        interval=7
     )
 
     db_dynamic_sequence = Sequence(
@@ -159,7 +159,7 @@ def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
         starts_at=next_dynamic,
         is_active=False,
         check_status=False,
-        interval=None
+        interval=28
     )
 
     db.add(db_conservative_sequence)
