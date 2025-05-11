@@ -19,3 +19,13 @@ def get_messages(level: int, lang: str, is_event: bool, bot_id: UUID):
         data = json.load(file)
 
     return data.get("messages", [])
+
+def get_message(is_dynamic: bool, lang: str):
+    path = f"data/traces/{lang}/stakings.json"
+
+    with open(path, "r", encoding="utf-8") as file:
+        data = json.load(file)
+    
+    messages = data.get("messages", {})
+
+    return messages.get("dynamic" if is_dynamic else "conservative", "")

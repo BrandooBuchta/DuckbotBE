@@ -6,6 +6,7 @@ from schemas.bot import ReadSequence, UpdateSequence
 import uuid
 from uuid import UUID
 from datetime import timedelta, datetime, timezone
+from utils.messages import get_message
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -107,6 +108,47 @@ def create_sequence(db: Session, bot_id: UUID):
     )
 
     db.add(db_sequence)
+    db.commit()
+    db.refresh(db_sequence)
+
+    return 200
+
+def create_staking_sequences(db: Session, bot_id: UUID):
+    db_sequences, status = get_all_sequences(db, bot_id) 
+    db_conservative_sequence = Sequence(
+        id=uuid.uuid4(),
+        bot_id=bot_id,
+        name="Conservative Cycle",
+        position=len(db_sequences) + 1,
+        message=get_message(False, lang),
+        levels=[],
+        repeat=False,
+        send_at=None,
+        send_immediately=True,
+        starts_at=None,
+        is_active=False,
+        check_status=False,
+        interval=None
+    )
+
+    db_dynamic_sequence = Sequence(
+        id=uuid.uuid4(),
+        bot_id=bot_id,
+        name="Dynamic Cycle",
+        position=len(db_sequences) + 1,
+        message=get_message(True, lang),
+        levels=[],
+        repeat=False,
+        send_at=None,
+        send_immediately=True,
+        starts_at=None,
+        is_active=False,
+        check_status=False,
+        interval=None
+    )
+
+    db.add(db_conservative_sequence)
+    db.add(db_dynamic_sequence)
     db.commit()
     db.refresh(db_sequence)
 

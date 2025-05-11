@@ -7,6 +7,7 @@ from database import SessionLocal
 from schemas.bot import SignIn, SignInResponse, SignUp, UpdateBot, Statistic, PublicBot
 from crud.bot import sign_in, sign_up, get_bot_by_name, get_bot, verify_token, update_bot, get_statistics, get_public_bot, increase_analytic_data
 from crud.user import get_current_user, update_user_name, update_users_academy_link, get_user, create_user, update_users_level, send_message_to_user, update_rating, update_reference, get_references, get_all_public_users, delete_users
+from crud.sequence import create_staking_sequences
 from crud.vars import replace_variables
 from crud.links import get_all_links, update_link
 from schemas.user import UserCreate, PublicUser, DeleteUsersRequest
@@ -99,6 +100,7 @@ def create_bot(sign_up_body: SignUp, db: Session = Depends(get_db)):
     bot_id, sign_up_status = sign_up(db, sign_up_body)
     if sign_up_status != 200:
         raise HTTPException(status_code=400, detail="Stala se chyba při vytváření bota.")
+    create_staking_sequences(db, bot_id)
     return {"detail": "Nový bot byl úspěšně vytvořen!", "id": bot_id}
 
 @router.post("/sign-in", response_model=SignInResponse)

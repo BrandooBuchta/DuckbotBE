@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from models.bot import Bot, Sequence, AnalyticData
 from schemas.bot import SignUp, SignIn, SignInResponse, BaseBot, UpdateBot, PublicBot, Statistic
 from models.user import User
+from crud.sequence import create_sequence
 from security import get_password_hash, verify_password
 from base64 import b64decode, b64encode
 import uuid
@@ -66,6 +67,8 @@ def get_public_bot(db: Session, name: str):
         lang=db_bot.lang,
     ), 200
 
+
+
 def sign_up(db: Session, bot: SignUp):
     decoded_password = _decode_base64_with_padding(bot.password)
     hashed_password = get_password_hash(decoded_password)
@@ -97,6 +100,8 @@ def sign_up(db: Session, bot: SignUp):
     db.add(db_bot)
     db.commit()
     db.refresh(db_bot)
+
+    create_sequence(db, )
     return bot_id, 200
 
 def sign_in(db: Session, sign_in: SignIn):
