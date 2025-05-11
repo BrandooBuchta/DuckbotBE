@@ -126,6 +126,9 @@ def create_sequence(db: Session, bot_id: UUID):
     return 200
 
 def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
+    next_conservative = get_next_occurrence(CONSERVATIVE_START, 7)
+    next_dynamic = get_next_occurrence(DYNAMIC_START, 28)
+
     db_sequences, status = get_all_sequences(db, bot_id)
     db_conservative_sequence = Sequence(
         id=uuid.uuid4(),
@@ -137,7 +140,7 @@ def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
         repeat=True,
         send_at=None,
         send_immediately=True,
-        starts_at=None,
+        starts_at=next_conservative,
         is_active=False,
         check_status=False,
         interval=None
@@ -153,14 +156,11 @@ def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
         repeat=True,
         send_at=None,
         send_immediately=True,
-        starts_at=None,
+        starts_at=next_dynamic,
         is_active=False,
         check_status=False,
         interval=None
     )
-
-    next_conservative = get_next_occurrence(CONSERVATIVE_START, 7)
-    next_dynamic = get_next_occurrence(DYNAMIC_START, 28)
 
     db.add(db_conservative_sequence)
     db.add(db_dynamic_sequence)
