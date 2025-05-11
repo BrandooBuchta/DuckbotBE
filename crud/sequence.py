@@ -148,9 +148,10 @@ def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
     )
 
     db.add(db_conservative_sequence)
-    db.add(db_dynamic_sequence)
+    db.add(db_conservative_sequence)
     db.commit()
-    db.refresh(db_sequence)
+    db.refresh(db_conservative_sequence)
+    db.refresh(db_conservative_sequence)
 
     return 200
 
