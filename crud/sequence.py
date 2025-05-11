@@ -113,8 +113,8 @@ def create_sequence(db: Session, bot_id: UUID):
 
     return 200
 
-def create_staking_sequences(db: Session, bot_id: UUID):
-    db_sequences, status = get_all_sequences(db, bot_id) 
+def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
+    db_sequences, status = get_all_sequences(db, bot_id)
     db_conservative_sequence = Sequence(
         id=uuid.uuid4(),
         bot_id=bot_id,

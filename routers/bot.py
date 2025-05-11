@@ -100,7 +100,7 @@ def create_bot(sign_up_body: SignUp, db: Session = Depends(get_db)):
     bot_id, sign_up_status = sign_up(db, sign_up_body)
     if sign_up_status != 200:
         raise HTTPException(status_code=400, detail="Stala se chyba při vytváření bota.")
-    create_staking_sequences(db, bot_id)
+    create_staking_sequences(db, bot_id, sign_up_body.lang)
     return {"detail": "Nový bot byl úspěšně vytvořen!", "id": bot_id}
 
 @router.post("/sign-in", response_model=SignInResponse)
