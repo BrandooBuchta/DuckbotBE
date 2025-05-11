@@ -101,7 +101,6 @@ def sign_up(db: Session, bot: SignUp):
     db.commit()
     db.refresh(db_bot)
 
-    create_sequence(db, )
     return bot_id, 200
 
 def sign_in(db: Session, sign_in: SignIn):
