@@ -7,11 +7,26 @@ import uuid
 from uuid import UUID
 from datetime import timedelta, datetime, timezone
 from utils.messages import get_message
+
+CONSERVATIVE_START = datetime(2025, 5, 16, 14, 0, tzinfo=timezone.utc)
+DYNAMIC_START = datetime(2025, 5, 12, 14, 0, tzinfo=timezone.utc)
+
 import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+def get_next_occurrence(start_date: datetime, interval_days: int) -> datetime:
+    now = datetime.now(timezone.utc).replace(microsecond=0)
+
+    if now < start_date:
+        return start_date
+
+    delta = now - start_date
+    periods_passed = (delta.days // interval_days) + 1
+    next_date = start_date + timedelta(days=periods_passed * interval_days)
+
+    return next_date
 
 def get_sequence(db: Session, sequence_id: UUID):
     db_sequence = db.query(Sequence).filter(Sequence.id == sequence_id).first()
@@ -68,9 +83,6 @@ def update_sequence(db: Session, sequence_id: UUID, update_data: UpdateSequence)
     return db_sequence, 200
 
 def update_send_at(db: Session, sequence_id: UUID, interval: int):
-    """
-    Aktualizuje atribut `send_at` sekvence podle zadaného intervalu (v dnech).
-    """
     db_sequence, status = get_sequence(db, sequence_id)
     if not db_sequence:
         logger.error(f"Sequence with ID {sequence_id} not found.")
@@ -121,8 +133,8 @@ def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
         name="Conservative Cycle",
         position=len(db_sequences) + 1,
         message=get_message(False, lang),
-        levels=[],
-        repeat=False,
+        levels=[1,2],
+        repeat=True,
         send_at=None,
         send_immediately=True,
         starts_at=None,
@@ -137,8 +149,8 @@ def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
         name="Dynamic Cycle",
         position=len(db_sequences) + 1,
         message=get_message(True, lang),
-        levels=[],
-        repeat=False,
+        levels=[1,2],
+        repeat=True,
         send_at=None,
         send_immediately=True,
         starts_at=None,
@@ -147,11 +159,14 @@ def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
         interval=None
     )
 
+    next_conservative = get_next_occurrence(CONSERVATIVE_START, 7)
+    next_dynamic = get_next_occurrence(DYNAMIC_START, 28)
+
     db.add(db_conservative_sequence)
-    db.add(db_conservative_sequence)
+    db.add(db_dynamic_sequence)
     db.commit()
     db.refresh(db_conservative_sequence)
-    db.refresh(db_conservative_sequence)
+    db.refresh(db_dynamic_sequence)
 
     return 200
 
