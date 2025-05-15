@@ -303,7 +303,7 @@ async def get_videos(user_id: UUID, db: Session = Depends(get_db)):
     user = get_user(db, user_id)
     bot, status = get_bot(db, user.bot_id)
 
-    return {"videos": bot.videos}
+    return {"videos": bot.videos, "footer_data": { "telegram": bot.support_contact, "instagram": bot.instagram }}
 
 @router.get("/references")
 async def fetch_references(
