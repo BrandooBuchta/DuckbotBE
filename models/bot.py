@@ -17,6 +17,7 @@ class Bot(Base):
     video_url = Column(String, nullable=True)
     bot_url = Column(String, nullable=True)
     support_contact = Column(String, nullable=True)
+    instagram = Column(String, nullable=True)
     is_event = Column(Boolean, nullable=True)
     event_capacity = Column(Integer, nullable=True)
     event_date = Column(DateTime(timezone=True), server_default=func.now())

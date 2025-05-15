@@ -64,6 +64,8 @@ def get_public_bot(db: Session, name: str):
         event_date=db_bot.event_date,
         event_location=db_bot.event_location,
         event_name=db_bot.event_name,
+        support_contact=db_bot.support_contact,
+        instagram=db_bot.instagram,
         lang=db_bot.lang,
     ), 200
 
