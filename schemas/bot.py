@@ -28,6 +28,7 @@ class PublicBot(BaseModel):
     videos: Optional[List[str]] = []
     bot_url: Optional[str] = None
     is_event: Optional[bool] = False
+    support_contact: Optional[str] = None
     instagram: Optional[str] = None
     event_capacity: Optional[int] = 0
     event_date: Optional[datetime] = None
@@ -67,6 +68,7 @@ class UpdateBot(BaseModel):
     name: Optional[str] = None
     video_url: Optional[str] = None
     support_contact: Optional[str] = None
+    instagram: Optional[str] = None
     is_event: Optional[bool] = False
     event_capacity: Optional[int] = 0
     event_date: Optional[datetime] = None
