@@ -95,7 +95,7 @@ async def broadcast_message(data: TelegramBroadcastSchema):
 
                 try:
                     peer = InputPeerUser(user.id, user.access_hash)
-                    await client.send_message(peer, data.message + user.first_name)
+                    await client.send_message(peer, data.message.replace("{name}", user.first_name))
                     sent += 1
                 except Exception as e:
                     failed.append({
