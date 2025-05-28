@@ -68,8 +68,12 @@ async def broadcast_message(data: TelegramBroadcastSchema):
 
             sent = 0
             for user in contacts.users:
+                if not user.access_hash:
+                    continue  # Přeskočíme kontakty bez access_hash
+
                 try:
-                    await client.send_message(user.id, message)
+                    entity = InputPeerUser(user.id, user.access_hash)
+                    await client.send_message(entity, message)
                     sent += 1
                 except Exception as e:
                     print(f"⚠️ Nepodařilo se poslat uživateli {user.id}: {e}")
