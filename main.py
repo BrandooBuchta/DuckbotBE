@@ -16,6 +16,8 @@ from routers.bot import router as bot_router
 from routers.links import router as links_router
 from routers.sequence import router as sequence_router
 from routers.target import router as target_router
+from routers.telegram import router as telegram_router
+
 from crud.sequence import get_sequences, update_sequence, get_all_sequences
 from crud.vars import replace_variables
 from crud.bot import get_bot
@@ -274,6 +276,7 @@ app.include_router(bot_router, prefix="/api/bot", tags=["Bots"])
 app.include_router(sequence_router, prefix="/api/bot/sequence", tags=["Sequences"])
 app.include_router(links_router, prefix="/api/bot/academy-link", tags=["Academy Links"])
 app.include_router(target_router, prefix="/api/bot/target", tags=["Target"])
+app.include_router(telegram_router, prefix="/api/telegram", tags=["Telegram"])
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
