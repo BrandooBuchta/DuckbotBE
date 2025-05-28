@@ -64,10 +64,12 @@ async def broadcast_message(data: TelegramBroadcastSchema):
         async with TelegramClient(StringSession(data.session), API_ID, API_HASH) as client:
             # Načtení všech kontaktů
             contacts = await client(GetContactsRequest(hash=0))
+            print("contacts: ", contacts)
             sent = 0
             failed = []
 
             for user in contacts.users:
+                print("contacts.users: ", contacts.users)
                 if user.bot or not user.access_hash:
                     continue
 
