@@ -5,6 +5,7 @@ from telethon.sessions import StringSession
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.contacts import GetContactsRequest, AddContactRequest
 from telethon.tl.types import InputPeerUser
+from vokativ import sex, vokativ
 
 import os
 from dotenv import load_dotenv
@@ -12,6 +13,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 router = APIRouter()
+
+def get_user_name(n):
+    if sex(n) == "w":
+        return vokativ(n, woman=True)
+    return vokativ(n, woman=False) 
+
 
 API_ID = int(os.getenv("TG_API_ID"))
 API_HASH = os.getenv("TG_API_HASH")
@@ -29,6 +36,7 @@ class ConfirmCodeRequest(BaseModel):
 class TelegramBroadcastSchema(BaseModel):
     session: str = Field(..., min_length=1)
     message: str = Field(..., min_length=1)
+    lang: str
 
 @router.post("/start")
 async def start_login(data: StartLoginRequest):
@@ -94,8 +102,11 @@ async def broadcast_message(data: TelegramBroadcastSchema):
                     continue
 
                 try:
+                    name = get_user_name(user.first_name) if lang in ("cs", "sk") else user.first_name
+
                     peer = InputPeerUser(user.id, user.access_hash)
-                    await client.send_message(peer, data.message.replace("{name}", user.first_name))
+                    await client.send_message(peer, data.message.replace("{name}", name), parse_mode="html")
+                    
                     sent += 1
                 except Exception as e:
                     failed.append({
