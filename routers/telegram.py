@@ -4,6 +4,9 @@ from telethon import TelegramClient
 from telethon.sessions import StringSession
 from telethon.errors import SessionPasswordNeededError
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter()
 
