@@ -29,6 +29,7 @@ class ConfirmCodeRequest(BaseModel):
 class TelegramBroadcastSchema(BaseModel):
     session: str = Field(..., min_length=1)
     message: str = Field(..., min_length=1)
+    lang: str
 
 @router.post("/start")
 async def start_login(data: StartLoginRequest):
