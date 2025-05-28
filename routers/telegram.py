@@ -1,9 +1,9 @@
-from fastapi import APIRouter, HTTPException, Body
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 from telethon.errors import SessionPasswordNeededError
-from telethon.tl.functions.contacts import GetContactsRequest
+from telethon.tl.functions.contacts import GetContactsRequest, AddContactRequest
 from telethon.tl.types import InputPeerUser
 
 import os
@@ -55,22 +55,42 @@ async def confirm_code(data: ConfirmCodeRequest):
 
     return {
         "status": "authenticated",
-        "session": session_string  # frontend si uloží
+        "session": session_string
     }
 
 @router.post("/broadcast")
 async def broadcast_message(data: TelegramBroadcastSchema):
     try:
         async with TelegramClient(StringSession(data.session), API_ID, API_HASH) as client:
-            # Načtení všech kontaktů
+            me = await client.get_me()
+
+            # KROK 1: Získání konverzací
+            dialogs = await client.get_dialogs(limit=50)
+
+            # KROK 2: Přidání do kontaktů
+            for dialog in dialogs:
+                if dialog.is_user and dialog.entity.id != me.id:
+                    user = dialog.entity
+                    try:
+                        await client(AddContactRequest(
+                            id=user.id,
+                            first_name=user.first_name or "NoName",
+                            last_name=user.last_name or "",
+                            phone="",
+                            add_phone_privacy_exception=False
+                        ))
+                    except Exception:
+                        pass  # už pravděpodobně v kontaktech nebo jiný problém
+
+            # KROK 3: Získání všech kontaktů
             contacts = await client(GetContactsRequest(hash=0))
-            print("contacts: ", contacts)
+
+            # KROK 4: Odeslání zprávy
             sent = 0
             failed = []
 
             for user in contacts.users:
-                print("contacts.users: ", contacts.users)
-                if user.bot or not user.access_hash:
+                if user.bot or not user.access_hash or user.id == me.id:
                     continue
 
                 try:
@@ -78,7 +98,11 @@ async def broadcast_message(data: TelegramBroadcastSchema):
                     await client.send_message(peer, data.message)
                     sent += 1
                 except Exception as e:
-                    failed.append({"id": user.id, "username": user.username, "error": str(e)})
+                    failed.append({
+                        "id": user.id,
+                        "username": user.username,
+                        "error": str(e)
+                    })
 
             return {
                 "success": True,
