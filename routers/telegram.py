@@ -61,7 +61,7 @@ async def confirm_code(data: ConfirmCodeRequest):
 @router.post("/broadcast")
 async def broadcast_message(data: TelegramBroadcastSchema):
     try:
-        async with TelegramClient(StringSession(data.session), API_ID, HASH_ID) as client:
+        async with TelegramClient(StringSession(data.session), API_ID, API_HASH) as client:
             # Načtení všech kontaktů
             contacts = await client(GetContactsRequest(hash=0))
             sent = 0
