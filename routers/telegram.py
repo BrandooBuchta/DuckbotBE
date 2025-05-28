@@ -4,6 +4,7 @@ from telethon import TelegramClient
 from telethon.sessions import StringSession
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.contacts import GetContactsRequest
+from telethon.tl.types import InputPeerUser
 
 import os
 from dotenv import load_dotenv
@@ -64,19 +65,23 @@ async def broadcast_message(data: TelegramBroadcastSchema):
         message = data.message
 
         async with TelegramClient(StringSession(session), API_ID, API_HASH) as client:
-            contacts = await client(GetContactsRequest(hash=0))
-
+            contacts = await client.get_contacts()
             sent = 0
-            for user in contacts.users:
-                if not user.access_hash:
-                    continue  # Přeskočíme kontakty bez access_hash
 
-                try:
-                    entity = InputPeerUser(user.id, user.access_hash)
-                    await client.send_message(entity, message)
-                    sent += 1
-                except Exception as e:
-                    print(f"⚠️ Nepodařilo se poslat uživateli {user.id}: {e}")
+            for user in contacts:
+                if isinstance(user, InputPeerUser):
+                    try:
+                        await client.send_message(user, message)
+                        sent += 1
+                    except Exception as e:
+                        print(f"⚠️ Nepodařilo se poslat {user.user_id}: {e}")
+                elif user.access_hash:
+                    try:
+                        peer = InputPeerUser(user.id, user.access_hash)
+                        await client.send_message(peer, message)
+                        sent += 1
+                    except Exception as e:
+                        print(f"⚠️ Nepodařilo se poslat {user.id}: {e}")
 
         return {"success": True, "sent": sent}
 
