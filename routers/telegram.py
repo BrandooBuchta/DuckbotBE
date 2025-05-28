@@ -20,9 +20,9 @@ class ConfirmCodeRequest(BaseModel):
     phone: str
     code: str
 
-class BroadcastRequest(BaseModel):
-    session: str
-    message: str
+class TelegramBroadcastSchema(BaseModel):
+    session: str = Field(..., min_length=1)
+    message: str = Field(..., min_length=1)
 
 @router.post("/start")
 async def start_login(data: StartLoginRequest):
