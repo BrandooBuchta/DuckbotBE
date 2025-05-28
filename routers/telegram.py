@@ -1,11 +1,10 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Body
 from pydantic import BaseModel, Field
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 from telethon.errors import SessionPasswordNeededError
-from telethon.tl.functions.contacts import GetContactsRequest, AddContactRequest
+from telethon.tl.functions.contacts import GetContactsRequest
 from telethon.tl.types import InputPeerUser
-from vokativ import sex, vokativ
 
 import os
 from dotenv import load_dotenv
@@ -13,12 +12,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 router = APIRouter()
-
-def get_user_name(n):
-    if sex(n) == "w":
-        return vokativ(n, woman=True)
-    return vokativ(n, woman=False) 
-
 
 API_ID = int(os.getenv("TG_API_ID"))
 API_HASH = os.getenv("TG_API_HASH")
@@ -36,7 +29,6 @@ class ConfirmCodeRequest(BaseModel):
 class TelegramBroadcastSchema(BaseModel):
     session: str = Field(..., min_length=1)
     message: str = Field(..., min_length=1)
-    lang: str
 
 @router.post("/start")
 async def start_login(data: StartLoginRequest):
@@ -63,7 +55,7 @@ async def confirm_code(data: ConfirmCodeRequest):
 
     return {
         "status": "authenticated",
-        "session": session_string
+        "session": session_string  # frontend si uloží
     }
 
 @router.post("/broadcast")
