@@ -64,26 +64,22 @@ async def broadcast_message(data: TelegramBroadcastSchema):
         session = data.session
         message = data.message
 
-        async with TelegramClient(StringSession(session), API_ID, API_HASH) as client:
-            contacts = await client.get_contacts()
+        async with TelegramClient(StringSession(session), api_id, api_hash) as client:
+            # Načti seznam kontaktů
+            result = await client(GetContactsRequest(hash=0))
+            users = result.users
             sent = 0
 
-            for user in contacts:
-                if isinstance(user, InputPeerUser):
-                    try:
-                        await client.send_message(user, message)
-                        sent += 1
-                    except Exception as e:
-                        print(f"⚠️ Nepodařilo se poslat {user.user_id}: {e}")
-                elif user.access_hash:
+            for user in users:
+                if user.access_hash:
                     try:
                         peer = InputPeerUser(user.id, user.access_hash)
                         await client.send_message(peer, message)
                         sent += 1
                     except Exception as e:
-                        print(f"⚠️ Nepodařilo se poslat {user.id}: {e}")
+                        print(f"⚠️ Nelze odeslat zprávu uživateli {user.id}: {e}")
 
-        return {"success": True, "sent": sent}
+            return {"success": True, "sent": sent}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Chyba při broadcastu: {e}")
