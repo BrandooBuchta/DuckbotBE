@@ -10,3 +10,4 @@ apscheduler
 pytz
 uvicorn
 telethon
+python-multipart
