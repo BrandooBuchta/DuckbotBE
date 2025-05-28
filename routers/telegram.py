@@ -58,7 +58,7 @@ async def confirm_code(data: ConfirmCodeRequest):
 @router.post("/broadcast")
 async def broadcast_message(data: TelegramBroadcastSchema):
     try:
-        client = TelegramClient(StringSession(data.session), api_id, api_hash)
+        client = TelegramClient(StringSession(data.session), API_ID, API_HASH)
         await client.connect()
 
         if not await client.is_user_authorized():
