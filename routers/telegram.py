@@ -57,7 +57,7 @@ async def confirm_code(data: ConfirmCodeRequest):
         "session": session_string  # frontend si uloží
     }
 
-@router.post("/api/telegram/broadcast")
+@router.post("/broadcast")
 async def broadcast_message(data: TelegramBroadcastSchema):
     try:
         session = data.session
