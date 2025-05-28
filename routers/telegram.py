@@ -61,23 +61,23 @@ async def confirm_code(data: ConfirmCodeRequest):
 @router.post("/broadcast")
 async def broadcast_message(data: TelegramBroadcastSchema):
     try:
-        session = data.session
-        message = data.message
-
-        async with TelegramClient(StringSession(session), API_ID, API_HASH) as client:
-            # Načti seznam kontaktů
+        async with TelegramClient(StringSession(data.session), API_ID, API_HASH) as client:
+            # Získání kontaktů
             result = await client(GetContactsRequest(hash=0))
             users = result.users
-            sent = 0
 
+            sent = 0
             for user in users:
-                if user.access_hash:
-                    try:
-                        peer = InputPeerUser(user.id, user.access_hash)
-                        await client.send_message(peer, message)
-                        sent += 1
-                    except Exception as e:
-                        print(f"⚠️ Nelze odeslat zprávu uživateli {user.id}: {e}")
+                # Přeskočit bota nebo neúplné kontakty
+                if user.bot or not user.access_hash:
+                    continue
+
+                try:
+                    peer = InputPeerUser(user_id=user.id, access_hash=user.access_hash)
+                    await client.send_message(peer, data.message)
+                    sent += 1
+                except Exception as e:
+                    print(f"❌ Chyba u {user.username or user.id}: {e}")
 
             return {"success": True, "sent": sent}
 
