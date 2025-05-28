@@ -3,6 +3,8 @@ from pydantic import BaseModel, Field
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 from telethon.errors import SessionPasswordNeededError
+from telethon.tl.functions.contacts import GetContactsRequest
+
 import os
 from dotenv import load_dotenv
 
@@ -55,25 +57,24 @@ async def confirm_code(data: ConfirmCodeRequest):
         "session": session_string  # frontend si uloží
     }
 
-@router.post("/broadcast")
+@router.post("/api/telegram/broadcast")
 async def broadcast_message(data: TelegramBroadcastSchema):
     try:
-        client = TelegramClient(StringSession(data.session), API_ID, API_HASH)
-        await client.connect()
+        session = data.session
+        message = data.message
 
-        if not await client.is_user_authorized():
-            raise HTTPException(status_code=401, detail="Unauthorized Telegram session")
+        async with TelegramClient(StringSession(session), API_ID, API_HASH) as client:
+            contacts = await client(GetContactsRequest(hash=0))
 
-        async for user in client.iter_contacts():
-            if user.bot or not user.access_hash:
-                continue
-            try:
-                await client.send_message(user.id, data.message)
-            except Exception as e:
-                print(f"❌ Nepodařilo se odeslat zprávu uživateli {user.id}: {e}")
+            sent = 0
+            for user in contacts.users:
+                try:
+                    await client.send_message(user.id, message)
+                    sent += 1
+                except Exception as e:
+                    print(f"⚠️ Nepodařilo se poslat uživateli {user.id}: {e}")
 
-        await client.disconnect()
-        return {"status": "ok"}
+        return {"success": True, "sent": sent}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Chyba při broadcastu: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Chyba při broadcastu: {e}")
