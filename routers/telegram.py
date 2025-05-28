@@ -64,7 +64,7 @@ async def broadcast_message(data: TelegramBroadcastSchema):
         session = data.session
         message = data.message
 
-        async with TelegramClient(StringSession(session), api_id, api_hash) as client:
+        async with TelegramClient(StringSession(session), API_ID, API_HASH) as client:
             # Načti seznam kontaktů
             result = await client(GetContactsRequest(hash=0))
             users = result.users
