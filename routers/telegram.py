@@ -53,20 +53,24 @@ async def confirm_code(data: ConfirmCodeRequest):
     }
 
 @router.post("/broadcast")
-async def broadcast_message(data: BroadcastRequest):
-    if not data.session:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+async def broadcast_message(data: TelegramBroadcastSchema):
+    try:
+        client = TelegramClient(StringSession(data.session), api_id, api_hash)
+        await client.connect()
 
-    client = TelegramClient(StringSession(data.session), API_ID, API_HASH)
-    await client.start()
-    success_count = 0
+        if not await client.is_user_authorized():
+            raise HTTPException(status_code=401, detail="Unauthorized Telegram session")
 
-    async for user in client.iter_contacts():
-        try:
-            await client.send_message(user.id, data.message)
-            success_count += 1
-        except Exception:
-            continue
+        async for user in client.iter_contacts():
+            if user.bot or not user.access_hash:
+                continue
+            try:
+                await client.send_message(user.id, data.message)
+            except Exception as e:
+                print(f"❌ Nepodařilo se odeslat zprávu uživateli {user.id}: {e}")
 
-    await client.disconnect()
-    return {"status": "sent", "sent_to": success_count}
+        await client.disconnect()
+        return {"status": "ok"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Chyba při broadcastu: {str(e)}")
