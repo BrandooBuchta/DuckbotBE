@@ -87,14 +87,12 @@ async def broadcast_message(
     lang: str = Form(...),
     file: UploadFile = File(None)
 ):
-    print("Filename:", file.filename)
-    print("Content Type:", file.content_type)
-
     try:
         async with TelegramClient(StringSession(session), API_ID, API_HASH) as client:
             me = await client.get_me()
             dialogs = await client.get_dialogs(limit=50)
 
+            # Přidání uživatelů do kontaktů
             for dialog in dialogs:
                 if dialog.is_user and dialog.entity.id != me.id:
                     user = dialog.entity
@@ -110,34 +108,29 @@ async def broadcast_message(
                         pass
 
             contacts = await client(GetContactsRequest(hash=0))
-
             sent = 0
             failed = []
-
-            file_bytes = await file.read() if file else None
-            file_name = file.filename if file else None
 
             for user in contacts.users:
                 if user.bot or not user.access_hash or user.id == me.id:
                     continue
 
                 try:
-                    name = user.first_name or "friend"
+                    name = get_user_name(user.first_name) if lang in ("cs", "sk") else user.first_name or "friend"
                     peer = InputPeerUser(user.id, user.access_hash)
+                    caption = message.replace("{name}", name)
 
-                    if file_bytes:
-                        await client.send_file(
-                            peer,
-                            file=bytes(file_bytes),
-                            caption=message.replace("{name}", name),
-                            file_name=file_name
-                        )
+                    # Odesílání souboru/media pokud je přítomen
+                    if file:
+                        mime = file.content_type or ""
+                        if mime.startswith("image/"):
+                            await client.send_file(peer, file.file, caption=caption, force_document=False)
+                        elif mime.startswith("video/"):
+                            await client.send_file(peer, file.file, caption=caption, force_document=False, video_note=False)
+                        else:
+                            await client.send_file(peer, file.file, caption=caption, file_name=file.filename)
                     else:
-                        await client.send_message(
-                            peer,
-                            message.replace("{name}", name),
-                            parse_mode="html"
-                        )
+                        await client.send_message(peer, caption, parse_mode="html")
 
                     sent += 1
                 except Exception as e:
