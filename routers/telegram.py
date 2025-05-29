@@ -43,18 +43,24 @@ async def start_login(data: StartLoginRequest):
 
 @router.post("/confirm")
 async def confirm_code(data: ConfirmCodeRequest):
-    async with TelegramClient(StringSession(), API_ID, API_HASH) as client:
-        await client.connect()
-        try:
-            await client.sign_in(data.phone, data.code)
-        except SessionPasswordNeededError:
-            raise HTTPException(status_code=403, detail="2FA is not supported yet")
+    client = TelegramClient(StringSession(), API_ID, API_HASH)
+    await client.connect()
 
+    try:
+        await client.sign_in(data.phone, data.code)
         session_string = client.session.save()
-    return {
-        "status": "authenticated",
-        "session": session_string
-    }
+        await client.disconnect()
+        return {
+            "status": "authenticated",
+            "session": session_string
+        }
+
+    except SessionPasswordNeededError:
+        await client.disconnect()
+        raise HTTPException(status_code=403, detail="2FA is not supported yet")
+    except Exception as e:
+        await client.disconnect()
+        raise HTTPException(status_code=500, detail=f"Chyba při přihlášení: {e}")
 
 def get_user_name(name: str | None) -> str:
     return name or "příteli"
