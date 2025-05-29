@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel, Field
 from telethon import TelegramClient
 from telethon.sessions import StringSession
@@ -81,9 +81,14 @@ async def confirm_code(data: ConfirmCodeRequest):
     }
 
 @router.post("/broadcast")
-async def broadcast_message(data: TelegramBroadcastSchema):
+async def broadcast_message(
+    session: str = Form(...),
+    message: str = Form(...),
+    lang: str = Form(...),
+    file: UploadFile = File(None)
+):
     try:
-        async with TelegramClient(StringSession(data.session), API_ID, API_HASH) as client:
+        async with TelegramClient(StringSession(session), API_ID, API_HASH) as client:
             me = await client.get_me()
             dialogs = await client.get_dialogs(limit=50)
 
@@ -106,14 +111,31 @@ async def broadcast_message(data: TelegramBroadcastSchema):
             sent = 0
             failed = []
 
+            file_bytes = await file.read() if file else None
+            file_name = file.filename if file else None
+
             for user in contacts.users:
                 if user.bot or not user.access_hash or user.id == me.id:
                     continue
 
                 try:
-                    name = get_user_name(user.first_name) if data.lang in ("cs", "sk") else (user.first_name or "friend")
+                    name = user.first_name or "friend"
                     peer = InputPeerUser(user.id, user.access_hash)
-                    await client.send_message(peer, data.message.replace("{name}", name), parse_mode="html")
+
+                    if file_bytes:
+                        await client.send_file(
+                            peer,
+                            file=bytes(file_bytes),
+                            caption=message.replace("{name}", name),
+                            file_name=file_name
+                        )
+                    else:
+                        await client.send_message(
+                            peer,
+                            message.replace("{name}", name),
+                            parse_mode="html"
+                        )
+
                     sent += 1
                 except Exception as e:
                     failed.append({
