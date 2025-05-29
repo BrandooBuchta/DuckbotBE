@@ -7,6 +7,12 @@ from telethon.tl.functions.contacts import GetContactsRequest, AddContactRequest
 from telethon.tl.types import InputPeerUser
 import os
 from dotenv import load_dotenv
+from vokativ import sex, vokativ
+
+def get_user_name(n):
+    if sex(n) == "w":
+        return vokativ(n, woman=True)
+    return vokativ(n, woman=False) 
 
 load_dotenv()
 
@@ -73,11 +79,6 @@ async def confirm_code(data: ConfirmCodeRequest):
         "status": "authenticated",
         "session": session_string
     }
-
-
-
-def get_user_name(name: str | None) -> str:
-    return name or "příteli"
 
 @router.post("/broadcast")
 async def broadcast_message(data: TelegramBroadcastSchema):
