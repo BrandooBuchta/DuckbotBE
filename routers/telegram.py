@@ -22,6 +22,8 @@ class StartLoginRequest(BaseModel):
 class ConfirmCodeRequest(BaseModel):
     phone: str
     code: str
+    phone_code_hash: str
+    session: str
 
 class TelegramBroadcastSchema(BaseModel):
     session: str = Field(..., min_length=1)
@@ -34,33 +36,35 @@ async def start_login(data: StartLoginRequest):
     await client.connect()
 
     try:
-        await client.send_code_request(data.phone)
+        sent = await client.send_code_request(data.phone)
+        code_hash = sent.phone_code_hash
+        session_string = client.session.save()
         await client.disconnect()
-        return {"status": "code_sent"}
+        return {
+            "status": "code_sent",
+            "session": session_string,
+            "phone_code_hash": code_hash
+        }
     except Exception as e:
         await client.disconnect()
         raise HTTPException(status_code=500, detail=f"Chyba při odesílání kódu: {e}")
 
+
 @router.post("/confirm")
 async def confirm_code(data: ConfirmCodeRequest):
-    client = TelegramClient(StringSession(), API_ID, API_HASH)
-    await client.connect()
+    async with TelegramClient(StringSession(data.session), API_ID, API_HASH) as client:
+        await client.connect()
+        try:
+            await client.sign_in(phone=data.phone, code=data.code, phone_code_hash=data.phone_code_hash)
+        except SessionPasswordNeededError:
+            raise HTTPException(status_code=403, detail="2FA is not supported yet")
 
-    try:
-        await client.sign_in(data.phone, data.code)
         session_string = client.session.save()
-        await client.disconnect()
-        return {
-            "status": "authenticated",
-            "session": session_string
-        }
 
-    except SessionPasswordNeededError:
-        await client.disconnect()
-        raise HTTPException(status_code=403, detail="2FA is not supported yet")
-    except Exception as e:
-        await client.disconnect()
-        raise HTTPException(status_code=500, detail=f"Chyba při přihlášení: {e}")
+    return {
+        "status": "authenticated",
+        "session": session_string
+    }
 
 def get_user_name(name: str | None) -> str:
     return name or "příteli"
