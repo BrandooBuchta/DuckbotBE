@@ -30,10 +30,16 @@ class TelegramBroadcastSchema(BaseModel):
 
 @router.post("/start")
 async def start_login(data: StartLoginRequest):
-    async with TelegramClient(StringSession(), API_ID, API_HASH) as client:
-        await client.connect()
+    client = TelegramClient(StringSession(), API_ID, API_HASH)
+    await client.connect()
+
+    try:
         await client.send_code_request(data.phone)
-    return {"status": "code_sent"}
+        await client.disconnect()
+        return {"status": "code_sent"}
+    except Exception as e:
+        await client.disconnect()
+        raise HTTPException(status_code=500, detail=f"Chyba při odesílání kódu: {e}")
 
 @router.post("/confirm")
 async def confirm_code(data: ConfirmCodeRequest):
