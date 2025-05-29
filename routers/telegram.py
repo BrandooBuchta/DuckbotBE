@@ -87,6 +87,9 @@ async def broadcast_message(
     lang: str = Form(...),
     file: UploadFile = File(None)
 ):
+    print("Filename:", file.filename)
+    print("Content Type:", file.content_type)
+
     try:
         async with TelegramClient(StringSession(session), API_ID, API_HASH) as client:
             me = await client.get_me()
