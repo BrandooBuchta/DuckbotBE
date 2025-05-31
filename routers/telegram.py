@@ -138,9 +138,23 @@ async def broadcast_message(
                         # Musíme resetovat pozici streamu před každým odesláním
                         file_stream.seek(0)
                         if mime.startswith("image/"):
-                            await client.send_file(peer, file_stream, caption=caption, force_document=False)
+                            file_stream.seek(0)
+                            await client.send_file(
+                                peer,
+                                file_stream,
+                                caption=caption,
+                                force_document=True,
+                                supports_streaming=True
+                            )
                         elif mime.startswith("video/"):
-                            await client.send_file(peer, file_stream, caption=caption, force_document=False, video_note=False)
+                            file_stream.seek(0)
+                            await client.send_file(
+                                peer,
+                                file_stream,
+                                caption=caption,
+                                force_document=True,
+                                supports_streaming=True
+                            )
                         else:
                             await client.send_file(peer, file_stream, caption=caption, file_name=file.filename)
                     else:
