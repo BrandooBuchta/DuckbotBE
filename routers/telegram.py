@@ -143,7 +143,6 @@ async def broadcast_message(
                                 peer,
                                 file_stream,
                                 caption=caption,
-                                force_document=True,
                                 supports_streaming=True
                             )
                         elif mime.startswith("video/"):
@@ -152,7 +151,6 @@ async def broadcast_message(
                                 peer,
                                 file_stream,
                                 caption=caption,
-                                force_document=True,
                                 supports_streaming=True
                             )
                         else:
