@@ -90,9 +90,11 @@ async def broadcast_message(
     try:
         async with TelegramClient(StringSession(session), API_ID, API_HASH) as client:
             me = await client.get_me()
-            dialogs = await client.get_dialogs(limit=50)
+            print(f"✅ Přihlášen jako {me.id} ({me.username})")
 
-            # Přidání uživatelů do kontaktů
+            dialogs = await client.get_dialogs(limit=50)
+            print(f"🔍 Nalezeno {len(dialogs)} dialogů")
+
             for dialog in dialogs:
                 if dialog.is_user and dialog.entity.id != me.id:
                     user = dialog.entity
@@ -104,10 +106,13 @@ async def broadcast_message(
                             phone="",
                             add_phone_privacy_exception=False
                         ))
-                    except Exception:
-                        pass
+                        print(f"👤 Přidán kontakt {user.id} ({user.username})")
+                    except Exception as e:
+                        print(f"⚠️ Nepodařilo se přidat {user.id}: {e}")
 
             contacts = await client(GetContactsRequest(hash=0))
+            print(f"📇 Získáno {len(contacts.users)} kontaktů")
+
             sent = 0
             failed = []
 
@@ -120,9 +125,12 @@ async def broadcast_message(
                     peer = InputPeerUser(user.id, user.access_hash)
                     caption = message.replace("{name}", name)
 
-                    # Odesílání souboru/media pokud je přítomen
+                    print(f"📤 Odesílám zprávu {user.id} ({user.username})")
+
                     if file:
                         mime = file.content_type or ""
+                        print(f"   ➤ Soubor: {file.filename} ({mime})")
+
                         if mime.startswith("image/"):
                             await client.send_file(peer, file.file, caption=caption, force_document=False)
                         elif mime.startswith("video/"):
@@ -133,12 +141,16 @@ async def broadcast_message(
                         await client.send_message(peer, caption, parse_mode="html")
 
                     sent += 1
+                    print(f"✅ Odesláno {user.username or user.id}")
                 except Exception as e:
+                    print(f"❌ Nezdařilo se u {user.username or user.id}: {e}")
                     failed.append({
                         "id": user.id,
                         "username": user.username,
                         "error": str(e)
                     })
+
+            print(f"📊 Hotovo – Úspěšně: {sent}, Selhalo: {len(failed)}")
 
             return {
                 "success": True,
@@ -148,4 +160,5 @@ async def broadcast_message(
             }
 
     except Exception as e:
+        print(f"🔥 Kritická chyba: {e}")
         raise HTTPException(status_code=500, detail=f"Chyba při broadcastu: {e}")
