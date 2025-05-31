@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: telegram-broadcast-api
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /docs
+    autoDeploy: true
+    envVars:
+      - key: TG_API_ID
+        value: "22556084"
+      - key: TG_API_HASH
+        value: "08ce7cb3b53707571f4b8718e7fb5460"
+      - key: DATABASE_URL
+        value: "postgresql://don_simon_bot_db_user:HcFWpwAlWrV8BqafJUrGPt9Po5Xmcw9S@dpg-ctd9ln68ii6s73910v3g-a.oregon-postgres.render.com:5432/don_simon_bot_db"
+      - key: SUPABASE_ANON_KEY
+        value: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxld29scWRrYnVsd2lpY3FrcW5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk2NDU1NzcsImV4cCI6MjAyNTIyMTU3N30.DT98IIZywTHc1BT3EyfCKf17F45cFdl4iPsMuH2JyHk"
+      - key: DOMAIN
+        value: "https://bot-configurator-api.onrender.com/api"
+      - key: PORT
+        value: "8000"

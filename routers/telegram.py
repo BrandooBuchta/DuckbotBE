@@ -1,3 +1,9 @@
+import os
+import io
+import subprocess
+import tempfile
+
+from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel, Field
 from telethon import TelegramClient
@@ -5,10 +11,9 @@ from telethon.sessions import StringSession
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.contacts import GetContactsRequest, AddContactRequest
 from telethon.tl.types import InputPeerUser
-import os
-import io
-from dotenv import load_dotenv
+
 from vokativ import sex, vokativ
+
 
 def get_user_name(n):
     if sex(n) == "w":
@@ -91,10 +96,7 @@ async def broadcast_message(
     try:
         async with TelegramClient(StringSession(session), API_ID, API_HASH) as client:
             me = await client.get_me()
-            print(f"✅ Přihlášen jako {me.id} ({me.username})")
-
             dialogs = await client.get_dialogs(limit=50)
-            print(f"🔍 Nalezeno {len(dialogs)} dialogů")
 
             for dialog in dialogs:
                 if dialog.is_user and dialog.entity.id != me.id:
@@ -107,19 +109,37 @@ async def broadcast_message(
                             phone="",
                             add_phone_privacy_exception=False
                         ))
-                        print(f"👤 Přidán kontakt {user.id} ({user.username})")
                     except Exception:
                         pass
 
             contacts = await client(GetContactsRequest(hash=0))
-            print(f"📇 Získáno {len(contacts.users)} kontaktů")
             sent = 0
             failed = []
 
-            file_bytes = await file.read() if file else None
-            file_stream = io.BytesIO(file_bytes) if file_bytes else None
-            if file_stream and file.filename:
-                file_stream.name = file.filename  # důležité
+            temp_video_path = None
+
+            if file and file.content_type and file.content_type.startswith("video/"):
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_input:
+                    temp_input.write(await file.read())
+                    temp_input.flush()
+
+                temp_output = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
+                temp_output_path = temp_output.name
+                temp_output.close()
+
+                subprocess.run([
+                    "ffmpeg",
+                    "-i", temp_input.name,
+                    "-vf", "transpose=0",
+                    "-metadata:s:v:0", "rotate=0",
+                    "-c:v", "libx264",
+                    "-preset", "fast",
+                    "-crf", "23",
+                    "-c:a", "copy",
+                    temp_output_path
+                ], check=True)
+
+                temp_video_path = temp_output_path
 
             for user in contacts.users:
                 if user.bot or not user.access_hash or user.id == me.id:
@@ -130,44 +150,29 @@ async def broadcast_message(
                     peer = InputPeerUser(user.id, user.access_hash)
                     caption = message.replace("{name}", name)
 
-                    print(f"📤 Odesílám zprávu {user.id} ({user.username})")
-                    if file_stream:
+                    if file:
                         mime = file.content_type or ""
-                        print(f"   ➤ Soubor: {file.filename} ({mime})")
 
-                        # Musíme resetovat pozici streamu před každým odesláním
-                        file_stream.seek(0)
                         if mime.startswith("image/"):
-                            file_stream.seek(0)
-                            await client.send_file(
-                                peer,
-                                file_stream,
-                                caption=caption,
-                                supports_streaming=True
-                            )
-                        elif mime.startswith("video/"):
-                            file_stream.seek(0)
-                            await client.send_file(
-                                peer,
-                                file_stream,
-                                caption=caption,
-                                supports_streaming=True
-                            )
+                            file.file.seek(0)
+                            await client.send_file(peer, file.file, caption=caption, supports_streaming=True)
+
+                        elif mime.startswith("video/") and temp_video_path:
+                            await client.send_file(peer, temp_video_path, caption=caption, supports_streaming=True)
+
                         else:
-                            await client.send_file(peer, file_stream, caption=caption, file_name=file.filename)
+                            file.file.seek(0)
+                            await client.send_file(peer, file.file, caption=caption, file_name=file.filename)
                     else:
                         await client.send_message(peer, caption, parse_mode="html")
 
                     sent += 1
                 except Exception as e:
-                    print(f"❌ Nezdařilo se u {user.username or user.id}: {e}")
                     failed.append({
                         "id": user.id,
                         "username": user.username,
                         "error": str(e)
                     })
-
-            print(f"📊 Hotovo – Úspěšně: {sent}, Selhalo: {len(failed)}")
 
             return {
                 "success": True,
