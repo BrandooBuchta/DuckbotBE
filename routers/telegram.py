@@ -117,29 +117,11 @@ async def broadcast_message(
             failed = []
 
             temp_video_path = None
-
             if file and file.content_type and file.content_type.startswith("video/"):
+                import tempfile, shutil
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_input:
-                    temp_input.write(await file.read())
-                    temp_input.flush()
-
-                temp_output = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
-                temp_output_path = temp_output.name
-                temp_output.close()
-
-                subprocess.run([
-                    "ffmpeg",
-                    "-i", temp_input.name,
-                    "-vf", "transpose=0",
-                    "-metadata:s:v:0", "rotate=0",
-                    "-c:v", "libx264",
-                    "-preset", "fast",
-                    "-crf", "23",
-                    "-c:a", "copy",
-                    temp_output_path
-                ], check=True)
-
-                temp_video_path = temp_output_path
+                    shutil.copyfileobj(file.file, temp_input)
+                    temp_video_path = temp_input.name
 
             for user in contacts.users:
                 if user.bot or not user.access_hash or user.id == me.id:
@@ -155,14 +137,32 @@ async def broadcast_message(
 
                         if mime.startswith("image/"):
                             file.file.seek(0)
-                            await client.send_file(peer, file.file, caption=caption, supports_streaming=True)
+                            await client.send_file(
+                                peer,
+                                file.file,
+                                caption=caption,
+                                supports_streaming=True,
+                                force_document=False
+                            )
 
                         elif mime.startswith("video/") and temp_video_path:
-                            await client.send_file(peer, temp_video_path, caption=caption, supports_streaming=True)
+                            await client.send_file(
+                                peer,
+                                temp_video_path,
+                                caption=caption,
+                                supports_streaming=True,
+                                force_document=False
+                            )
 
                         else:
                             file.file.seek(0)
-                            await client.send_file(peer, file.file, caption=caption, file_name=file.filename)
+                            await client.send_file(
+                                peer,
+                                file.file,
+                                caption=caption,
+                                file_name=file.filename,
+                                force_document=True  # pro PDF apod.
+                            )
                     else:
                         await client.send_message(peer, caption, parse_mode="html")
 
