@@ -117,11 +117,23 @@ async def broadcast_message(
             failed = []
 
             temp_video_path = None
+
             if file and file.content_type and file.content_type.startswith("video/"):
                 import tempfile, shutil
+
+                # 1️⃣ Ulož příchozí video z FE
+                uploaded_test_path = "uploaded_test_video.mp4"
+                with open(uploaded_test_path, "wb") as out_f:
+                    shutil.copyfileobj(file.file, out_f)
+
+                # 2️⃣ Připrav dočasný soubor k odeslání
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_input:
-                    shutil.copyfileobj(file.file, temp_input)
+                    with open(uploaded_test_path, "rb") as in_f:
+                        shutil.copyfileobj(in_f, temp_input)
                     temp_video_path = temp_input.name
+
+                # 3️⃣ Záloha před odesláním do Telegramu
+                shutil.copyfile(temp_video_path, "prepared_video.mp4")
 
             for user in contacts.users:
                 if user.bot or not user.access_hash or user.id == me.id:
@@ -136,14 +148,14 @@ async def broadcast_message(
                         mime = file.content_type or ""
 
                         if mime.startswith("image/"):
-                            file.file.seek(0)
-                            await client.send_file(
-                                peer,
-                                file.file,
-                                caption=caption,
-                                supports_streaming=True,
-                                force_document=False
-                            )
+                            with open(uploaded_test_path, "rb") as f:
+                                await client.send_file(
+                                    peer,
+                                    f,
+                                    caption=caption,
+                                    supports_streaming=True,
+                                    force_document=False
+                                )
 
                         elif mime.startswith("video/") and temp_video_path:
                             await client.send_file(
@@ -155,14 +167,14 @@ async def broadcast_message(
                             )
 
                         else:
-                            file.file.seek(0)
-                            await client.send_file(
-                                peer,
-                                file.file,
-                                caption=caption,
-                                file_name=file.filename,
-                                force_document=True  # pro PDF apod.
-                            )
+                            with open(uploaded_test_path, "rb") as f:
+                                await client.send_file(
+                                    peer,
+                                    f,
+                                    caption=caption,
+                                    file_name=file.filename,
+                                    force_document=True
+                                )
                     else:
                         await client.send_message(peer, caption, parse_mode="html")
 
