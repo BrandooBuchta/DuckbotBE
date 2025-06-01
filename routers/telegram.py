@@ -11,9 +11,9 @@ from telethon.sessions import StringSession
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.contacts import GetContactsRequest, AddContactRequest
 from telethon.tl.types import InputPeerUser
-import shutil
+
 from vokativ import sex, vokativ
-from utils.process_video import process_video_ffmpeg, get_video_metadata
+
 
 def get_user_name(n):
     if sex(n) == "w":
@@ -26,7 +26,6 @@ router = APIRouter()
 
 API_ID = int(os.getenv("TG_API_ID"))
 API_HASH = os.getenv(("TG_API_HASH"))
-BASE_URL = "https://bot-configurator-api.onrender.com"
 
 # Pydantic modely pro vstup
 class StartLoginRequest(BaseModel):
@@ -87,20 +86,6 @@ async def confirm_code(data: ConfirmCodeRequest):
         "session": session_string
     }
 
-@router.get("/download/uploaded")
-async def download_uploaded_video():
-    file_path = "uploaded_test_video.mp4"
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="Soubor nenalezen")
-    return FileResponse(file_path, media_type="video/mp4", filename="uploaded_test_video.mp4")
-
-@router.get("/download/prepared")
-async def download_prepared_video():
-    file_path = "prepared_video.mp4"
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="Soubor nenalezen")
-    return FileResponse(file_path, media_type="video/mp4", filename="prepared_video.mp4")
-
 @router.post("/broadcast")
 async def broadcast_message(
     session: str = Form(...),
@@ -115,11 +100,12 @@ async def broadcast_message(
 
             for dialog in dialogs:
                 if dialog.is_user and dialog.entity.id != me.id:
+                    user = dialog.entity
                     try:
                         await client(AddContactRequest(
-                            id=dialog.entity.id,
-                            first_name=dialog.entity.first_name or "NoName",
-                            last_name=dialog.entity.last_name or "",
+                            id=user.id,
+                            first_name=user.first_name or "NoName",
+                            last_name=user.last_name or "",
                             phone="",
                             add_phone_privacy_exception=False
                         ))
@@ -130,55 +116,63 @@ async def broadcast_message(
             sent = 0
             failed = []
 
-            processed_path = None
-            video_metadata = None
-
-            if file and file.content_type.startswith("video/"):
-                # 📥 Ulož přijaté video
-                uploaded_path = "uploaded_test_video.mp4"
-                with open(uploaded_path, "wb") as f:
-                    shutil.copyfileobj(file.file, f)
-
-                # 🔁 Převod přes ffmpeg
-                processed_path = process_video_ffmpeg(uploaded_path)
-
-                # 📏 Metadata
-                duration, width, height = get_video_metadata(processed_path)
-
-                # 🔗 Log odkazy
-                print(f"🟢 FE upload video:     {BASE_URL}/download/uploaded")
-                print(f"🟢 Processed video:      {BASE_URL}/download/prepared")
+            temp_video_path = None
+            if file and file.content_type and file.content_type.startswith("video/"):
+                import tempfile, shutil
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_input:
+                    shutil.copyfileobj(file.file, temp_input)
+                    temp_video_path = temp_input.name
 
             for user in contacts.users:
                 if user.bot or not user.access_hash or user.id == me.id:
                     continue
 
                 try:
-                    name = user.first_name or "friend"
-                    caption = message.replace("{name}", name)
+                    name = get_user_name(user.first_name) if lang in ("cs", "sk") else user.first_name or "friend"
                     peer = InputPeerUser(user.id, user.access_hash)
+                    caption = message.replace("{name}", name)
 
-                    if processed_path:
-                        await client.send_file(
-                            peer,
-                            processed_path,
-                            caption=caption,
-                            supports_streaming=True,
-                            attributes=[
-                                DocumentAttributeVideo(
-                                    duration=duration,
-                                    w=width,
-                                    h=height,
-                                    supports_streaming=True
-                                )
-                            ]
-                        )
+                    if file:
+                        mime = file.content_type or ""
+
+                        if mime.startswith("image/"):
+                            file.file.seek(0)
+                            await client.send_file(
+                                peer,
+                                file.file,
+                                caption=caption,
+                                supports_streaming=True,
+                                force_document=False
+                            )
+
+                        elif mime.startswith("video/") and temp_video_path:
+                            await client.send_file(
+                                peer,
+                                temp_video_path,
+                                caption=caption,
+                                supports_streaming=True,
+                                force_document=False
+                            )
+
+                        else:
+                            file.file.seek(0)
+                            await client.send_file(
+                                peer,
+                                file.file,
+                                caption=caption,
+                                file_name=file.filename,
+                                force_document=True  # pro PDF apod.
+                            )
                     else:
-                        await client.send_message(peer, caption)
+                        await client.send_message(peer, caption, parse_mode="html")
 
                     sent += 1
                 except Exception as e:
-                    failed.append({"id": user.id, "error": str(e)})
+                    failed.append({
+                        "id": user.id,
+                        "username": user.username,
+                        "error": str(e)
+                    })
 
             return {
                 "success": True,
