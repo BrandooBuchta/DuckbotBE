@@ -11,7 +11,7 @@ from telethon.sessions import StringSession
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.contacts import GetContactsRequest, AddContactRequest
 from telethon.tl.types import InputPeerUser
-
+import shutil
 from vokativ import sex, vokativ
 
 
