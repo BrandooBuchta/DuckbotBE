@@ -2,6 +2,7 @@ import os
 import io
 import subprocess
 import tempfile
+import cv2
 
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form
@@ -10,7 +11,7 @@ from telethon import TelegramClient
 from telethon.sessions import StringSession
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.contacts import GetContactsRequest, AddContactRequest
-from telethon.tl.types import InputPeerUser
+from telethon.tl.types import InputPeerUser, DocumentAttributeVideo
 
 from vokativ import sex, vokativ
 
@@ -18,7 +19,20 @@ from vokativ import sex, vokativ
 def get_user_name(n):
     if sex(n) == "w":
         return vokativ(n, woman=True)
-    return vokativ(n, woman=False) 
+    return vokativ(n, woman=False)
+
+def get_video_metadata(path: str):
+    try:
+        cap = cv2.VideoCapture(path)
+        if not cap.isOpened():
+            return None
+        width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        duration = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) / cap.get(cv2.CAP_PROP_FPS))
+        cap.release()
+        return width, height, duration
+    except Exception:
+        return None
 
 load_dotenv()
 
@@ -146,13 +160,22 @@ async def broadcast_message(
                             )
 
                         elif mime.startswith("video/") and temp_video_path:
+                            metadata = get_video_metadata(temp_video_path)
+                            if metadata:
+                                w, h, duration = metadata
+                            else:
+                                w, h, duration = 720, 1280, 10  # fallback
+
                             await client.send_file(
                                 peer,
                                 temp_video_path,
                                 caption=caption,
-                                supports_streaming=True,
+                                attributes=[
+                                    DocumentAttributeVideo(duration=duration, w=w, h=h, supports_streaming=True)
+                                ],
                                 force_document=False
                             )
+
 
                         else:
                             file.file.seek(0)
