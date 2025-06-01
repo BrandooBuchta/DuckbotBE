@@ -26,9 +26,11 @@ def get_video_metadata(path: str):
         cap = cv2.VideoCapture(path)
         if not cap.isOpened():
             return None
-        width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        duration = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) / cap.get(cv2.CAP_PROP_FPS))
+        fps = cap.get(cv2.CAP_PROP_FPS) or 25
+        frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        duration = int(frame_count / fps)
         cap.release()
         return width, height, duration
     except Exception:
@@ -159,13 +161,13 @@ async def broadcast_message(
                                 force_document=False
                             )
 
-                        elif mime.startswith("video/") and temp_video_path:
+                        if mime.startswith("video/") and temp_video_path:
                             metadata = get_video_metadata(temp_video_path)
                             if metadata:
                                 w, h, duration = metadata
                             else:
                                 w, h, duration = 720, 1280, 10  # fallback
-
+                            
                             await client.send_file(
                                 peer,
                                 temp_video_path,
@@ -175,7 +177,6 @@ async def broadcast_message(
                                 ],
                                 force_document=False
                             )
-
 
                         else:
                             file.file.seek(0)
