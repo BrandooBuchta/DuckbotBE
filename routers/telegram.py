@@ -26,6 +26,7 @@ router = APIRouter()
 
 API_ID = int(os.getenv("TG_API_ID"))
 API_HASH = os.getenv(("TG_API_HASH"))
+BASE_URL = "https://bot-configurator-api.onrender.com"
 
 # Pydantic modely pro vstup
 class StartLoginRequest(BaseModel):
@@ -86,6 +87,20 @@ async def confirm_code(data: ConfirmCodeRequest):
         "session": session_string
     }
 
+@router.get("/download/uploaded")
+async def download_uploaded_video():
+    file_path = "uploaded_test_video.mp4"
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Soubor nenalezen")
+    return FileResponse(file_path, media_type="video/mp4", filename="uploaded_test_video.mp4")
+
+@router.get("/download/prepared")
+async def download_prepared_video():
+    file_path = "prepared_video.mp4"
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Soubor nenalezen")
+    return FileResponse(file_path, media_type="video/mp4", filename="prepared_video.mp4")
+
 @router.post("/broadcast")
 async def broadcast_message(
     session: str = Form(...),
@@ -100,12 +115,11 @@ async def broadcast_message(
 
             for dialog in dialogs:
                 if dialog.is_user and dialog.entity.id != me.id:
-                    user = dialog.entity
                     try:
                         await client(AddContactRequest(
-                            id=user.id,
-                            first_name=user.first_name or "NoName",
-                            last_name=user.last_name or "",
+                            id=dialog.entity.id,
+                            first_name=dialog.entity.first_name or "NoName",
+                            last_name=dialog.entity.last_name or "",
                             phone="",
                             add_phone_privacy_exception=False
                         ))
@@ -119,45 +133,30 @@ async def broadcast_message(
             temp_video_path = None
 
             if file and file.content_type and file.content_type.startswith("video/"):
-                import tempfile, shutil
+                with open("uploaded_test_video.mp4", "wb") as f:
+                    shutil.copyfileobj(file.file, f)
 
-                # 1️⃣ Ulož příchozí video z FE
-                uploaded_test_path = "uploaded_test_video.mp4"
-                with open(uploaded_test_path, "wb") as out_f:
-                    shutil.copyfileobj(file.file, out_f)
-
-                # 2️⃣ Připrav dočasný soubor k odeslání
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_input:
-                    with open(uploaded_test_path, "rb") as in_f:
+                    with open("uploaded_test_video.mp4", "rb") as in_f:
                         shutil.copyfileobj(in_f, temp_input)
                     temp_video_path = temp_input.name
 
-                # 3️⃣ Záloha před odesláním do Telegramu
                 shutil.copyfile(temp_video_path, "prepared_video.mp4")
+
+                print(f"🟢 FE upload video:     {BASE_URL}/download/uploaded")
+                print(f"🟢 Prepared video:      {BASE_URL}/download/prepared")
 
             for user in contacts.users:
                 if user.bot or not user.access_hash or user.id == me.id:
                     continue
 
                 try:
-                    name = get_user_name(user.first_name) if lang in ("cs", "sk") else user.first_name or "friend"
-                    peer = InputPeerUser(user.id, user.access_hash)
+                    name = user.first_name or "friend"
                     caption = message.replace("{name}", name)
+                    peer = InputPeerUser(user.id, user.access_hash)
 
                     if file:
-                        mime = file.content_type or ""
-
-                        if mime.startswith("image/"):
-                            with open(uploaded_test_path, "rb") as f:
-                                await client.send_file(
-                                    peer,
-                                    f,
-                                    caption=caption,
-                                    supports_streaming=True,
-                                    force_document=False
-                                )
-
-                        elif mime.startswith("video/") and temp_video_path:
+                        if file.content_type.startswith("video/") and temp_video_path:
                             await client.send_file(
                                 peer,
                                 temp_video_path,
@@ -165,26 +164,19 @@ async def broadcast_message(
                                 supports_streaming=True,
                                 force_document=False
                             )
-
                         else:
-                            with open(uploaded_test_path, "rb") as f:
-                                await client.send_file(
-                                    peer,
-                                    f,
-                                    caption=caption,
-                                    file_name=file.filename,
-                                    force_document=True
-                                )
+                            await client.send_file(
+                                peer,
+                                "uploaded_test_video.mp4",
+                                caption=caption,
+                                force_document=True
+                            )
                     else:
-                        await client.send_message(peer, caption, parse_mode="html")
+                        await client.send_message(peer, caption)
 
                     sent += 1
                 except Exception as e:
-                    failed.append({
-                        "id": user.id,
-                        "username": user.username,
-                        "error": str(e)
-                    })
+                    failed.append({"id": user.id, "error": str(e)})
 
             return {
                 "success": True,
