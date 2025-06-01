@@ -32,9 +32,14 @@ def get_video_metadata(file_path: str) -> tuple[int, int, int]:
         "-v", "error",
         "-select_streams", "v:0",
         "-show_entries", "stream=width,height,duration",
-        "-of", "default=noprint_wrappers=1:nokey=1",
+        "-of", "csv=p=0",
         file_path,
     ]
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    width, height, duration = result.stdout.strip().split("\n")
+
+    output = result.stdout.strip().split(',')
+    if len(output) != 3:
+        raise ValueError(f"❌ ffprobe failed to return metadata correctly: {result.stdout.strip()}")
+
+    width, height, duration = output
     return int(float(duration)), int(width), int(height)
