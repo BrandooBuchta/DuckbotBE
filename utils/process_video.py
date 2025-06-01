@@ -11,11 +11,13 @@ def process_video_ffmpeg(input_file_path: str) -> str:
 
     command = [
         FFMPEG_PATH,
+        "-y",
         "-i", input_file_path,
         "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2",
         "-c:v", "libx264",
         "-preset", "veryfast",
         "-crf", "23",
+        "-pix_fmt", "yuv420p",
         "-c:a", "aac",
         "-b:a", "128k",
         "-movflags", "+faststart",
@@ -36,6 +38,10 @@ def get_video_metadata(file_path: str) -> tuple[int, int, int]:
         file_path,
     ]
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+    print("📄 ffprobe stdout:", result.stdout)
+    print("📄 ffprobe stderr:", result.stderr)
+    print("📄 video path exists:", os.path.exists(file_path))
 
     output = result.stdout.strip().split(',')
     if len(output) != 3:
