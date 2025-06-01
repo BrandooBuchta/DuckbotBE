@@ -10,3 +10,4 @@ pytz
 uvicorn
 telethon
 python-multipart
+opencv-python
