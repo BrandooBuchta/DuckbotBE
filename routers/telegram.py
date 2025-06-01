@@ -13,7 +13,7 @@ from telethon.tl.functions.contacts import GetContactsRequest, AddContactRequest
 from telethon.tl.types import InputPeerUser
 import shutil
 from vokativ import sex, vokativ
-
+from utils.process_video import process_video_ffmpeg, get_video_metadata
 
 def get_user_name(n):
     if sex(n) == "w":
@@ -130,21 +130,24 @@ async def broadcast_message(
             sent = 0
             failed = []
 
-            temp_video_path = None
+            processed_path = None
+            video_metadata = None
 
-            if file and file.content_type and file.content_type.startswith("video/"):
-                with open("uploaded_test_video.mp4", "wb") as f:
+            if file and file.content_type.startswith("video/"):
+                # 📥 Ulož přijaté video
+                uploaded_path = "uploaded_test_video.mp4"
+                with open(uploaded_path, "wb") as f:
                     shutil.copyfileobj(file.file, f)
 
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_input:
-                    with open("uploaded_test_video.mp4", "rb") as in_f:
-                        shutil.copyfileobj(in_f, temp_input)
-                    temp_video_path = temp_input.name
+                # 🔁 Převod přes ffmpeg
+                processed_path = process_video_ffmpeg(uploaded_path)
 
-                shutil.copyfile(temp_video_path, "prepared_video.mp4")
+                # 📏 Metadata
+                duration, width, height = get_video_metadata(processed_path)
 
+                # 🔗 Log odkazy
                 print(f"🟢 FE upload video:     {BASE_URL}/download/uploaded")
-                print(f"🟢 Prepared video:      {BASE_URL}/download/prepared")
+                print(f"🟢 Processed video:      {BASE_URL}/download/prepared")
 
             for user in contacts.users:
                 if user.bot or not user.access_hash or user.id == me.id:
@@ -155,22 +158,21 @@ async def broadcast_message(
                     caption = message.replace("{name}", name)
                     peer = InputPeerUser(user.id, user.access_hash)
 
-                    if file:
-                        if file.content_type.startswith("video/") and temp_video_path:
-                            await client.send_file(
-                                peer,
-                                temp_video_path,
-                                caption=caption,
-                                supports_streaming=True,
-                                force_document=False
-                            )
-                        else:
-                            await client.send_file(
-                                peer,
-                                "uploaded_test_video.mp4",
-                                caption=caption,
-                                force_document=True
-                            )
+                    if processed_path:
+                        await client.send_file(
+                            peer,
+                            processed_path,
+                            caption=caption,
+                            supports_streaming=True,
+                            attributes=[
+                                DocumentAttributeVideo(
+                                    duration=duration,
+                                    w=width,
+                                    h=height,
+                                    supports_streaming=True
+                                )
+                            ]
+                        )
                     else:
                         await client.send_message(peer, caption)
 
