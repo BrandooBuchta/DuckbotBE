@@ -146,7 +146,7 @@ async def broadcast_message(
                 try:
                     name = get_user_name(user.first_name) if lang in ("cs", "sk") else user.first_name or "friend"
                     peer = InputPeerUser(user.id, user.access_hash)
-                    caption = message.replace("{name}", name)
+                    personalized_msg = message.replace("{name}", name)
 
                     if file:
                         mime = file.content_type or ""
@@ -156,12 +156,13 @@ async def broadcast_message(
                             await client.send_file(
                                 peer,
                                 file.file,
-                                caption=caption,
+                                caption=None,
                                 supports_streaming=True,
                                 force_document=False
                             )
+                            await client.send_message(peer, personalized_msg, parse_mode="html")
 
-                        if mime.startswith("video/") and temp_video_path:
+                        elif mime.startswith("video/") and temp_video_path:
                             metadata = get_video_metadata(temp_video_path)
                             if metadata:
                                 w, h, duration = metadata
@@ -171,24 +172,26 @@ async def broadcast_message(
                             await client.send_file(
                                 peer,
                                 temp_video_path,
-                                caption=caption,
+                                caption=None,
                                 attributes=[
                                     DocumentAttributeVideo(duration=duration, w=w, h=h, supports_streaming=True)
                                 ],
                                 force_document=False
                             )
+                            await client.send_message(peer, personalized_msg, parse_mode="html")
 
                         else:
                             file.file.seek(0)
                             await client.send_file(
                                 peer,
                                 file.file,
-                                caption=caption,
+                                caption=None,
                                 file_name=file.filename,
-                                force_document=True  # pro PDF apod.
+                                force_document=True
                             )
+                            await client.send_message(peer, personalized_msg, parse_mode="html")
                     else:
-                        await client.send_message(peer, caption, parse_mode="html")
+                        await client.send_message(peer, personalized_msg, parse_mode="html")
 
                     sent += 1
                 except Exception as e:
