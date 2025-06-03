@@ -112,7 +112,7 @@ async def broadcast_message(
     try:
         async with TelegramClient(StringSession(session), API_ID, API_HASH) as client:
             me = await client.get_me()
-            dialogs = await client.get_dialogs(limit=50)
+            dialogs = await client.get_dialogs()
 
             for dialog in dialogs:
                 if dialog.is_user and dialog.entity.id != me.id:
@@ -206,6 +206,113 @@ async def broadcast_message(
                 "sent": sent,
                 "failed": failed,
                 "total": len(contacts.users),
+            }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Chyba při broadcastu: {e}")
+
+@router.post("/broadcast-new")
+async def broadcast_new_contacts(
+    session: str = Form(...),
+    message: str = Form(...),
+    lang: str = Form(...),
+    file: UploadFile = File(None)
+):
+    try:
+        async with TelegramClient(StringSession(session), API_ID, API_HASH) as client:
+            me = await client.get_me()
+
+            # Kontakty před přidáním
+            old_contacts = await client(GetContactsRequest(hash=0))
+            old_ids = {user.id for user in old_contacts.users}
+
+            # Přidání nových lidí z dialogu
+            dialogs = await client.get_dialogs()
+            for dialog in dialogs:
+                if dialog.is_user and dialog.entity.id != me.id:
+                    user = dialog.entity
+                    if user.id not in old_ids:
+                        try:
+                            await client(AddContactRequest(
+                                id=user.id,
+                                first_name=user.first_name or "NoName",
+                                last_name=user.last_name or "",
+                                phone="",
+                                add_phone_privacy_exception=False
+                            ))
+                        except Exception:
+                            pass
+
+            # Kontakty po přidání
+            updated_contacts = await client(GetContactsRequest(hash=0))
+            new_users = [
+                u for u in updated_contacts.users
+                if u.id not in old_ids and not u.bot and u.access_hash and u.id != me.id
+            ]
+
+            # Video příprava
+            temp_video_path = None
+            if file and file.content_type and file.content_type.startswith("video/"):
+                import shutil
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_input:
+                    shutil.copyfileobj(file.file, temp_input)
+                    temp_video_path = temp_input.name
+
+            sent = 0
+            failed = []
+
+            for user in new_users:
+                try:
+                    name = get_user_name(user.first_name) if lang in ("cs", "sk") else user.first_name or "friend"
+                    peer = InputPeerUser(user.id, user.access_hash)
+                    personalized_msg = message.replace("{name}", name)
+
+                    if file:
+                        mime = file.content_type or ""
+
+                        if mime.startswith("video/") and temp_video_path:
+                            metadata = get_video_metadata(temp_video_path)
+                            if metadata:
+                                w, h, duration = metadata
+                            else:
+                                w, h, duration = 720, 1280, 10
+                            
+                            await client.send_file(
+                                peer,
+                                temp_video_path,
+                                caption=None,
+                                attributes=[
+                                    DocumentAttributeVideo(duration=duration, w=w, h=h, supports_streaming=True)
+                                ],
+                                force_document=False
+                            )
+                            await client.send_message(peer, personalized_msg, parse_mode="html")
+                        else:
+                            file.file.seek(0)
+                            await client.send_file(
+                                peer,
+                                file.file,
+                                caption=None,
+                                file_name=file.filename,
+                                force_document=True
+                            )
+                            await client.send_message(peer, personalized_msg, parse_mode="html")
+                    else:
+                        await client.send_message(peer, personalized_msg, parse_mode="html")
+
+                    sent += 1
+                except Exception as e:
+                    failed.append({
+                        "id": user.id,
+                        "username": user.username,
+                        "error": str(e)
+                    })
+
+            return {
+                "success": True,
+                "sent": sent,
+                "failed": failed,
+                "new_contacts": len(new_users),
             }
 
     except Exception as e:
