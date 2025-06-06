@@ -3,7 +3,7 @@
 from fastapi import FastAPI, Depends, Request, BackgroundTasks, Request
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
-from database import engine, Base, SessionLocal
+from database import engine, ase, SessionLocal
 from schemas.user import UserCreate, UserBase
 from crud.user import get_audience, update_user_name, get_current_user, get_users_in_queue, send_message_to_user, get_user
 import os
@@ -281,3 +281,4 @@ app.include_router(telegram_router, prefix="/api/telegram", tags=["Telegram"])
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
+
