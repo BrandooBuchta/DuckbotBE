@@ -47,6 +47,7 @@ from datetime import datetime, timezone
 
 def get_sequences(db: Session):
     now = datetime.now(timezone.utc).replace(microsecond=0)
+    logger.info("now: ", now)
 
     db_sequences = db.query(Sequence).filter(
         Sequence.is_active == True,
@@ -139,7 +140,7 @@ def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
         levels=[1,2],
         repeat=True,
         send_at=None,
-        send_immediately=True,
+        send_immediately=False,
         starts_at=next_conservative,
         is_active=True,
         check_status=False,
@@ -155,7 +156,7 @@ def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
         levels=[1,2],
         repeat=True,
         send_at=None,
-        send_immediately=True,
+        send_immediately=False,
         starts_at=next_dynamic,
         is_active=True,
         check_status=False,
