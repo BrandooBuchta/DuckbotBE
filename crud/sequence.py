@@ -47,7 +47,9 @@ from datetime import datetime, timezone
 
 def get_sequences(db: Session):
     now = datetime.now(timezone.utc).replace(microsecond=0)
-    logger.info("now: ", now)
+
+    formatted_now = now.strftime("%Y-%m-%d %H:%M:%S")
+    logger.info("now: %s", formatted_now)
 
     db_sequences = db.query(Sequence).filter(
         Sequence.is_active == True,
