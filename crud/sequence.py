@@ -46,7 +46,7 @@ def get_all_sequences(db: Session, bot_id: UUID):
 from datetime import datetime, timezone
 
 def get_sequences(db: Session):
-    now = datetime.now(timezone.utc).replace(microsecond=0) + timedelta(hours=1)
+    now = datetime.now(timezone.utc).replace(microsecond=0)
 
     db_sequences = db.query(Sequence).filter(
         Sequence.is_active == True,
@@ -61,7 +61,7 @@ def get_sequences(db: Session):
 
 def update_sequence(db: Session, sequence_id: UUID, update_data: UpdateSequence):
     db_sequence, status = get_sequence(db, sequence_id)
-    now = datetime.now(timezone.utc).replace(microsecond=0) + timedelta(hours=1)  # Fixed timezone
+    now = datetime.now(timezone.utc).replace(microsecond=0)
 
     if not db_sequence:
         return 404, None
@@ -141,7 +141,7 @@ def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
         send_at=None,
         send_immediately=True,
         starts_at=next_conservative,
-        is_active=False,
+        is_active=True,
         check_status=False,
         interval=7
     )
@@ -157,7 +157,7 @@ def create_staking_sequences(db: Session, bot_id: UUID, lang: str):
         send_at=None,
         send_immediately=True,
         starts_at=next_dynamic,
-        is_active=False,
+        is_active=True,
         check_status=False,
         interval=28
     )
