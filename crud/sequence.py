@@ -45,6 +45,7 @@ def get_all_sequences(db: Session, bot_id: UUID):
 
 def get_sequences(db: Session):
     now = datetime.now(timezone.utc).replace(microsecond=0)
+    logger.info("now : %s", now)
 
     formatted_now = now.strftime("%Y-%m-%d %H:%M:%S %z")
     logger.info("now (UTC): %s", formatted_now)
